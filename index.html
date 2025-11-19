@@ -1,0 +1,2783 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slay the Werewolf</title>
+    <style>
+      :root {
+        /* Palette */
+        --color-bg-base: #050303;
+        --color-bg-accent: #120505;
+        --color-text-primary: #e7dfd7;
+        --color-header-border: rgba(127, 29, 29, 0.35);
+        --color-header-highlight: rgba(220, 38, 38, 0.08);
+        --color-panel-bg: rgba(6, 3, 4, 0.78);
+        --color-panel-border: rgba(68, 32, 32, 0.35);
+        --color-card-border: rgba(127, 29, 29, 0.4);
+        --color-chip-bg: rgba(45, 15, 15, 0.9);
+        --color-chip-remove: rgba(251, 113, 133, 0.2);
+        --color-primary-from: #b91c1c;
+        --color-primary-to: #7f1d1d;
+        --color-secondary-bg: rgba(41, 28, 28, 0.55);
+        --color-secondary-border: rgba(107, 33, 33, 0.5);
+        --color-ghost-border: rgba(248, 113, 113, 0.35);
+        --color-gold: #facc15;
+        --color-danger-border: rgba(185, 28, 28, 0.6);
+        --color-danger-bg: rgba(120, 20, 20, 0.35);
+        --font-display: "Cinzel", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-family: var(--font-body);
+        line-height: 1.5;
+        color: var(--color-text-primary);
+        background-color: var(--color-bg-base);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        padding: 20px;
+        background-image:
+          linear-gradient(180deg, rgba(5, 3, 5, 0.92), rgba(12, 4, 5, 0.85)),
+          url("assets/backgrounds/background.jpg");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        color: var(--color-text-primary);
+        min-height: 100vh;
+        font-family: var(--font-display);
+      }
+
+      .app-shell {
+        max-width: 760px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .global-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 0;
+        margin-bottom: 10px;
+      }
+
+      .app-header {
+        background: rgba(8, 9, 13, 0.82);
+        border: 1px solid var(--color-header-border);
+        border-radius: 28px;
+        padding: 30px;
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.55);
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(12px);
+      }
+
+      .app-header::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 35% 20%, var(--color-header-highlight), transparent 60%);
+        pointer-events: none;
+      }
+
+      .app-header h1 {
+        margin: 10px 0 6px;
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        color: var(--color-gold);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        font-weight: 900;
+        text-shadow:
+          0 0 20px rgba(250, 204, 21, 0.5),
+          0 0 40px rgba(250, 204, 21, 0.3),
+          0 4px 8px rgba(0, 0, 0, 0.8);
+        line-height: 1.1;
+      }
+
+      .logo-row {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+      }
+
+      .site-logo {
+        width: 300px;
+        height: 300px;
+        object-fit: contain;
+        filter: drop-shadow(0 5px 20px rgba(0, 0, 0, 0.4));
+      }
+
+      .language-picker {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        color: #cbd5f5;
+        margin-right: auto;
+      }
+
+      .language-picker select {
+        background: rgba(31, 31, 35, 0.8);
+        border: 1px solid var(--color-ghost-border);
+        color: var(--color-text-primary);
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-weight: 600;
+      }
+
+      .btn-link {
+        background: transparent;
+        border: none;
+        color: #fbbf24;
+        font-size: 0.95rem;
+        cursor: pointer;
+        text-decoration: underline;
+        align-self: center;
+      }
+
+      .app-footer {
+        text-align: center;
+        font-size: 0.8rem;
+        color: #cbd5f5;
+        margin-top: 10px;
+        padding: 0 10px;
+      }
+
+      .link-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        color: #9ca3af;
+        font-weight: 600;
+      }
+
+      .tagline {
+        margin: 2px 0;
+        color: #e7d8b1;
+        font-size: 0.95rem;
+        font-style: italic;
+      }
+
+      .panel {
+        background: var(--color-panel-bg);
+        border: 1px solid var(--color-panel-border);
+        border-radius: 24px;
+        padding: 26px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02), 0 18px 50px rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(10px);
+      }
+
+      .panel h2 {
+        margin-bottom: 18px;
+        font-size: 1.35rem;
+        color: var(--color-gold);
+        letter-spacing: 0.04em;
+      }
+
+      #rolesPanel {
+        margin-top: -6px;
+      }
+
+      .roles-details {
+        border: none;
+      }
+
+      .roles-summary {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        font-size: 1.15rem;
+        color: var(--color-gold);
+        letter-spacing: 0.04em;
+        list-style: none;
+      }
+
+      .roles-caret {
+        transition: transform 0.2s ease;
+      }
+
+      details[open] .roles-caret {
+        transform: rotate(180deg);
+      }
+
+      .roles-details > summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .collapsible-content {
+        margin-top: 14px;
+      }
+
+      #rolesPanel .options-grid {
+        margin-top: 12px;
+      }
+
+      label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-weight: 600;
+        color: #ede9e4;
+        font-size: 0.95rem;
+      }
+
+      input[type="number"],
+      input[type="text"],
+      select {
+        border: 1px solid rgba(100, 116, 139, 0.45);
+        border-radius: 12px;
+        padding: 12px;
+        font-size: 1rem;
+        font-family: inherit;
+        background: rgba(15, 16, 20, 0.85);
+        color: #f3f4f6;
+        transition: border-color 0.2s ease;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: #c084fc;
+      }
+
+      .help {
+        font-weight: 400;
+        font-size: 0.82rem;
+        color: #94a3b8;
+      }
+
+      .setup-form {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+      }
+
+      .number-stepper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px;
+        background: rgba(35, 18, 20, 0.85);
+        border: 1px solid rgba(107, 33, 33, 0.55);
+        border-radius: 14px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      }
+
+      .number-stepper input {
+        flex: 1;
+        text-align: center;
+        border: none;
+        background: transparent;
+        color: #f3f4f6;
+        font-weight: 600;
+        font-size: 1.05rem;
+        -moz-appearance: textfield;
+      }
+
+      .number-stepper input:focus {
+        outline: none;
+      }
+
+      .number-stepper input::-webkit-outer-spin-button,
+      .number-stepper input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      .step-btn {
+        border: 1px solid rgba(248, 250, 252, 0.35);
+        background: linear-gradient(135deg, rgba(185, 28, 28, 0.95), rgba(88, 28, 28, 0.95));
+        color: #fef3c7;
+        border-radius: 10px;
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+      }
+
+      .step-btn:active {
+        transform: translateY(1px);
+      }
+
+      .field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .player-list-section {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .add-player-row {
+        display: flex;
+        gap: 10px;
+      }
+
+      .add-player-row input {
+        flex: 1;
+      }
+
+      .player-chips {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .player-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: var(--color-chip-bg);
+        color: #f5f5f4;
+        font-weight: 500;
+        font-size: 0.9rem;
+      }
+
+      .chip-remove {
+        background: var(--color-chip-remove);
+        border: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        font-size: 0.9rem;
+        cursor: pointer;
+        color: #fef3c7;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        padding: 0;
+        line-height: 1;
+      }
+
+      fieldset.options {
+        border: 1px solid rgba(100, 116, 139, 0.4);
+        border-radius: 18px;
+        padding: 18px;
+      }
+
+      .options-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .option-item {
+        border: 1px solid rgba(63, 63, 70, 0.65);
+        border-radius: 14px;
+        padding: 12px;
+        background: rgba(23, 23, 26, 0.7);
+        transition: opacity 0.2s ease;
+      }
+
+      .option-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 6px;
+      }
+
+      .tag {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 3px 8px;
+        border-radius: 999px;
+        font-weight: 700;
+      }
+
+      .tag.wolves {
+        background: #991b1b;
+        color: #fde68a;
+      }
+
+      .tag.humans {
+        background: #1f2937;
+        color: #cbd5f5;
+      }
+
+      .tag.loner {
+        background: #3f3f46;
+        color: #fde68a;
+      }
+
+      .option-disabled {
+        opacity: 0.4;
+      }
+
+      .deck-preview {
+        border: 1px dashed rgba(239, 200, 144, 0.4);
+        padding: 16px;
+        border-radius: 14px;
+        background: rgba(30, 27, 18, 0.7);
+        text-align: center;
+      }
+
+      .validation {
+        color: #f87171;
+        margin-top: 8px;
+        font-weight: 600;
+      }
+
+      button {
+        border: none;
+        border-radius: 18px;
+        padding: 12px 22px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        font-family: inherit;
+        color: inherit;
+        background: var(--color-secondary-bg);
+      }
+
+      button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      .btn-primary {
+        background: linear-gradient(120deg, var(--color-primary-from), var(--color-primary-to));
+        color: #fff7ed;
+        box-shadow: 0 12px 30px rgba(180, 83, 9, 0.35);
+      }
+
+      .btn-secondary {
+        background: var(--color-secondary-bg);
+        color: #e7e5e4;
+        border: 1px solid var(--color-secondary-border);
+      }
+
+      .btn-day {
+        background: linear-gradient(120deg, #d97706, #b45309);
+        color: #030712;
+        box-shadow: 0 10px 25px rgba(217, 119, 6, 0.4);
+      }
+
+      .btn-ghost {
+        background: transparent;
+        color: #c4b5fd;
+        border: 1px solid var(--color-ghost-border);
+      }
+
+      .btn-small {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .actions-right {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+      }
+
+      .reveal-status {
+        background: linear-gradient(120deg, rgba(15, 23, 42, 0.95), rgba(2, 6, 12, 0.9));
+        color: white;
+        border-radius: 18px;
+        padding: 18px;
+        text-align: center;
+        margin-bottom: 18px;
+        border: 1px solid rgba(55, 65, 81, 0.6);
+      }
+
+      .role-card {
+        border-radius: 20px;
+        color: white;
+        padding: 32px 24px;
+        margin: 18px 0;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+        min-height: 200px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        align-items: center;
+      }
+
+      .role-card.can-reveal {
+        cursor: pointer;
+        border: 1px solid rgba(250, 204, 21, 0.4);
+      }
+
+      .role-card.with-image {
+        text-align: left;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .role-card.with-image .role-text {
+        flex: 1;
+      }
+
+      .role-image {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 20px;
+        margin: 0 auto 14px;
+        border: 2px solid rgba(255, 255, 255, 0.35);
+        display: block;
+      }
+
+      .role-text {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+      }
+
+      .role-card.with-image .role-text {
+        text-align: left;
+      }
+
+      .handoff-notice {
+        border: 1px solid rgba(190, 18, 60, 0.6);
+        border-radius: 16px;
+        background: rgba(127, 29, 29, 0.15);
+        padding: 16px;
+        margin-bottom: 18px;
+        text-align: center;
+        color: #fecdd3;
+        box-shadow: inset 0 0 12px rgba(127, 29, 29, 0.25);
+      }
+
+      .handoff-notice h4 {
+        margin: 0 0 6px;
+        font-size: 1rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .role-card[data-team="unknown"] {
+        background: radial-gradient(circle, rgba(96, 165, 250, 0.15), rgba(15, 23, 42, 0.9));
+      }
+
+      .role-card[data-team="wolves"] {
+        background: linear-gradient(120deg, #3b0d0c, #7f1d1d);
+      }
+
+      .role-card[data-team="humans"] {
+        background: linear-gradient(120deg, #102a44, #1f2937);
+      }
+
+      .role-card[data-team="loner"] {
+        background: linear-gradient(120deg, #2f2436, #4b2d4f);
+      }
+
+      .summary-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .summary-list.hidden {
+        display: none;
+      }
+
+      .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid var(--color-card-border);
+        border-radius: 16px;
+        padding: 14px;
+        background: rgba(22, 14, 15, 0.82);
+        gap: 12px;
+      }
+
+      .summary-thumb {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        object-fit: cover;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .summary-item.eliminated {
+        opacity: 0.5;
+        text-decoration: line-through;
+      }
+
+      .summary-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+      }
+
+      .summary-name {
+        font-weight: 600;
+        color: #f8fafc;
+      }
+
+      .summary-role {
+        font-size: 0.9rem;
+        color: var(--color-gold);
+      }
+
+      .mini-action {
+        border-radius: 12px;
+        padding: 8px 14px;
+        font-size: 0.85rem;
+        border: 1px solid rgba(248, 250, 252, 0.2);
+      }
+
+      .mini-action.remove {
+        background: rgba(248, 113, 113, 0.15);
+        color: #fecaca;
+      }
+
+      .mini-action.revive {
+        background: rgba(52, 211, 153, 0.2);
+        color: #bbf7d0;
+      }
+
+      .narrator-tools {
+        margin-top: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        border-top: 1px solid rgba(148, 163, 184, 0.2);
+        padding-top: 20px;
+      }
+
+      .day-control {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .day-number {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #fbbf24;
+      }
+
+      .guide-panel,
+      .log-panel {
+        border: 1px solid rgba(68, 32, 32, 0.45);
+        border-radius: 16px;
+        padding: 16px;
+        background: rgba(17, 12, 12, 0.85);
+      }
+
+      .guide-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .guide-progress {
+        font-size: 0.85rem;
+        color: #cbd5f5;
+      }
+
+      .guide-text {
+        min-height: 60px;
+        color: #f8fafc;
+        margin-bottom: 12px;
+      }
+
+      .guide-list {
+        list-style: decimal;
+        padding-left: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .guide-list.hidden,
+      .guide-nav.hidden,
+      #guideStepText.hidden {
+        display: none;
+      }
+
+      .log-panel ul {
+        list-style: none;
+        padding-left: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 0.9rem;
+        color: #f8f1e9;
+      }
+
+      .handoff-list {
+        list-style: decimal inside;
+        margin-bottom: 20px;
+        color: #cbd5f5;
+      }
+
+      .summary-actions {
+        margin-top: 20px;
+      }
+
+      .victory-title {
+        font-size: 1.8rem;
+        margin-bottom: 12px;
+        color: var(--color-gold);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        z-index: 50;
+      }
+
+      .modal-panel {
+        background: rgba(6, 7, 10, 0.95);
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        border-radius: 18px;
+        padding: 24px;
+        max-width: 420px;
+        width: 100%;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        text-align: center;
+      }
+
+      .modal-title {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: var(--color-gold);
+      }
+
+      .modal-actions {
+        margin-top: 18px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .info-panel {
+        max-width: 640px;
+        text-align: left;
+      }
+
+      .info-section {
+        margin-bottom: 18px;
+        border-top: 1px solid rgba(148, 163, 184, 0.25);
+        padding-top: 16px;
+      }
+
+      .info-section h3 {
+        font-size: 1.1rem;
+        color: var(--color-gold);
+        margin-bottom: 8px;
+      }
+
+      .info-section p {
+        font-size: 0.92rem;
+        color: #f5ebe0;
+        margin-bottom: 8px;
+      }
+
+      @media (max-width: 640px) {
+        body {
+          padding: 16px;
+        }
+
+        .panel {
+          padding: 20px;
+        }
+
+        .global-controls {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 12px;
+        }
+
+        .actions-right {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .day-control {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 12px;
+        }
+
+        .logo-row {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .site-logo {
+          width: 200px;
+          height: 200px;
+        }
+
+        .role-card,
+        .role-card.with-image {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .role-image {
+          width: 120px;
+          height: 120px;
+        }
+
+        .summary-item {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app-shell">
+      <div class="global-controls">
+          <label class="language-picker">
+            <select id="languageSelect">
+              <option value="en">🇬🇧 English</option>
+              <option value="es">🇪🇸 Español</option>
+              <option value="it">🇮🇹 Italiano</option>
+            </select>
+          </label>
+          <button id="restartBtn" class="btn-ghost btn-small" type="button" data-i18n="buttons.restart">🔄 New game</button>
+      </div>
+      <header class="app-header">
+        <div class="logo-row">
+          <img src="assets/logo.png" alt="Slay the Werewolf logo" class="site-logo" />
+          <div>
+            <p class="eyebrow" data-i18n="header.label">SLAY THE WEREWOLF</p>
+            <h1 data-i18n="header.title">Slay the Werewolf</h1>
+            <p class="tagline" data-i18n="header.tagline1">Ricordati di uccidere il lupo.</p>
+          </div>
+        </div>
+      </header>
+
+      <section id="setupView" class="panel">
+        <h2 data-i18n="setup.title">⚙️ Setup</h2>
+        <form id="setupForm" class="setup-form">
+          <div class="field-group">
+            <label>
+              <span data-i18n="setup.playersLabel">Number of players</span>
+              <div class="number-stepper">
+                <button type="button" class="step-btn" data-target="playerCount" data-delta="-1">-</button>
+                <input type="number" id="playerCount" min="5" max="24" value="8" required />
+                <button type="button" class="step-btn" data-target="playerCount" data-delta="1">+</button>
+              </div>
+              <span class="help" data-i18n="setup.playersHelp">Minimum 5 players to start</span>
+            </label>
+
+            <label>
+              <span data-i18n="setup.wolvesLabel">Werewolves</span>
+              <div class="number-stepper">
+                <button type="button" class="step-btn" data-target="wolfCount" data-delta="-1">-</button>
+                <input type="number" id="wolfCount" min="1" max="5" value="2" required />
+                <button type="button" class="step-btn" data-target="wolfCount" data-delta="1">+</button>
+              </div>
+              <span id="wolfHint" class="help"></span>
+            </label>
+          </div>
+
+          <div class="player-list-section">
+            <label>
+              <span data-i18n="setup.namesLabel">👥 Player names (optional)</span>
+              <span class="help" data-i18n="setup.namesHelp">We keep this list even after starting a new game.</span>
+            </label>
+            <div class="add-player-row">
+              <input type="text" id="playerNameInput" data-i18n-placeholder="setup.namesPlaceholder" placeholder="e.g. Marcus" autocomplete="off" />
+              <button type="button" id="addPlayerBtn" class="btn-secondary btn-small" data-i18n="buttons.addPlayer">Add</button>
+            </div>
+            <ul id="playerList" class="player-chips"></ul>
+            <button type="button" id="clearPlayersBtn" class="btn-ghost btn-small hidden" data-i18n="buttons.clearPlayers">Clear list</button>
+          </div>
+
+          <div class="deck-preview">
+            <p><span data-i18n="setup.deckLabel">📦 Cards prepared</span>: <span id="selectedCount">0</span></p>
+            <p id="validationMessage" class="validation"></p>
+          </div>
+
+          <div class="actions-right">
+            <button type="submit" class="btn-primary" data-i18n="buttons.deal">🎴 Deal the cards</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="rolesPanel" class="panel">
+        <details id="rolesDetails" class="roles-details">
+          <summary class="roles-summary">
+            <span data-i18n="setup.specialsTitle">✨ Special roles</span>
+            <span class="roles-caret">⌄</span>
+          </summary>
+          <div class="collapsible-content">
+            <p class="help" data-i18n="setup.specialsHelp">The Seer is always included. Other roles unlock based on the player count.</p>
+            <div id="roleOptions" class="options-grid"></div>
+          </div>
+        </details>
+      </section>
+
+      <section id="revealView" class="panel hidden">
+        <h2 data-i18n="reveal.title">🔐 Secret dealing</h2>
+        <div id="revealStatus" class="reveal-status">
+          <p id="playerProgress">Player 1 / 1</p>
+          <h3 id="currentPlayerLabel">Player 1</h3>
+        </div>
+        <div id="roleCard" class="role-card" data-team="unknown">
+          <img id="roleImage" class="role-image hidden" alt="Immagine del ruolo" />
+          <div class="role-text">
+            <p class="eyebrow" id="roleTeam">Hidden card</p>
+            <h3 id="roleName">Tap to reveal</h3>
+            <p id="roleDescription">Make sure no one else is watching</p>
+          </div>
+        </div>
+        <div id="handoffNotice" class="handoff-notice hidden">
+          <h4 data-i18n="handoffNotice.title">⚠️ Pass the device to the narrator</h4>
+          <p data-i18n="handoffNotice.body">When every card has been seen, nobody else should touch the device. Hand it to the narrator before Day 1 begins.</p>
+        </div>
+        <div class="actions-right">
+          <button id="revealBtn" class="btn-primary" type="button" data-i18n="buttons.showCard">👁️ Show card</button>
+          <button id="hideBtn" class="btn-secondary hidden" type="button" data-i18n="buttons.nextPlayer">➡️ Next player</button>
+          <button id="openSummaryBtn" class="btn-ghost hidden" type="button" data-i18n="buttons.handoff">📱 I am the narrator</button>
+        </div>
+      </section>
+
+      <section id="summaryView" class="panel hidden">
+        <h2 data-i18n="summary.title">📋 Narrator summary</h2>
+        <div class="summary-controls actions-right" style="margin-bottom: 12px">
+          <button id="togglePlayersBtn" class="btn-ghost btn-small" type="button" data-i18n="buttons.hidePlayers">Hide players</button>
+        </div>
+        <ul id="summaryList" class="summary-list"></ul>
+
+        <div class="log-panel" style="margin-top: 16px">
+          <h3 class="eyebrow" style="letter-spacing: 0.2em" data-i18n="log.title">Eliminations</h3>
+          <ul id="eliminationLog" class="elimination-log"></ul>
+        </div>
+
+        <div class="narrator-tools">
+          <div class="day-control">
+            <div>
+              <p class="eyebrow" data-i18n="day.label">Current day</p>
+              <p class="day-number" id="dayCounter">1</p>
+            </div>
+            <button id="nextDayBtn" class="btn-day" type="button" data-i18n="buttons.nextDay">Next day</button>
+          </div>
+
+          <div class="guide-panel">
+            <div class="guide-header">
+              <h3 data-i18n="guide.title">Narration guide</h3>
+              <span id="guideProgress" class="guide-progress">Step 1 / 1</span>
+              <button id="toggleGuideMode" class="btn-ghost btn-small" type="button" data-i18n="buttons.toggleGuide">Show list</button>
+            </div>
+            <p id="guideStepText" class="guide-text">-</p>
+            <ul id="guideFullList" class="guide-list hidden"></ul>
+            <div id="guideNav" class="actions-right guide-nav">
+              <button id="prevGuideStep" class="btn-ghost btn-small" type="button" data-i18n="buttons.prevStep">⬅️ Back</button>
+              <button id="nextGuideStep" class="btn-primary btn-small" type="button" data-i18n="buttons.nextStep">Next ➡️</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="summary-actions actions-right">
+          <button id="backToReveal" class="btn-secondary" type="button" data-i18n="buttons.back">⬅️ Back</button>
+          <button id="newGameBtn" class="btn-primary" type="button" data-i18n="buttons.newMatch">🎮 New game</button>
+        </div>
+      </section>
+
+      <section id="finalView" class="panel hidden">
+        <h2 id="victoryTitle" class="victory-title">Victory</h2>
+        <p id="victorySubtitle" class="help"></p>
+        <ul id="victoryList" class="summary-list"></ul>
+        <div class="summary-actions actions-right">
+          <button id="finalBackBtn" class="btn-ghost" type="button" data-i18n="buttons.finalBack">📜 View summary</button>
+          <button id="finalNewGameBtn" class="btn-primary" type="button" data-i18n="buttons.newMatch">🔁 New game</button>
+        </div>
+      </section>
+
+      <div class="link-stack">
+        <button id="infoButton" class="btn-link" type="button" data-i18n="info.button">📖 Immersion tips & rules</button>
+        <a class="btn-link" id="feedbackLink" href="https://github.com/n0tsosmart/slaythewerewolf" target="_blank" rel="noopener noreferrer" data-i18n="info.feedback">💬 Send feedback & suggestions on GitHub</a>
+      </div>
+      <p class="app-footer" data-i18n="footer.disclaimer">We do not collect cookies, the artwork is AI-generated, and this free fan-made tribute keeps the Lupus In Tabula spirit alive so friends can play without physical cards.</p>
+      <p class="app-footer" data-i18n="footer.license">Released under the MIT License by n0tsosmart.</p>
+
+      <div id="modalOverlay" class="modal-overlay hidden">
+        <div class="modal-panel">
+          <h3 id="modalTitle" class="modal-title" data-i18n="modal.title">Confirm</h3>
+          <p id="modalMessage" class="help" style="color: #f8fafc"></p>
+          <div class="modal-actions">
+            <button id="modalCancel" class="btn-secondary btn-small" type="button" data-i18n="modal.cancel">Cancel</button>
+            <button id="modalConfirm" class="btn-primary btn-small" type="button" data-i18n="modal.confirm">Confirm</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="infoOverlay" class="modal-overlay hidden">
+        <div class="modal-panel info-panel">
+          <h3 class="modal-title" data-i18n="info.title">Keep the village immersive</h3>
+          <div class="info-section">
+            <h3 data-i18n="info.roleplayTitle">Roleplay suggestions</h3>
+            <p data-i18n="info.roleplayPlayers">Players: speak in character, whisper suspicions, and describe gestures without breaking immersion. Skip meta remarks like “I was picked third”.</p>
+            <p data-i18n="info.roleplayNarrator">Narrator: set the scene before every phase, give sensory details, and call roles by title instead of names so the mystery stays alive.</p>
+          </div>
+          <div class="info-section">
+            <h3 data-i18n="info.rulesTitle">Rules & metagame</h3>
+            <p data-i18n="info.rulesSummary">No one may show their card, record the night, or discuss outside the table. Eliminated players remain silent unless a role explicitly reintroduces them.</p>
+            <p data-i18n="info.rulesMetagame">Metagame reminders: no nudging, no phone searches, and no coded taps. The narrator can pause or rewind a phase if the table breaks immersion.</p>
+          </div>
+          <div class="modal-actions">
+            <button id="infoClose" class="btn-secondary btn-small" type="button" data-i18n="modal.cancel">Close</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const MIN_PLAYERS = 5;
+
+const ROLE_LIBRARY = {
+  werewolf: {
+    id: "werewolf",
+    name: "Werewolf",
+    team: "wolves",
+    teamLabel: "Werewolves",
+    image: "assets/cards/lupo.jpg",
+    description: "Each night the wolves open their eyes together and pick a victim. They win when the pack is as numerous as the villagers.",
+    locales: {
+      es: {
+        name: "Hombre Lobo",
+        teamLabel: "Licántropos",
+        description: "Cada noche los lobos abren los ojos juntos y eligen una víctima. Ganáis cuando la manada iguala o supera a los aldeanos.",
+      },
+      it: {
+        name: "Lupo Mannaro",
+        teamLabel: "Lupi Mannari",
+        description: "Ogni notte i lupi aprono gli occhi insieme e scelgono una vittima. Vincete quando il branco uguaglia o supera i villici.",
+      },
+    },
+  },
+  villager: {
+    id: "villager",
+    name: "Villager",
+    team: "humans",
+    teamLabel: "Village",
+    image: "assets/cards/villico.jpg",
+    description: "No special power: discuss, observe, and vote to expose the wolves. You win when no werewolves remain.",
+    locales: {
+      es: {
+        name: "Aldeano",
+        teamLabel: "Aldea",
+        description: "Sin poderes especiales: observa, debate y vota para desenmascarar a los lobos. Ganas cuando no quedan licántropos.",
+      },
+      it: {
+        name: "Villico",
+        teamLabel: "Villaggio",
+        description: "Nessun potere speciale: discuti, osserva e vota per smascherare i lupi. Vinci quando non restano lupi mannari.",
+      },
+    },
+  },
+  seer: {
+    id: "seer",
+    name: "Seer",
+    team: "humans",
+    teamLabel: "Village",
+    image: "assets/cards/veggente.jpg",
+    description: "Each night you point at a player and learn whether they are wolf/hamster or human. Share information carefully.",
+    locales: {
+      es: {
+        name: "Vidente",
+        teamLabel: "Aldea",
+        description: "Cada noche señala a un jugador y descubre si es lobo/criceto o humano. Comparte la información con cuidado.",
+      },
+      it: {
+        name: "Veggente",
+        teamLabel: "Villaggio",
+        description: "Ogni notte indichi un giocatore e scopri se è lupo/criceto o umano. Condividi le informazioni con cautela.",
+      },
+    },
+  },
+  medium: {
+    id: "medium",
+    name: "Medium",
+    team: "humans",
+    teamLabel: "Village",
+    image: "assets/cards/medium.jpg",
+    description: "From the second night on, learn whether the player lynched the previous day was a werewolf.",
+    locales: {
+      es: {
+        name: "Médium",
+        teamLabel: "Aldea",
+        description: "Desde la segunda noche averiguas si el jugador linchado el día anterior era un hombre lobo.",
+      },
+      it: {
+        name: "Medium",
+        teamLabel: "Villaggio",
+        description: "Dalla seconda notte scopri se il giocatore linciato il giorno precedente era un lupo mannaro.",
+      },
+    },
+  },
+  possessed: {
+    id: "possessed",
+    name: "Possessed",
+    team: "wolves",
+    teamLabel: "Ally of the Wolves",
+    image: "assets/cards/indemoniato.jpg",
+    description: "You are human but secretly root for the wolves without knowing who they are. Win only if the wolves dominate.",
+    locales: {
+      es: {
+        name: "Endemoniado",
+        teamLabel: "Aliado de los Lobos",
+        description: "Eres humano pero apoyas en secreto a los lobos sin saber quiénes son. Solo ganas si los lobos vencen al pueblo.",
+      },
+      it: {
+        name: "Indemoniato",
+        teamLabel: "Alleato dei Lupi",
+        description: "Sei umano ma tifi segretamente per i lupi senza sapere chi siano. Vinci solo se il branco domina il villaggio.",
+      },
+    },
+  },
+  bodyguard: {
+    id: "bodyguard",
+    name: "Bodyguard",
+    team: "humans",
+    teamLabel: "Village",
+    image: "assets/cards/guardia.jpg",
+    description: "Each night before the wolves attack you protect one player. If targeted, they survive.",
+    locales: {
+      es: {
+        name: "Guardián",
+        teamLabel: "Aldea",
+        description: "Cada noche, antes del ataque de los lobos, proteges a un jugador. Si lo atacan, sobrevive.",
+      },
+      it: {
+        name: "Guardia del Corpo",
+        teamLabel: "Villaggio",
+        description: "Ogni notte, prima dell'attacco dei lupi, proteggi un giocatore. Se viene colpito, sopravvive.",
+      },
+    },
+  },
+  owl: {
+    id: "owl",
+    name: "Owl",
+    team: "humans",
+    teamLabel: "Village",
+    image: "assets/cards/gufo.jpg",
+    description: "Each night you mark a suspect. That player is automatically nominated and with 20+ players dies if they are not Wolf/Hamster.",
+    locales: {
+      es: {
+        name: "Búho",
+        teamLabel: "Aldea",
+        description: "Cada noche marcas a un sospechoso. Ese jugador queda nominado y con 20+ jugadores muere si no es Lobo/Criceto.",
+      },
+      it: {
+        name: "Gufo",
+        teamLabel: "Villaggio",
+        description: "Ogni notte marchi un sospetto. Quel giocatore è automaticamente nominato e con 20+ giocatori muore se non è Lupo/Criceto.",
+      },
+    },
+  },
+  mason: {
+    id: "mason",
+    name: "Mason",
+    team: "humans",
+    teamLabel: "Village",
+    image: "assets/cards/massone.jpg",
+    description: "Always in pairs: on the first night you open your eyes and recognize each other as allies.",
+    locales: {
+      es: {
+        name: "Masón",
+        teamLabel: "Aldea",
+        description: "Siempre en pareja: la primera noche abrís los ojos y os reconocéis como aliados contra los lobos.",
+      },
+      it: {
+        name: "Massone",
+        teamLabel: "Villaggio",
+        description: "Sempre in coppia: la prima notte aprite gli occhi e vi riconoscete come alleati contro i lupi.",
+      },
+    },
+  },
+  werehamster: {
+    id: "werehamster",
+    name: "Werehamster",
+    team: "loner",
+    teamLabel: "Loner",
+    image: "assets/cards/criceto.jpg",
+    description: "You only want to survive. Immune to wolf attacks but the Seer kills you if they look at you. Win alone if you live to the end.",
+    locales: {
+      es: {
+        name: "Hámster Licántropo",
+        teamLabel: "Solitaria",
+        description: "Solo quieres sobrevivir. Eres inmune a los lobos pero mueres si el Vidente te ve. Ganas en solitario si sigues vivo al final.",
+      },
+      it: {
+        name: "Criceto Mannaro",
+        teamLabel: "Solitario",
+        description: "Vuoi solo sopravvivere. Sei immune ai lupi mannari ma il Veggente ti elimina se ti osserva. Vinci da solo se resti in vita fino alla fine.",
+      },
+    },
+  },
+  mythomaniac: {
+    id: "mythomaniac",
+    name: "Mythomaniac",
+    team: "humans",
+    teamLabel: "Village",
+    image: "assets/cards/mitomane.jpg",
+    description: "At the end of the second night choose a player: if they are a Wolf you become one, if they are the Seer you inherit the power, otherwise you remain human.",
+    locales: {
+      es: {
+        name: "Mitómano",
+        teamLabel: "Aldea",
+        description: "Al final de la segunda noche elige a un jugador: si es Lobo te conviertes en uno, si es Vidente heredas su poder, de lo contrario sigues como humano.",
+      },
+      it: {
+        name: "Mitomane",
+        teamLabel: "Villaggio",
+        description: "Alla fine della seconda notte scegli un giocatore: se è un Lupo lo diventi, se è il Veggente erediti il suo potere, altrimenti rimani umano.",
+      },
+    },
+  },
+};
+
+const OPTIONAL_CONFIG = [
+  { roleId: "medium", copies: 1, minPlayers: 9 },
+  { roleId: "possessed", copies: 1, minPlayers: 10 },
+  { roleId: "bodyguard", copies: 1, minPlayers: 11 },
+  { roleId: "owl", copies: 1, minPlayers: 12 },
+  { roleId: "mason", copies: 2, minPlayers: 13, noteKey: "roles.masonNote" },
+  { roleId: "werehamster", copies: 1, minPlayers: 15 },
+  { roleId: "mythomaniac", copies: 1, minPlayers: 16 },
+];
+
+const DEFAULT_LANGUAGE = "en";
+const TRANSLATIONS = {
+  en: {
+    "header.label": "A TRIBUTE TO LUPUS IN TABULA",
+    "header.title": "Slay the Werewolf",
+    "header.tagline1": "Remember to slay the wolf.",
+    "buttons.restart": "🔄 New game",
+    "language.label": "Language",
+    "setup.title": "⚙️ Setup",
+    "setup.playersLabel": "Number of players",
+    "setup.playersHelp": "Minimum 5 players to start",
+    "setup.wolvesLabel": "Werewolves",
+    "setup.namesLabel": "👥 Player names (optional)",
+    "setup.namesHelp": "We keep this list even after starting a new game.",
+    "setup.namesPlaceholder": "e.g. Marcus",
+    "setup.wolfHint": "Suggested: {count} werewolves (~25%)",
+    "buttons.addPlayer": "Add",
+    "buttons.clearPlayers": "Clear list",
+    "setup.specialsTitle": "✨ Special roles",
+    "setup.specialsHelp": "The Seer is always included. Other roles unlock based on the player count.",
+    "roles.availableFrom": "Available from {count}+ players.",
+    "roles.masonNote": "Always add both cards together.",
+    "setup.deckLabel": "📦 Cards prepared",
+    "buttons.deal": "🎴 Deal the cards",
+    "reveal.title": "🔐 Secret dealing",
+    "reveal.hiddenTeam": "Hidden card",
+    "reveal.tap": "Tap to reveal",
+    "reveal.prompt": "Make sure no one else is watching",
+    "buttons.showCard": "👁️ Show card",
+    "buttons.nextPlayer": "➡️ Next player",
+    "handoffNotice.title": "⚠️ Pass the device to the narrator",
+    "handoffNotice.body": "When every card has been seen, hand the device to the narrator before Day 1.",
+    "buttons.handoff": "I am the narrator",
+    "summary.title": "📋 Narrator summary",
+    "buttons.hidePlayers": "Hide players",
+    "buttons.showPlayers": "Show players",
+    "log.title": "Eliminations",
+    "log.empty": "No players eliminated yet",
+    "log.entry": "{name} was eliminated on Day {day}",
+    "day.label": "Current day",
+    "buttons.nextDay": "Next day",
+    "buttons.noMoreDays": "No more days",
+    "guide.title": "Narration guide",
+    "guide.progress": "Step {current} / {total}",
+    "buttons.toggleGuide": "Show list",
+    "buttons.showList": "Show list",
+    "buttons.stepMode": "Step mode",
+    "guide.empty": "No instructions for this day.",
+    "buttons.prevStep": "⬅️ Back",
+    "buttons.nextStep": "Next ➡️",
+    "elimination.title": "Eliminate a player",
+    "buttons.eliminate": "Eliminate",
+    "buttons.revive": "Revive",
+    "buttons.locked": "Locked",
+    "elimination.placeholder": "Select a player",
+    "elimination.none": "No living players",
+    "buttons.revive": "Revive",
+    "buttons.locked": "Locked",
+    "buttons.back": "⬅️ Back",
+    "buttons.newMatch": "🎮 New game",
+    "buttons.finalBack": "📜 View summary",
+    "final.title": "Victory",
+    "buttons.finalNew": "🔁 New game",
+    "modal.title": "Confirm",
+    "modal.cancel": "Cancel",
+    "modal.confirm": "Confirm",
+    "errors.minPlayers": "⚠️ At least {count} players are required",
+    "errors.needWolf": "⚠️ You need at least one werewolf",
+    "errors.tooManyWolves": "⚠️ Werewolves must be fewer than the players",
+    "errors.tooManySpecials": "⚠️ Too many special roles for this group",
+    "status.player": "Player {current} / {total}",
+    "status.defaultPlayer": "Player {number}",
+    "messages.ready": "Ready to reveal",
+    "messages.ensureAlone": "Make sure no one else is watching",
+    "messages.completionTitle": "Ready to play",
+    "messages.completionProgress": "Distribution complete",
+    "messages.everyoneReady": "Everyone has seen their card",
+    "messages.completionBody": "Pass the device to the narrator to start Day 1.",
+    "guide.step.closeEyes": "Night {day}: everyone closes their eyes.",
+    "guide.step.masons": "Call the Masons so they recognize each other.",
+    "guide.step.bodyguard": "Call the Bodyguard to choose someone to protect.",
+    "guide.step.seer": "Call the Seer and reveal the vision.",
+    "guide.step.medium": "Call the Medium and reveal whether the previous lynch was a wolf.",
+    "guide.step.owl": "Call the Owl to mark the nominated player.",
+    "guide.step.mythomaniac": "Remind the Mythomaniac to pick a role to mimic.",
+    "guide.step.wolves": "Call the Werewolves to choose their victim.",
+    "guide.step.hamster": "Remember the Werehamster is immune to wolves and only dies to the Seer.",
+    "guide.step.dawn": "Dawn {day}: announce the victims of the night.",
+    "guide.step.owlReveal": "Reveal the Owl's chosen player before the discussion.",
+    "guide.step.possessed": "Keep in mind there may be a Possessed ally.",
+    "guide.step.dayDiscuss": "Day {day}: let the village discuss and then collect votes for the lynching.",
+    "victory.village.title": "The village prevails",
+    "victory.village.subtitle": "All werewolves have been slain. The village may finally rest.",
+    "victory.wolves.title": "The werewolves conquer Tabula",
+    "victory.wolves.subtitle": "The pack is now as strong as the villagers. There is no escape.",
+    "victory.hamster.title": "The Werehamster survives",
+    "victory.hamster.subtitle": "The little beast outlives everyone and wins alone.",
+    "buttons.showSummary": "📜 View summary",
+    "confirmation.newGame": "Start a new game?",
+    "confirmation.restart": "Restart the setup?",
+    "confirmation.nextDay": "Proceed to Day {day}? Make sure everyone has their eyes closed.",
+    "confirmation.eliminationVictory": "Eliminating {player} will trigger {outcome}. Continue?",
+    "confirmation.handoff": "Ready to open the summary? Confirm you are the narrator and everyone else is not looking.",
+    "accessibility.removePlayer": "Remove {name}",
+    "info.button": "📖 Immersion tips & rules",
+    "info.title": "Keep the village immersive",
+    "info.roleplayTitle": "Roleplay suggestions",
+    "info.roleplayPlayers": "Players: stay in character, whisper suspicions, and describe gestures without meta comments such as “I was picked third”.",
+    "info.roleplayNarrator": "Narrator: paint the night with sensory details, call roles by title, and pause the story if the tension breaks so everyone refocuses.",
+    "info.rulesTitle": "Rules & metagame",
+    "info.rulesSummary": "No screenshots, recordings, or discussions outside the table. Eliminated players remain silent unless a power explicitly reintroduces them.",
+    "info.rulesMetagame": "Metagame reminders: no coded taps, no phone searches, no hints about shuffling order. The narrator may rewind a phase if immersion is broken.",
+    "info.feedback": "💬 Send feedback & suggestions on GitHub",
+    "footer.disclaimer": "We do not collect cookies, the artwork is AI-generated, and this free fan-made tribute keeps the Lupus In Tabula spirit alive so friends can play without physical cards.",
+    "footer.license": "Released under the MIT License by n0tsosmart.",
+  },
+ es: {
+    "header.label": "UN HOMENAJE A LUPUS IN TABULA",
+    "header.title": "Slay the Werewolf",
+    "header.tagline1": "Recuerda cazar al lobo.",
+    "buttons.restart": "🔄 Nueva partida",
+    "language.label": "Idioma",
+    "setup.title": "⚙️ Preparación",
+    "setup.playersLabel": "Número de jugadores",
+    "setup.playersHelp": "Se necesitan al menos 5 jugadores",
+    "setup.wolvesLabel": "Hombres lobo",
+    "setup.namesLabel": "👥 Nombres de jugadores (opcional)",
+    "setup.namesHelp": "Conservamos esta lista incluso tras comenzar otra partida.",
+    "setup.namesPlaceholder": "p.ej. Marcos",
+    "setup.wolfHint": "Sugerido: {count} hombres lobo (~25%)",
+    "buttons.addPlayer": "Añadir",
+    "buttons.clearPlayers": "Limpiar lista",
+    "setup.specialsTitle": "✨ Roles especiales",
+    "setup.specialsHelp": "El Vidente siempre está incluido. Los demás roles dependen del número de jugadores.",
+    "roles.availableFrom": "Disponible a partir de {count} jugadores.",
+    "roles.masonNote": "Siempre se añaden las dos cartas juntas.",
+    "setup.deckLabel": "📦 Cartas preparadas",
+    "buttons.deal": "🎴 Repartir cartas",
+    "reveal.title": "🔐 Reparto secreto",
+    "reveal.hiddenTeam": "Carta oculta",
+    "reveal.tap": "Toca para revelar",
+    "reveal.prompt": "Asegúrate de que nadie más esté mirando",
+    "buttons.showCard": "👁️ Mostrar carta",
+    "buttons.nextPlayer": "➡️ Siguiente jugador",
+    "handoffNotice.title": "⚠️ Entrega el dispositivo al narrador",
+    "handoffNotice.body": "Cuando todos hayan visto su carta, entrega el dispositivo al narrador antes del Día 1.",
+    "buttons.handoff": "Soy el narrador",
+    "summary.title": "📋 Resumen del narrador",
+    "buttons.hidePlayers": "Ocultar jugadores",
+    "buttons.showPlayers": "Mostrar jugadores",
+    "log.title": "Eliminaciones",
+    "log.empty": "Ningún jugador eliminado todavía",
+    "log.entry": "{name} fue eliminado en el Día {day}",
+    "day.label": "Día actual",
+    "buttons.nextDay": "Siguiente día",
+    "buttons.noMoreDays": "Sin más días",
+    "guide.title": "Guía de narración",
+    "guide.progress": "Paso {current} / {total}",
+    "buttons.toggleGuide": "Mostrar lista",
+    "buttons.showList": "Mostrar lista",
+    "buttons.stepMode": "Modo por pasos",
+    "guide.empty": "No hay instrucciones para este día.",
+    "buttons.prevStep": "⬅️ Atrás",
+    "buttons.nextStep": "Siguiente ➡️",
+    "elimination.title": "Elimina a un jugador",
+    "buttons.eliminate": "Eliminar",
+    "buttons.revive": "Devolver",
+    "buttons.locked": "Bloqueado",
+    "elimination.placeholder": "Selecciona un jugador",
+    "elimination.none": "No quedan jugadores vivos",
+    "buttons.revive": "Devolver",
+    "buttons.locked": "Bloqueado",
+    "buttons.back": "⬅️ Volver",
+    "buttons.newMatch": "🎮 Nueva partida",
+    "buttons.finalBack": "📜 Ver resumen",
+    "final.title": "Victoria",
+    "buttons.finalNew": "🔁 Nueva partida",
+    "modal.title": "Confirmar",
+    "modal.cancel": "Cancelar",
+    "modal.confirm": "Confirmar",
+    "errors.minPlayers": "⚠️ Se requieren al menos {count} jugadores",
+    "errors.needWolf": "⚠️ Necesitas al menos un hombre lobo",
+    "errors.tooManyWolves": "⚠️ Los lobos deben ser menos que los jugadores",
+    "errors.tooManySpecials": "⚠️ Demasiados roles especiales para este grupo",
+    "status.player": "Jugador {current} / {total}",
+    "status.defaultPlayer": "Jugador {number}",
+    "messages.ready": "Listo para revelar",
+    "messages.ensureAlone": "Asegúrate de que nadie más mire",
+    "messages.completionTitle": "Listo para jugar",
+    "messages.completionProgress": "Distribución completada",
+    "messages.everyoneReady": "Todos han visto su carta",
+    "messages.completionBody": "Entrega el dispositivo al narrador para comenzar el Día 1.",
+    "guide.step.closeEyes": "Noche {day}: todos cierran los ojos.",
+    "guide.step.masons": "Llama a los Masones para que se reconozcan.",
+    "guide.step.bodyguard": "Llama al Guardián para que elija a quién proteger.",
+    "guide.step.seer": "Llama al Vidente y revela su visión.",
+    "guide.step.medium": "Llama al Médium y di si el linchado anterior era un lobo.",
+    "guide.step.owl": "Llama al Búho para marcar al nominado.",
+    "guide.step.mythomaniac": "Recuerda al Mitómano que elija a quién imitar.",
+    "guide.step.wolves": "Llama a los Hombres Lobo para elegir a su víctima.",
+    "guide.step.hamster": "Recuerda que el Hámster Licántropo es inmune a los lobos y solo muere con el Vidente.",
+    "guide.step.dawn": "Amanecer {day}: anuncia las víctimas de la noche.",
+    "guide.step.owlReveal": "Revela el nombre marcado por el Búho antes de la discusión.",
+    "guide.step.possessed": "Recuerda que puede haber un Endemoniado aliado.",
+    "guide.step.dayDiscuss": "Día {day}: deja que el pueblo discuta y recoge los votos del linchamiento.",
+    "victory.village.title": "El pueblo resiste",
+    "victory.village.subtitle": "Todos los licántropos han sido eliminados. El pueblo puede descansar.",
+    "victory.wolves.title": "Los Hombres Lobo conquistan Tabula",
+    "victory.wolves.subtitle": "La manada ya es tan grande como los aldeanos. No hay escapatoria.",
+    "victory.hamster.title": "Triunfa el Hámster Licántropo",
+    "victory.hamster.subtitle": "La pequeña bestia sobrevive a todos y gana en solitario.",
+    "buttons.showSummary": "📜 Ver resumen",
+    "confirmation.newGame": "¿Iniciar una nueva partida?",
+    "confirmation.restart": "¿Reiniciar la configuración?",
+    "confirmation.nextDay": "¿Pasar al Día {day}? Asegúrate de que todos tengan los ojos cerrados.",
+    "confirmation.eliminationVictory": "Eliminar a {player} provocará {outcome}. ¿Continuar?",
+    "confirmation.handoff": "¿Listo para abrir el resumen? Confirma que eres el narrador y que nadie más está mirando.",
+    "accessibility.removePlayer": "Eliminar a {name}",
+    "info.button": "📖 Consejos de inmersión y reglas",
+    "info.title": "Mantén viva la maldición del pueblo",
+    "info.roleplayTitle": "Sugerencias de interpretación",
+    "info.roleplayPlayers": "Jugadores: hablad como vuestros personajes, susurrad sospechas y describid gestos sin recurrir a comentarios meta como “fui el tercero en ser elegido”.",
+    "info.roleplayNarrator": "Narrador: describe sonidos, olores y sombras antes de cada fase. Llama a los roles por su título y pausa la historia si el grupo rompe la tensión.",
+    "info.rulesTitle": "Reglas y metajuego",
+    "info.rulesSummary": "Nada de grabaciones, fotos ni charlas fuera de la mesa. Los eliminados permanecen en silencio salvo que un poder los devuelva.",
+    "info.rulesMetagame": "Recordatorios de metajuego: nada de golpecitos codificados, búsquedas en el móvil ni referencias al orden del mazo. El narrador puede repetir una fase si la inmersión se rompe.",
+    "info.feedback": "💬 Envía feedback y sugerencias en GitHub",
+    "footer.disclaimer": "No recopilamos cookies, el arte es generado por IA y este homenaje gratuito mantiene vivo el espíritu de Lupus In Tabula para que los amigos jueguen sin cartas físicas.",
+    "footer.license": "Publicado bajo la licencia MIT por n0tsosmart.",
+  },
+ it: {
+    "header.label": "UN TRIBUTO A LUPUS IN TABULA",
+    "header.title": "Slay the Werewolf",
+    "header.tagline1": "Ricordati di uccidere il lupo.",
+    "buttons.restart": "🔄 Nuova partita",
+    "language.label": "Lingua",
+    "setup.title": "⚙️ Preparazione",
+    "setup.playersLabel": "Numero di giocatori",
+    "setup.playersHelp": "Servono almeno 5 giocatori",
+    "setup.wolvesLabel": "Lupi mannari",
+    "setup.namesLabel": "👥 Nomi dei giocatori (opzionale)",
+    "setup.namesHelp": "Manteniamo questo elenco anche iniziando una nuova partita.",
+    "setup.namesPlaceholder": "es. Marco",
+    "setup.wolfHint": "Consigliati: {count} lupi (~25%)",
+    "buttons.addPlayer": "Aggiungi",
+    "buttons.clearPlayers": "Svuota elenco",
+    "setup.specialsTitle": "✨ Ruoli speciali",
+    "setup.specialsHelp": "Il Veggente è sempre incluso. Altri ruoli si sbloccano in base al numero di giocatori.",
+    "roles.availableFrom": "Disponibile da {count}+ giocatori.",
+    "roles.masonNote": "Aggiungi sempre entrambe le carte.",
+    "setup.deckLabel": "📦 Carte preparate",
+    "buttons.deal": "🎴 Distribuisci le carte",
+    "reveal.title": "🔐 Distribuzione segreta",
+    "reveal.hiddenTeam": "Carta coperta",
+    "reveal.tap": "Tocca per rivelare",
+    "reveal.prompt": "Assicurati che nessun altro stia guardando",
+    "buttons.showCard": "👁️ Mostra carta",
+    "buttons.nextPlayer": "➡️ Giocatore successivo",
+    "handoffNotice.title": "⚠️ Passa il dispositivo al narratore",
+    "handoffNotice.body": "Quando tutti hanno visto la carta, consegna il dispositivo al narratore prima del Giorno 1.",
+    "buttons.handoff": "Sono il narratore",
+    "summary.title": "📋 Riepilogo narratore",
+    "buttons.hidePlayers": "Nascondi giocatori",
+    "buttons.showPlayers": "Mostra giocatori",
+    "log.title": "Eliminazioni",
+    "log.empty": "Nessun giocatore eliminato",
+    "log.entry": "{name} è stato eliminato al Giorno {day}",
+    "day.label": "Giorno attuale",
+    "buttons.nextDay": "Giorno successivo",
+    "buttons.noMoreDays": "Niente altri giorni",
+    "guide.title": "Guida del narratore",
+    "guide.progress": "Passo {current} / {total}",
+    "buttons.toggleGuide": "Mostra elenco",
+    "buttons.showList": "Mostra elenco",
+    "buttons.stepMode": "Modalità passi",
+    "guide.empty": "Nessuna istruzione per questo giorno.",
+    "buttons.prevStep": "⬅️ Indietro",
+    "buttons.nextStep": "Avanti ➡️",
+    "elimination.title": "Elimina un giocatore",
+    "buttons.eliminate": "Elimina",
+    "buttons.revive": "Rianima",
+    "buttons.locked": "Bloccato",
+    "elimination.placeholder": "Seleziona un giocatore",
+    "elimination.none": "Nessun giocatore vivo",
+    "buttons.back": "⬅️ Indietro",
+    "buttons.newMatch": "🎮 Nuova partita",
+    "buttons.finalBack": "📜 Vedi riepilogo",
+    "final.title": "Vittoria",
+    "buttons.finalNew": "🔁 Nuova partita",
+    "modal.title": "Conferma",
+    "modal.cancel": "Annulla",
+    "modal.confirm": "Conferma",
+    "errors.minPlayers": "⚠️ Servono almeno {count} giocatori",
+    "errors.needWolf": "⚠️ Serve almeno un lupo mannaro",
+    "errors.tooManyWolves": "⚠️ I lupi devono essere meno dei giocatori",
+    "errors.tooManySpecials": "⚠️ Troppi ruoli speciali per questo gruppo",
+    "status.player": "Giocatore {current} / {total}",
+    "status.defaultPlayer": "Giocatore {number}",
+    "messages.ready": "Pronti a rivelare",
+    "messages.ensureAlone": "Assicurati che nessuno stia guardando",
+    "messages.completionTitle": "Pronti a giocare",
+    "messages.completionProgress": "Distribuzione completata",
+    "messages.everyoneReady": "Tutti hanno visto la carta",
+    "messages.completionBody": "Passa il dispositivo al narratore per iniziare il Giorno 1.",
+    "guide.step.closeEyes": "Notte {day}: tutti chiudono gli occhi.",
+    "guide.step.masons": "Chiama i Massoni perché si riconoscano.",
+    "guide.step.bodyguard": "Chiama la Guardia del Corpo per decidere chi proteggere.",
+    "guide.step.seer": "Chiama il Veggente e rivela la visione.",
+    "guide.step.medium": "Chiama il Medium e svela se il linciato precedente era un lupo.",
+    "guide.step.owl": "Chiama il Gufo per segnare il sospetto.",
+    "guide.step.mythomaniac": "Ricorda al Mitomane di scegliere un ruolo da imitare.",
+    "guide.step.wolves": "Chiama i Lupi Mannari per scegliere la vittima.",
+    "guide.step.hamster": "Ricorda che il Criceto Mannaro è immune ai lupi e muore solo col Veggente.",
+    "guide.step.dawn": "Alba {day}: annuncia le vittime della notte.",
+    "guide.step.owlReveal": "Rivela il nome segnato dal Gufo prima della discussione.",
+    "guide.step.possessed": "Ricorda che potrebbe esserci un Indemoniato alleato.",
+    "guide.step.dayDiscuss": "Giorno {day}: lascia discutere il villaggio e raccogli i voti del linciaggio.",
+    "victory.village.title": "Il villaggio trionfa",
+    "victory.village.subtitle": "Tutti i lupi sono stati eliminati. Il villaggio può riposare.",
+    "victory.wolves.title": "I lupi mannari conquistano Tabula",
+    "victory.wolves.subtitle": "Il branco è ormai forte quanto i villici. Non c'è scampo.",
+    "victory.hamster.title": "Il Criceto Mannaro sopravvive",
+    "victory.hamster.subtitle": "La piccola bestia sopravvive a tutti e vince da sola.",
+    "buttons.showSummary": "📜 Mostra riepilogo",
+    "confirmation.newGame": "Iniziare una nuova partita?",
+    "confirmation.restart": "Riavviare la configurazione?",
+    "confirmation.nextDay": "Passare al Giorno {day}? Assicurati che tutti abbiano gli occhi chiusi.",
+    "confirmation.eliminationVictory": "Eliminare {player} farà scattare {outcome}. Vuoi procedere?",
+    "confirmation.handoff": "Pronto a mostrare il riepilogo? Conferma di essere il narratore e che nessun altro stia guardando.",
+    "accessibility.removePlayer": "Rimuovi {name}",
+    "info.button": "📖 Suggerimenti di immersione e regole",
+    "info.title": "Mantieni vivo il mistero del villaggio",
+    "info.roleplayTitle": "Suggerimenti di interpretazione",
+    "info.roleplayPlayers": "Giocatori: parlate come i vostri personaggi, sussurrate i sospetti e descrivete gesti senza accennare a dettagli meta come “ero stato pescato per terzo”.",
+    "info.roleplayNarrator": "Narratore: descrivi suoni, odori e luci prima di ogni fase e chiama i ruoli per titolo. Se la tensione svanisce, fermati e riportate tutti nell'atmosfera.",
+    "info.rulesTitle": "Regole e metagioco",
+    "info.rulesSummary": "Niente foto, registrazioni o discussioni fuori tavolo. Chi viene eliminato resta in silenzio finché un potere non lo richiama.",
+    "info.rulesMetagame": "Promemoria metagame: niente colpetti in codice, ricerche al telefono o riferimenti all'ordine delle carte. Il narratore può ripetere una fase se l'immersione si rompe.",
+    "info.feedback": "💬 Invia feedback e suggerimenti su GitHub",
+    "footer.disclaimer": "Non raccogliamo cookie, le illustrazioni sono generate da IA e questo tributo gratuito mantiene vivo lo spirito di Lupus In Tabula per giocare tra amici senza carte fisiche.",
+    "footer.license": "Distribuito con licenza MIT da n0tsosmart.",
+  },
+};
+
+function formatString(template, vars = {}) {
+  return template.replace(/\{(.*?)\}/g, (_, key) => (vars[key] !== undefined ? vars[key] : `{${key}}`));
+}
+
+function t(key, vars) {
+  const langPack = TRANSLATIONS[state.language] || TRANSLATIONS[DEFAULT_LANGUAGE];
+  const fallback = TRANSLATIONS[DEFAULT_LANGUAGE][key];
+  const template = langPack[key] ?? fallback ?? key;
+  return vars ? formatString(template, vars) : template;
+}
+
+function applyTranslations() {
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    const key = element.dataset.i18n;
+    if (key) element.textContent = t(key);
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+    const key = element.dataset.i18nPlaceholder;
+    if (key) element.placeholder = t(key);
+  });
+}
+
+function setLanguage(lang, { skipPersist = false, skipRender = false } = {}) {
+  state.language = TRANSLATIONS[lang] ? lang : DEFAULT_LANGUAGE;
+  if (el.languageSelect) el.languageSelect.value = state.language;
+  if (typeof document !== "undefined") {
+    document.documentElement.lang = state.language;
+  }
+  const selectedRoles = getSelectedSpecials().map((item) => item.roleId);
+  renderRoleOptions();
+  selectedRoles.forEach((roleId) => {
+    const input = el.roleOptions.querySelector(`.role-option[value="${roleId}"]`);
+    if (input) input.checked = true;
+  });
+  enforceRoleLimits();
+  applyTranslations();
+  renderPlayerList();
+  updatePlayersListVisibility();
+  if (!skipRender) {
+    updateWolfHint();
+    renderSummaryList();
+    renderEliminationLog();
+    if (state.view === "summary") {
+      updateNarratorUI({ preserveGuideStep: true });
+    }
+    if (state.view === "reveal") {
+      if (el.hideBtn && !el.hideBtn.classList.contains("hidden")) {
+        revealCard();
+      } else {
+        prepareReveal();
+      }
+    }
+    if (state.view === "final" && state.victory) renderVictoryFromState();
+  }
+  if (!skipPersist) persistState();
+}
+
+function getRoleContent(roleId) {
+  const base = ROLE_LIBRARY[roleId] || ROLE_LIBRARY.villager;
+  const locale = base.locales?.[state.language] || {};
+  return {
+    name: locale.name || base.name,
+    teamLabel: locale.teamLabel || base.teamLabel,
+    description: locale.description || base.description,
+  };
+}
+
+      const STORAGE_KEY = "SLAY_STATE";
+
+const state = {
+        deck: [],
+        players: [],
+        revealIndex: 0,
+        revealComplete: false,
+        customNames: [],
+        activeSpecialIds: [],
+        narratorDay: 1,
+        maxDays: 1,
+        eliminatedPlayers: [],
+        guideSteps: [],
+        guideStepIndex: 0,
+        victory: null,
+        playersCollapsed: false,
+  guideExpanded: true,
+  language: DEFAULT_LANGUAGE,
+  view: "setup",
+};
+
+  const el = {
+        setupView: document.getElementById("setupView"),
+        revealView: document.getElementById("revealView"),
+        summaryView: document.getElementById("summaryView"),
+        rolesPanel: document.getElementById("rolesPanel"),
+        rolesDetails: document.getElementById("rolesDetails"),
+        setupForm: document.getElementById("setupForm"),
+        playerCount: document.getElementById("playerCount"),
+        wolfCount: document.getElementById("wolfCount"),
+        wolfHint: document.getElementById("wolfHint"),
+        playerNameInput: document.getElementById("playerNameInput"),
+        addPlayerBtn: document.getElementById("addPlayerBtn"),
+        playerList: document.getElementById("playerList"),
+        clearPlayersBtn: document.getElementById("clearPlayersBtn"),
+        selectedCount: document.getElementById("selectedCount"),
+        validationMessage: document.getElementById("validationMessage"),
+        roleOptions: document.getElementById("roleOptions"),
+        revealBtn: document.getElementById("revealBtn"),
+        hideBtn: document.getElementById("hideBtn"),
+        roleCard: document.getElementById("roleCard"),
+        roleImage: document.getElementById("roleImage"),
+        handoffNotice: document.getElementById("handoffNotice"),
+        revealStatus: document.getElementById("revealStatus"),
+        roleTeam: document.getElementById("roleTeam"),
+        roleName: document.getElementById("roleName"),
+        roleDescription: document.getElementById("roleDescription"),
+        playerProgress: document.getElementById("playerProgress"),
+        currentPlayerLabel: document.getElementById("currentPlayerLabel"),
+        summaryList: document.getElementById("summaryList"),
+        togglePlayersBtn: document.getElementById("togglePlayersBtn"),
+        backToReveal: document.getElementById("backToReveal"),
+        restartBtn: document.getElementById("restartBtn"),
+    newGameBtn: document.getElementById("newGameBtn"),
+        openSummaryBtn: document.getElementById("openSummaryBtn"),
+        dayCounter: document.getElementById("dayCounter"),
+        nextDayBtn: document.getElementById("nextDayBtn"),
+        guideProgress: document.getElementById("guideProgress"),
+        guideStepText: document.getElementById("guideStepText"),
+        guideFullList: document.getElementById("guideFullList"),
+        guideNav: document.getElementById("guideNav"),
+        toggleGuideMode: document.getElementById("toggleGuideMode"),
+        prevGuideStep: document.getElementById("prevGuideStep"),
+        nextGuideStep: document.getElementById("nextGuideStep"),
+        eliminationLog: document.getElementById("eliminationLog"),
+        eliminationSelect: document.getElementById("eliminationSelect"),
+        eliminateBtn: document.getElementById("eliminateBtn"),
+        finalView: document.getElementById("finalView"),
+        victoryTitle: document.getElementById("victoryTitle"),
+        victorySubtitle: document.getElementById("victorySubtitle"),
+        victoryList: document.getElementById("victoryList"),
+        finalBackBtn: document.getElementById("finalBackBtn"),
+        finalNewGameBtn: document.getElementById("finalNewGameBtn"),
+        modalOverlay: document.getElementById("modalOverlay"),
+        modalTitle: document.getElementById("modalTitle"),
+        modalMessage: document.getElementById("modalMessage"),
+        modalCancel: document.getElementById("modalCancel"),
+    modalConfirm: document.getElementById("modalConfirm"),
+    languageSelect: document.getElementById("languageSelect"),
+    infoButton: document.getElementById("infoButton"),
+    infoOverlay: document.getElementById("infoOverlay"),
+    infoClose: document.getElementById("infoClose"),
+  };
+
+init();
+
+function persistState() {
+  if (typeof localStorage === "undefined") return;
+  try {
+    const payload = {
+      view: state.view,
+      players: state.players,
+      customNames: state.customNames,
+      revealIndex: state.revealIndex,
+      narratorDay: state.narratorDay,
+      maxDays: state.maxDays,
+      eliminatedPlayers: state.eliminatedPlayers,
+      activeSpecialIds: state.activeSpecialIds,
+      victory: state.victory,
+      revealComplete: state.revealComplete,
+      deckRoleIds: state.deck.map((card) => card.roleId),
+      assignments: state.players.map((name, index) => ({
+        name,
+        roleId: state.deck[index]?.roleId || null,
+      })),
+      guideStepIndex: state.guideStepIndex,
+      playersCollapsed: state.playersCollapsed,
+      guideExpanded: state.guideExpanded,
+      playerCount: el.playerCount.value,
+      wolfCount: el.wolfCount.value,
+      selectedSpecialIds: Array.from(el.roleOptions.querySelectorAll(".role-option:checked")).map(
+        (input) => input.value,
+      ),
+      language: state.language,
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  } catch (error) {
+    console.warn("Unable to save the game state", error);
+  }
+}
+
+function restoreFromStorage() {
+  if (typeof localStorage === "undefined") return;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    if (data.playerCount) el.playerCount.value = data.playerCount;
+    if (data.wolfCount) el.wolfCount.value = data.wolfCount;
+    if (Array.isArray(data.selectedSpecialIds)) {
+      el.roleOptions.querySelectorAll(".role-option").forEach((input) => {
+        input.checked = data.selectedSpecialIds.includes(input.value);
+      });
+    }
+    state.customNames = Array.isArray(data.customNames) ? [...data.customNames] : [];
+    renderPlayerList();
+    clampWolfCount();
+    enforceRoleLimits();
+    updateDeckPreview();
+    const assignments = Array.isArray(data.assignments) ? data.assignments : null;
+    if (assignments && assignments.length) {
+      const fallbackPlayers = Array.isArray(data.players) ? data.players : [];
+      state.players = assignments.map((entry, index) => entry?.name ?? fallbackPlayers[index] ?? "");
+      state.deck = assignments.map((entry) => {
+        if (entry && entry.roleId) {
+          return createCard(ROLE_LIBRARY[entry.roleId] || ROLE_LIBRARY.villager);
+        }
+        return createCard(ROLE_LIBRARY.villager);
+      });
+    } else {
+      state.players = Array.isArray(data.players) ? data.players : [];
+      state.deck = deckFromRoleIds(data.deckRoleIds);
+    }
+    state.revealIndex = Math.min(data.revealIndex || 0, Math.max(state.players.length - 1, 0));
+    state.revealComplete = Boolean(data.revealComplete);
+    state.narratorDay = data.narratorDay || 1;
+    state.maxDays = data.maxDays || Math.max(1, state.players.length || 1);
+    state.eliminatedPlayers = Array.isArray(data.eliminatedPlayers) ? data.eliminatedPlayers : [];
+    state.activeSpecialIds = Array.isArray(data.activeSpecialIds) ? data.activeSpecialIds : [];
+    state.victory = data.victory || null;
+    state.guideStepIndex = data.guideStepIndex || 0;
+    state.playersCollapsed = Boolean(data.playersCollapsed);
+    state.guideExpanded = data.guideExpanded !== undefined ? Boolean(data.guideExpanded) : true;
+    state.view = data.view || "setup";
+    if (state.view === "handoff") {
+      state.view = "reveal";
+      state.revealComplete = true;
+    }
+    state.language = data.language || DEFAULT_LANGUAGE;
+
+    setLanguage(state.language, { skipPersist: true, skipRender: true });
+    if (state.view === "reveal" && state.deck.length) {
+      if (state.revealComplete) {
+        showCompletionState();
+      } else {
+        prepareReveal();
+      }
+    } else if (state.view === "summary") {
+      renderSummaryList();
+      updateNarratorUI({ preserveGuideStep: true });
+    } else if (state.view === "final" && state.victory) {
+      renderVictoryFromState();
+    }
+    updatePlayersListVisibility();
+    updateEliminationSelect();
+  } catch (error) {
+    console.warn("Unable to restore the game state", error);
+  }
+}
+
+function init() {
+  renderRoleOptions();
+  attachEvents();
+  updateWolfHint();
+  clampWolfCount();
+  enforceRoleLimits();
+  updateDeckPreview();
+  renderPlayerList();
+  restoreFromStorage();
+  setLanguage(state.language, { skipPersist: true });
+  showView(state.view || "setup");
+}
+
+      function attachEvents() {
+        el.playerCount.addEventListener("input", () => {
+          autoAdjustWolvesFromPlayers();
+          updateWolfHint();
+          clampWolfCount();
+          enforceRoleLimits();
+          updateDeckPreview();
+          persistState();
+        });
+
+        el.wolfCount.addEventListener("input", () => {
+          clampWolfCount();
+          updateDeckPreview();
+          persistState();
+        });
+
+        el.roleOptions.addEventListener("change", () => {
+          updateDeckPreview();
+          persistState();
+        });
+
+        el.addPlayerBtn.addEventListener("click", handleAddPlayer);
+        el.playerNameInput.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            handleAddPlayer();
+          }
+        });
+
+        el.playerList.addEventListener("click", (event) => {
+          if (!(event.target instanceof Element)) return;
+          const button = event.target.closest(".chip-remove");
+          if (!button) return;
+          const index = Number(button.dataset.index);
+          state.customNames.splice(index, 1);
+          renderPlayerList();
+          persistState();
+        });
+
+        el.clearPlayersBtn.addEventListener("click", () => {
+          state.customNames = [];
+          renderPlayerList();
+          persistState();
+        });
+
+        el.setupForm.addEventListener("submit", (event) => {
+          event.preventDefault();
+          startGame();
+        });
+
+        if (el.roleCard) {
+          el.roleCard.addEventListener("click", () => {
+            if (el.roleCard.classList.contains("can-reveal") && el.revealBtn && !el.revealBtn.classList.contains("hidden")) {
+              revealCard();
+            }
+          });
+        }
+        el.revealBtn.addEventListener("click", revealCard);
+        el.hideBtn.addEventListener("click", nextPlayer);
+        el.openSummaryBtn.addEventListener("click", () => {
+          confirmAction(t("confirmation.handoff"), () => {
+            showSummary();
+          });
+        });
+        el.backToReveal.addEventListener("click", () => {
+          showView("reveal");
+          showCompletionState();
+          persistState();
+        });
+        el.restartBtn.addEventListener("click", () => confirmAction(t("confirmation.restart"), resetGame));
+        el.newGameBtn.addEventListener("click", () => confirmAction(t("confirmation.newGame"), resetGame));
+        el.nextDayBtn.addEventListener("click", advanceDay);
+        el.prevGuideStep.addEventListener("click", () => changeGuideStep(-1));
+        el.nextGuideStep.addEventListener("click", () => changeGuideStep(1));
+        el.summaryList.addEventListener("click", (event) => {
+          if (!(event.target instanceof Element)) return;
+          const button = event.target.closest(".mini-action");
+          if (!button) return;
+          toggleElimination(button.dataset.player || "");
+        });
+        el.finalBackBtn.addEventListener("click", () => showView("summary"));
+        el.finalNewGameBtn.addEventListener("click", () => confirmAction(t("confirmation.newGame"), resetGame));
+        if (el.togglePlayersBtn) el.togglePlayersBtn.addEventListener("click", togglePlayersVisibility);
+        if (el.toggleGuideMode) el.toggleGuideMode.addEventListener("click", toggleGuideMode);
+        if (el.eliminateBtn) el.eliminateBtn.addEventListener("click", eliminateFromSelect);
+        if (el.languageSelect) {
+          el.languageSelect.addEventListener("change", (event) => {
+            setLanguage(event.target.value);
+          });
+        }
+
+        document.querySelectorAll(".step-btn").forEach((button) => {
+          const targetId = button.dataset.target;
+          const delta = Number(button.dataset.delta) || 0;
+          const targetInput = document.getElementById(targetId);
+          if (!targetInput) return;
+          button.addEventListener("click", () => adjustNumberInput(targetInput, delta));
+        });
+
+        if (el.infoButton) el.infoButton.addEventListener("click", openInfoModal);
+        if (el.infoClose) el.infoClose.addEventListener("click", closeInfoModal);
+        if (el.infoOverlay) {
+          el.infoOverlay.addEventListener("click", (event) => {
+            if (event.target === el.infoOverlay) closeInfoModal();
+          });
+        }
+      }
+
+      function renderRoleOptions() {
+        el.roleOptions.innerHTML = "";
+        OPTIONAL_CONFIG.forEach((config) => {
+          const role = ROLE_LIBRARY[config.roleId];
+          const localized = getRoleContent(role.id);
+          const item = document.createElement("label");
+          item.className = "option-item";
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.value = role.id;
+          checkbox.dataset.copies = String(config.copies);
+          checkbox.dataset.minPlayers = String(config.minPlayers);
+          checkbox.className = "role-option";
+
+          const title = document.createElement("div");
+          title.className = "option-title";
+          title.append(checkbox);
+
+          const name = document.createElement("span");
+          name.textContent = localized.name;
+          title.append(name);
+
+          const tag = document.createElement("span");
+          tag.className = `tag ${role.team}`;
+          tag.textContent = localized.teamLabel;
+          title.append(tag);
+
+          const description = document.createElement("p");
+          description.className = "help";
+          const parts = [localized.description, t("roles.availableFrom", { count: config.minPlayers })];
+          if (config.noteKey) parts.push(t(config.noteKey));
+          description.textContent = parts.join(" ");
+
+          item.append(title, description);
+          el.roleOptions.appendChild(item);
+        });
+        enforceRoleLimits();
+      }
+
+      function updateWolfHint() {
+        const playerTotal = Number(el.playerCount.value) || 0;
+        const recommended = recommendWolves(playerTotal);
+        el.wolfHint.textContent = t("setup.wolfHint", { count: recommended });
+      }
+
+      function recommendWolves(playerTotal) {
+        if (playerTotal <= 7) return 1;
+        if (playerTotal <= 10) return 2;
+        if (playerTotal <= 15) return 3;
+        if (playerTotal <= 20) return 4;
+        return 5;
+      }
+
+      function autoAdjustWolvesFromPlayers() {
+        const playerTotal = Number(el.playerCount.value) || 0;
+        if (playerTotal <= 0) return;
+        const recommended = recommendWolves(playerTotal);
+        const limit = Math.max(1, playerTotal - 1);
+        const adjusted = Math.max(1, Math.min(recommended, limit));
+        el.wolfCount.value = String(adjusted);
+      }
+
+      function adjustNumberInput(input, delta) {
+        const min = Number(input.min) || Number.NEGATIVE_INFINITY;
+        const max = Number(input.max) || Number.POSITIVE_INFINITY;
+        let value = Number(input.value) || 0;
+        value += delta;
+        value = Math.min(max, Math.max(min, value));
+        input.value = String(value);
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+
+      function clampWolfCount() {
+        const playerTotal = Number(el.playerCount.value) || 0;
+        let wolves = Number(el.wolfCount.value) || 1;
+        if (wolves < 1) wolves = 1;
+        if (playerTotal > 0) {
+          wolves = Math.min(wolves, Math.max(1, playerTotal - 1));
+        }
+        el.wolfCount.value = String(wolves);
+      }
+
+      function enforceRoleLimits() {
+        const playerTotal = Number(el.playerCount.value) || 0;
+        const inputs = el.roleOptions.querySelectorAll("input[type='checkbox']");
+        inputs.forEach((input) => {
+          const minPlayers = Number(input.dataset.minPlayers) || MIN_PLAYERS;
+          const isAllowed = playerTotal >= minPlayers;
+          if (!isAllowed && input.checked) input.checked = false;
+          input.disabled = !isAllowed;
+          const optionItem = input.closest(".option-item");
+          if (optionItem) optionItem.classList.toggle("option-disabled", !isAllowed);
+        });
+      }
+
+      function getSelectedSpecials() {
+        return Array.from(el.roleOptions.querySelectorAll("input:checked")).map((input) => ({
+          roleId: input.value,
+          copies: Number(input.dataset.copies || "1"),
+        }));
+      }
+
+      function updateDeckPreview() {
+        const playerTotal = Number(el.playerCount.value) || 0;
+        const wolfTotal = Number(el.wolfCount.value) || 0;
+        const specialTotal = getSelectedSpecials().reduce((sum, item) => sum + item.copies, 0);
+        const selected = wolfTotal + 1 + specialTotal;
+        const remaining = playerTotal - selected;
+
+        el.selectedCount.textContent = String(selected);
+
+        let message = "";
+        if (playerTotal < MIN_PLAYERS) message = t("errors.minPlayers", { count: MIN_PLAYERS });
+        else if (wolfTotal < 1) message = t("errors.needWolf");
+        else if (wolfTotal >= playerTotal) message = t("errors.tooManyWolves");
+        else if (remaining < 0) message = t("errors.tooManySpecials");
+
+        el.validationMessage.textContent = message;
+        return message === "";
+      }
+
+      function handleAddPlayer() {
+        const name = el.playerNameInput.value.trim();
+        if (!name) return;
+        state.customNames.push(name);
+        el.playerNameInput.value = "";
+        renderPlayerList();
+        persistState();
+      }
+
+      function renderPlayerList() {
+        el.playerList.innerHTML = "";
+        state.customNames.forEach((name, index) => {
+          const item = document.createElement("li");
+          item.className = "player-chip";
+          item.textContent = name;
+
+          const removeButton = document.createElement("button");
+          removeButton.type = "button";
+          removeButton.className = "chip-remove";
+          removeButton.dataset.index = String(index);
+          removeButton.setAttribute("aria-label", t("accessibility.removePlayer", { name }));
+          removeButton.textContent = "×";
+
+          item.appendChild(removeButton);
+          el.playerList.appendChild(item);
+        });
+
+        el.clearPlayersBtn.classList.toggle("hidden", state.customNames.length === 0);
+      }
+
+      function buildPlayerList(playerTotal) {
+        const players = [];
+        for (let i = 0; i < playerTotal; i += 1) {
+          players.push(state.customNames[i] || t("status.defaultPlayer", { number: i + 1 }));
+        }
+        return players;
+      }
+
+      function buildDeck({ playerTotal, wolfTotal, specials }) {
+        const deck = [];
+        for (let i = 0; i < wolfTotal; i += 1) deck.push(createCard(ROLE_LIBRARY.werewolf));
+        deck.push(createCard(ROLE_LIBRARY.seer));
+
+        specials.forEach((special) => {
+          const role = ROLE_LIBRARY[special.roleId];
+          if (!role) return;
+          for (let count = 0; count < special.copies; count += 1) {
+            deck.push(createCard(role));
+          }
+        });
+
+        while (deck.length < playerTotal) deck.push(createCard(ROLE_LIBRARY.villager));
+        return shuffle(deck);
+      }
+
+      function createCard(role) {
+        const base = role || ROLE_LIBRARY.villager;
+        return {
+          roleId: base.id,
+          name: base.name,
+          team: base.team,
+          teamLabel: base.teamLabel,
+          description: base.description,
+          image: base.image,
+        };
+      }
+
+      function deckFromRoleIds(roleIds) {
+        if (!Array.isArray(roleIds)) return [];
+        return roleIds.map((roleId) => createCard(ROLE_LIBRARY[roleId] || ROLE_LIBRARY.villager));
+      }
+
+      function shuffle(deck) {
+        const arr = [...deck];
+        for (let i = arr.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      function startGame() {
+        enforceRoleLimits();
+        if (!updateDeckPreview()) return;
+
+        const playerTotal = Number(el.playerCount.value) || 0;
+        const wolfTotal = Number(el.wolfCount.value) || 0;
+        const specials = getSelectedSpecials();
+
+        state.players = buildPlayerList(playerTotal);
+        state.deck = buildDeck({ playerTotal, wolfTotal, specials });
+        state.revealIndex = 0;
+        state.activeSpecialIds = Array.from(new Set(specials.map((item) => item.roleId)));
+        state.eliminatedPlayers = [];
+        state.narratorDay = 1;
+        state.maxDays = Math.max(1, state.players.length);
+        state.guideSteps = [];
+        state.guideStepIndex = 0;
+        state.victory = null;
+        state.revealComplete = false;
+
+        prepareReveal();
+        showView("reveal");
+        persistState();
+      }
+
+      function prepareReveal() {
+        if (!state.deck.length) return;
+        state.revealComplete = false;
+        if (el.revealStatus) el.revealStatus.classList.remove("hidden");
+        if (el.roleCard) el.roleCard.classList.remove("hidden");
+        el.revealBtn.classList.remove("hidden");
+        el.hideBtn.classList.add("hidden");
+        el.openSummaryBtn.classList.add("hidden");
+        el.roleImage.classList.add("hidden");
+        el.roleImage.removeAttribute("src");
+        el.roleImage.alt = "";
+        el.roleCard.classList.remove("with-image");
+        el.handoffNotice.classList.add("hidden");
+
+        const total = state.players.length;
+        const current = state.revealIndex + 1;
+        el.playerProgress.textContent = t("status.player", { current, total });
+        el.currentPlayerLabel.textContent = state.players[state.revealIndex];
+
+        el.roleCard.dataset.team = "unknown";
+        el.roleCard.classList.add("can-reveal");
+        el.roleTeam.textContent = t("reveal.hiddenTeam");
+        el.roleName.textContent = t("reveal.tap");
+        el.roleDescription.textContent = t("reveal.prompt");
+      }
+
+      function revealCard() {
+        const card = state.deck[state.revealIndex];
+        if (!card) return;
+        el.roleCard.classList.remove("can-reveal");
+        const roleText = getRoleContent(card.roleId);
+        el.roleCard.dataset.team = card.team;
+        el.roleTeam.textContent = roleText.teamLabel;
+        el.roleName.textContent = roleText.name;
+        el.roleDescription.textContent = roleText.description;
+        if (card.image) {
+          el.roleImage.src = card.image;
+          el.roleImage.alt = roleText ? roleText.name : "Role";
+          el.roleImage.classList.remove("hidden");
+          el.roleCard.classList.add("with-image");
+        } else {
+          el.roleImage.classList.add("hidden");
+        el.roleCard.classList.remove("with-image");
+      }
+      el.revealBtn.classList.add("hidden");
+      el.hideBtn.classList.remove("hidden");
+      scrollToBottom();
+    }
+
+      function nextPlayer() {
+        if (state.revealIndex < state.players.length - 1) {
+          state.revealIndex += 1;
+          prepareReveal();
+          persistState();
+        } else {
+          showCompletionState();
+          persistState();
+        }
+        scrollToBottom();
+      }
+
+      function showCompletionState() {
+        state.revealComplete = true;
+        el.roleCard.dataset.team = "humans";
+        el.roleCard.classList.remove("can-reveal");
+        el.roleTeam.textContent = "";
+        el.roleName.textContent = "";
+        el.roleDescription.textContent = "";
+        el.playerProgress.textContent = "";
+        el.currentPlayerLabel.textContent = "";
+        el.roleImage.classList.add("hidden");
+        el.roleImage.removeAttribute("src");
+        el.roleCard.classList.remove("with-image");
+        if (el.roleCard) el.roleCard.classList.add("hidden");
+        if (el.revealStatus) el.revealStatus.classList.add("hidden");
+        el.handoffNotice.classList.remove("hidden");
+        el.revealBtn.classList.add("hidden");
+        el.hideBtn.classList.add("hidden");
+        el.openSummaryBtn.classList.remove("hidden");
+        scrollToBottom();
+      }
+
+      function showSummary() {
+        renderSummaryList();
+        updateNarratorUI();
+        showView("summary");
+        persistState();
+      }
+
+      function renderSummaryList() {
+        el.summaryList.innerHTML = "";
+        state.players.forEach((player, index) => {
+          const card = state.deck[index];
+          const listItem = document.createElement("li");
+          listItem.className = "summary-item";
+          const eliminationEntry = state.eliminatedPlayers.find((entry) => entry.name === player);
+          const eliminated = Boolean(eliminationEntry);
+          if (eliminated) listItem.classList.add("eliminated");
+
+          if (card && card.image) {
+            const localized = getRoleContent(card.roleId);
+            const img = document.createElement("img");
+            img.className = "summary-thumb";
+            img.src = card.image;
+            img.alt = localized ? localized.name : "Role image";
+            listItem.appendChild(img);
+          }
+
+          const info = document.createElement("div");
+          info.className = "summary-info";
+          const name = document.createElement("span");
+          name.className = "summary-name";
+          name.textContent = player;
+          const role = document.createElement("span");
+          role.className = "summary-role";
+          const roleText = card ? getRoleContent(card.roleId) : null;
+          role.textContent = roleText ? roleText.name : "-";
+          info.append(name, role);
+
+          const actionBtn = document.createElement("button");
+          actionBtn.type = "button";
+          actionBtn.className = "mini-action";
+          actionBtn.dataset.player = player;
+          if (eliminated) {
+            if (eliminationEntry?.locked) {
+              actionBtn.classList.add("revive");
+              actionBtn.textContent = t("buttons.locked");
+              actionBtn.disabled = true;
+            } else {
+              actionBtn.classList.add("revive");
+              actionBtn.textContent = t("buttons.revive");
+            }
+          } else {
+            actionBtn.classList.add("remove");
+            actionBtn.textContent = t("buttons.eliminate");
+          }
+
+        listItem.append(info, actionBtn);
+        el.summaryList.appendChild(listItem);
+      });
+        updatePlayersListVisibility();
+        updateEliminationSelect();
+      }
+
+      function togglePlayersVisibility() {
+        state.playersCollapsed = !state.playersCollapsed;
+        updatePlayersListVisibility();
+        persistState();
+      }
+
+      function updatePlayersListVisibility() {
+        const collapsed = state.playersCollapsed;
+        el.summaryList.classList.toggle("hidden", collapsed);
+        if (el.togglePlayersBtn) {
+          el.togglePlayersBtn.textContent = collapsed ? t("buttons.showPlayers") : t("buttons.hidePlayers");
+        }
+      }
+
+      function updateEliminationSelect() {
+        if (!el.eliminationSelect) return;
+        const alivePlayers = getLivingPlayers();
+        el.eliminationSelect.innerHTML = "";
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = alivePlayers.length ? t("elimination.placeholder") : t("elimination.none");
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        el.eliminationSelect.appendChild(placeholder);
+        alivePlayers.forEach(({ name }) => {
+          const option = document.createElement("option");
+          option.value = name;
+          option.textContent = name;
+          el.eliminationSelect.appendChild(option);
+        });
+        const disabled = alivePlayers.length === 0;
+        el.eliminationSelect.disabled = disabled;
+        if (el.eliminateBtn) el.eliminateBtn.disabled = disabled;
+      }
+
+      function eliminateFromSelect() {
+        if (!el.eliminationSelect) return;
+        const name = el.eliminationSelect.value;
+        if (!name || isEliminated(name)) return;
+        promptElimination(name, {
+          afterConfirm: () => {
+            el.eliminationSelect.value = "";
+          },
+        });
+      }
+
+      function toggleElimination(player) {
+        if (state.victory) return;
+        if (!player) return;
+        if (isEliminated(player)) {
+          const entry = state.eliminatedPlayers.find((item) => item.name === player);
+          if (entry?.locked) return;
+          state.eliminatedPlayers = state.eliminatedPlayers.filter((item) => item.name !== player);
+          renderSummaryList();
+          updateNarratorUI({ preserveGuideStep: true });
+          return;
+        }
+        promptElimination(player);
+      }
+
+      function isEliminated(name) {
+        return state.eliminatedPlayers.some((entry) => entry.name === name);
+      }
+
+      function addEliminationEntry(name) {
+        state.eliminatedPlayers.push({ name, day: state.narratorDay, locked: false });
+        renderSummaryList();
+        updateNarratorUI({ preserveGuideStep: true });
+      }
+
+      function promptElimination(name, { afterConfirm } = {}) {
+        const proceed = () => {
+          addEliminationEntry(name);
+          if (typeof afterConfirm === "function") afterConfirm();
+        };
+        const outcome = predictVictoryOnElimination(name);
+        if (outcome) {
+          const texts = getVictoryText(outcome.team);
+          confirmAction(t("confirmation.eliminationVictory", { player: name, outcome: texts.title }), proceed);
+        } else {
+          proceed();
+        }
+      }
+
+      function predictVictoryOnElimination(name) {
+        const eliminatedSet = new Set(state.eliminatedPlayers.map((entry) => entry.name));
+        eliminatedSet.add(name);
+        return computeVictoryOutcomeFromSet(eliminatedSet);
+      }
+
+      function updateNarratorUI({ preserveGuideStep = false } = {}) {
+        el.dayCounter.textContent = String(state.narratorDay);
+        const maxReached = state.narratorDay >= state.maxDays;
+        el.nextDayBtn.disabled = maxReached || Boolean(state.victory);
+        el.nextDayBtn.textContent = maxReached ? t("buttons.noMoreDays") : t("buttons.nextDay");
+
+        const previousIndex = state.guideStepIndex;
+        state.guideSteps = buildNarrationSteps(state.narratorDay);
+        if (state.guideSteps.length === 0) {
+          state.guideStepIndex = 0;
+        } else if (!preserveGuideStep) {
+          state.guideStepIndex = 0;
+        } else {
+          state.guideStepIndex = Math.min(previousIndex, state.guideSteps.length - 1);
+        }
+        renderGuide();
+        renderEliminationLog();
+        persistState();
+        updateEliminationSelect();
+        evaluateVictoryConditions();
+      }
+
+      function buildNarrationSteps(day) {
+        const steps = [];
+        steps.push(t("guide.step.closeEyes", { day }));
+        if (hasSpecial("mason") && day === 1) steps.push(t("guide.step.masons"));
+        if (hasSpecial("bodyguard") && day >= 2) steps.push(t("guide.step.bodyguard"));
+        steps.push(t("guide.step.seer"));
+        if (hasSpecial("medium") && day >= 2) steps.push(t("guide.step.medium"));
+        if (hasSpecial("owl")) steps.push(t("guide.step.owl"));
+        if (hasSpecial("mythomaniac") && day === 2) steps.push(t("guide.step.mythomaniac"));
+        steps.push(t("guide.step.wolves"));
+        if (hasSpecial("werehamster")) steps.push(t("guide.step.hamster"));
+        steps.push(t("guide.step.dawn", { day }));
+        if (hasSpecial("owl")) steps.push(t("guide.step.owlReveal"));
+        if (hasSpecial("possessed")) steps.push(t("guide.step.possessed"));
+        steps.push(t("guide.step.dayDiscuss", { day }));
+        return steps;
+      }
+
+      function hasSpecial(roleId) {
+        return state.activeSpecialIds.includes(roleId);
+      }
+
+      function renderGuide() {
+        const total = state.guideSteps.length;
+        if (total === 0) {
+        el.guideProgress.textContent = t("guide.progress", { current: 0, total: 0 });
+          el.guideStepText.textContent = t("guide.empty");
+          el.prevGuideStep.disabled = true;
+          el.nextGuideStep.disabled = true;
+          el.guideStepText.classList.remove("hidden");
+          el.guideFullList.classList.add("hidden");
+          el.guideNav.classList.remove("hidden");
+          return;
+        }
+        const current = state.guideStepIndex;
+        el.guideProgress.textContent = t("guide.progress", { current: current + 1, total });
+        const showFull = state.guideExpanded;
+        if (showFull) {
+          el.guideStepText.classList.add("hidden");
+          el.guideNav.classList.add("hidden");
+          el.guideFullList.classList.remove("hidden");
+          el.guideFullList.innerHTML = "";
+          state.guideSteps.forEach((step) => {
+            const li = document.createElement("li");
+            li.textContent = step;
+            el.guideFullList.appendChild(li);
+          });
+          if (el.toggleGuideMode) el.toggleGuideMode.textContent = t("buttons.stepMode");
+        } else {
+          el.guideFullList.classList.add("hidden");
+          el.guideStepText.classList.remove("hidden");
+          el.guideNav.classList.remove("hidden");
+          el.guideStepText.textContent = state.guideSteps[current];
+          el.prevGuideStep.disabled = current <= 0;
+          el.nextGuideStep.disabled = current >= total - 1;
+          if (el.toggleGuideMode) el.toggleGuideMode.textContent = t("buttons.showList");
+        }
+      }
+
+      function toggleGuideMode() {
+        state.guideExpanded = !state.guideExpanded;
+        renderGuide();
+        persistState();
+      }
+
+      function changeGuideStep(delta) {
+        if (!state.guideSteps.length) return;
+        const nextIndex = state.guideStepIndex + delta;
+        if (nextIndex < 0 || nextIndex >= state.guideSteps.length) return;
+        state.guideStepIndex = nextIndex;
+        renderGuide();
+        persistState();
+      }
+
+      function renderEliminationLog() {
+        el.eliminationLog.innerHTML = "";
+        if (!state.eliminatedPlayers.length) {
+          const li = document.createElement("li");
+          li.textContent = t("log.empty");
+          el.eliminationLog.appendChild(li);
+          return;
+        }
+        state.eliminatedPlayers.forEach((entry) => {
+          const li = document.createElement("li");
+          li.textContent = t("log.entry", { name: entry.name, day: entry.day ?? "?" });
+          el.eliminationLog.appendChild(li);
+        });
+      }
+
+      function advanceDay() {
+        if (state.victory) return;
+        if (state.narratorDay >= state.maxDays) return;
+        const nextDay = state.narratorDay + 1;
+        confirmAction(
+          t("confirmation.nextDay", { day: nextDay }),
+          () => {
+            state.narratorDay += 1;
+            state.guideStepIndex = 0;
+            state.eliminatedPlayers = state.eliminatedPlayers.map((entry) => ({
+              ...entry,
+              locked: true,
+            }));
+            renderSummaryList();
+            updateNarratorUI();
+          },
+        );
+      }
+
+      function confirmAction(message, onConfirm) {
+        el.modalTitle.textContent = t("modal.title");
+        el.modalMessage.textContent = message;
+        el.modalOverlay.classList.remove("hidden");
+        const cleanup = () => {
+          el.modalOverlay.classList.add("hidden");
+          el.modalCancel.removeEventListener("click", cancelHandler);
+          el.modalConfirm.removeEventListener("click", confirmHandler);
+        };
+        const cancelHandler = () => cleanup();
+        const confirmHandler = () => {
+          cleanup();
+          if (typeof onConfirm === "function") onConfirm();
+        };
+        el.modalCancel.addEventListener("click", cancelHandler);
+        el.modalConfirm.addEventListener("click", confirmHandler);
+      }
+
+      function openInfoModal() {
+        if (!el.infoOverlay) return;
+        el.infoOverlay.classList.remove("hidden");
+      }
+
+      function closeInfoModal() {
+        if (!el.infoOverlay) return;
+        el.infoOverlay.classList.add("hidden");
+      }
+
+      function scrollToBottom() {
+        if (state.view !== "reveal") return;
+        window.requestAnimationFrame(() => {
+          window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+        });
+      }
+
+      function getLivingPlayers() {
+        return state.players
+          .map((name, index) => ({ name, card: state.deck[index] }))
+          .filter((entry) => !isEliminated(entry.name));
+      }
+
+      function computeVictoryOutcomeFromSet(eliminatedSet) {
+        if (!state.deck.length || !state.players.length) return null;
+        if (state.deck.length < state.players.length) return null;
+        const living = state.players
+          .map((name, index) => ({ name, card: state.deck[index] }))
+          .filter((entry) => !eliminatedSet.has(entry.name));
+        if (!living.length) return null;
+        const wolves = living.filter((entry) => entry.card?.team === "wolves");
+        const humans = living.filter((entry) => entry.card?.team === "humans");
+        const hamsters = living.filter((entry) => entry.card?.roleId === "werehamster");
+
+        if (hamsters.length && hamsters.length === living.length) {
+          return { team: "loner", survivors: living };
+        }
+        if (!wolves.length) {
+          return { team: "humans", survivors: living };
+        }
+        if (wolves.length >= humans.length) {
+          return { team: "wolves", survivors: living };
+        }
+        return null;
+      }
+
+      function evaluateVictoryConditions() {
+        if (state.victory) return;
+        const eliminatedSet = new Set(state.eliminatedPlayers.map((entry) => entry.name));
+        const outcome = computeVictoryOutcomeFromSet(eliminatedSet);
+        if (outcome) {
+          showVictoryScreen(outcome);
+        }
+      }
+
+      function showVictoryScreen({ team, survivors }) {
+        state.victory = { team };
+        const texts = getVictoryText(team);
+        el.victoryTitle.textContent = texts.title;
+        el.victorySubtitle.textContent = texts.subtitle;
+        el.victoryList.innerHTML = "";
+        survivors.forEach((entry) => {
+          const li = document.createElement("li");
+          li.className = "summary-item";
+          const info = document.createElement("div");
+          info.className = "summary-info";
+          const name = document.createElement("span");
+          name.className = "summary-name";
+          name.textContent = entry.name;
+          const role = document.createElement("span");
+          role.className = "summary-role";
+          const localized = entry.card ? getRoleContent(entry.card.roleId) : null;
+          role.textContent = localized ? localized.name : "-";
+          info.append(name, role);
+          li.appendChild(info);
+          el.victoryList.appendChild(li);
+        });
+        showView("final");
+      }
+
+      function renderVictoryFromState() {
+        if (!state.victory) return;
+        const living = getLivingPlayers();
+        const texts = getVictoryText(state.victory.team);
+        el.victoryTitle.textContent = texts.title;
+        el.victorySubtitle.textContent = texts.subtitle;
+        el.victoryList.innerHTML = "";
+        living.forEach((entry) => {
+          const li = document.createElement("li");
+          li.className = "summary-item";
+          const info = document.createElement("div");
+          info.className = "summary-info";
+          const name = document.createElement("span");
+          name.className = "summary-name";
+          name.textContent = entry.name;
+          const role = document.createElement("span");
+          role.className = "summary-role";
+          const localized = entry.card ? getRoleContent(entry.card.roleId) : null;
+          role.textContent = localized ? localized.name : "-";
+          info.append(name, role);
+          li.appendChild(info);
+          el.victoryList.appendChild(li);
+        });
+      }
+
+      function getVictoryText(team) {
+        if (team === "wolves") {
+          return { title: t("victory.wolves.title"), subtitle: t("victory.wolves.subtitle") };
+        }
+        if (team === "loner") {
+          return { title: t("victory.hamster.title"), subtitle: t("victory.hamster.subtitle") };
+        }
+        return { title: t("victory.village.title"), subtitle: t("victory.village.subtitle") };
+      }
+
+      function showView(view) {
+        [el.setupView, el.revealView, el.summaryView, el.finalView].forEach((section) => {
+          section.classList.add("hidden");
+        });
+        if (view === "setup") el.setupView.classList.remove("hidden");
+        if (view === "reveal") el.revealView.classList.remove("hidden");
+        if (view === "summary") el.summaryView.classList.remove("hidden");
+        if (view === "final") el.finalView.classList.remove("hidden");
+        if (el.rolesPanel) {
+          const hide = view !== "setup";
+          el.rolesPanel.classList.toggle("hidden", hide);
+          if (!hide && el.rolesDetails) el.rolesDetails.open = false;
+        }
+        state.view = view;
+        persistState();
+      }
+
+      function resetGame({ preserveNames = true } = {}) {
+        state.deck = [];
+        state.players = [];
+        state.revealIndex = 0;
+        if (!preserveNames) state.customNames = [];
+        state.activeSpecialIds = [];
+        state.eliminatedPlayers = [];
+        state.narratorDay = 1;
+        state.maxDays = 1;
+        state.guideSteps = [];
+        state.guideStepIndex = 0;
+        state.victory = null;
+        state.playersCollapsed = false;
+        state.guideExpanded = true;
+        state.revealComplete = false;
+        el.setupForm.reset();
+        el.roleOptions.querySelectorAll("input[type='checkbox']").forEach((input) => {
+          input.checked = false;
+        });
+        el.openSummaryBtn.classList.add("hidden");
+        renderPlayerList();
+        updateWolfHint();
+        clampWolfCount();
+        enforceRoleLimits();
+        updateDeckPreview();
+        el.handoffNotice.classList.add("hidden");
+        showView("setup");
+      }
+    </script>
+  </body>
+</html>
