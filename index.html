@@ -266,7 +266,7 @@
       .setup-form {
         display: flex;
         flex-direction: column;
-        gap: 22px;
+        gap: 18px;
       }
 
       .number-stepper {
@@ -435,18 +435,14 @@
         opacity: 0.4;
       }
 
-      .deck-preview {
-        border: 1px dashed rgba(239, 200, 144, 0.4);
-        padding: 16px;
-        border-radius: 14px;
-        background: rgba(30, 27, 18, 0.7);
-        text-align: center;
-      }
-
       .validation {
         color: #f87171;
         margin-top: 8px;
         font-weight: 600;
+      }
+
+      .validation:empty {
+        display: none;
       }
 
       button {
@@ -693,8 +689,7 @@
         color: #fbbf24;
       }
 
-      .guide-panel,
-      .log-panel {
+      .guide-panel {
         border: 1px solid rgba(68, 32, 32, 0.45);
         border-radius: 16px;
         padding: 16px;
@@ -727,20 +722,49 @@
         gap: 6px;
       }
 
+      .fallen-details {
+        margin-top: 20px;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 14px;
+        padding: 14px 18px;
+        background: rgba(17, 12, 12, 0.7);
+      }
+
+      .fallen-details summary {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .fallen-count {
+        background: rgba(248, 250, 252, 0.1);
+        border-radius: 999px;
+        padding: 2px 10px;
+        font-size: 0.85rem;
+        color: #f8fafc;
+      }
+
+      .fallen-list {
+        list-style: none;
+        margin: 12px 0 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        color: #e2e8f0;
+      }
+
+      .fallen-list .fallen-empty {
+        color: #94a3b8;
+        font-style: italic;
+      }
+
       .guide-list.hidden,
       .guide-nav.hidden,
       #guideStepText.hidden {
         display: none;
-      }
-
-      .log-panel ul {
-        list-style: none;
-        padding-left: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        font-size: 0.9rem;
-        color: #f8f1e9;
       }
 
       .handoff-list {
@@ -843,12 +867,6 @@
           align-items: stretch;
         }
 
-        .day-control {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 12px;
-        }
-
         .logo-row {
           flex-direction: column;
           text-align: center;
@@ -901,12 +919,6 @@
 
         .guide-panel {
           padding: 18px;
-        }
-
-        .guide-header {
-          flex-direction: column;
-          gap: 6px;
-          align-items: flex-start;
         }
 
         .guide-nav {
@@ -981,10 +993,7 @@
             <button type="button" id="clearPlayersBtn" class="btn-ghost btn-small hidden" data-i18n="buttons.clearPlayers">Clear list</button>
           </div>
 
-          <div class="deck-preview">
-            <p><span data-i18n="setup.deckLabel">📦 Cards prepared</span>: <span id="selectedCount">0</span></p>
-            <p id="validationMessage" class="validation"></p>
-          </div>
+          <p id="validationMessage" class="validation"></p>
 
           <div class="actions-right">
             <button type="submit" class="btn-primary" data-i18n="buttons.deal">🎴 Deal the cards</button>
@@ -1037,10 +1046,13 @@
         </div>
         <ul id="summaryList" class="summary-list"></ul>
 
-        <div class="log-panel" style="margin-top: 16px">
-          <h3 class="eyebrow" style="letter-spacing: 0.2em" data-i18n="log.title">Eliminations</h3>
-          <ul id="eliminationLog" class="elimination-log"></ul>
-        </div>
+        <details id="fallenDetails" class="fallen-details">
+          <summary>
+            <span data-i18n="fallen.title">🪦 Fallen players</span>
+            <span id="fallenCount" class="fallen-count">0</span>
+          </summary>
+          <ul id="fallenList" class="fallen-list"></ul>
+        </details>
 
         <div class="narrator-tools">
           <div class="day-control">
@@ -1353,7 +1365,6 @@ const TRANSLATIONS = {
     "setup.specialsHelp": "The Seer is always included. Other roles unlock based on the player count.",
     "roles.availableFrom": "Available from {count}+ players.",
     "roles.masonNote": "Always add both cards together.",
-    "setup.deckLabel": "📦 Cards prepared",
     "buttons.deal": "🎴 Deal the cards",
     "reveal.title": "🔐 Secret dealing",
     "reveal.hiddenTeam": "Hidden card",
@@ -1369,7 +1380,10 @@ const TRANSLATIONS = {
     "buttons.showPlayers": "Show players",
     "log.title": "Eliminations",
     "log.empty": "No players eliminated yet",
-    "log.entry": "{name} was eliminated on Day {day}",
+    "log.entry": "{name} ({role}) was eliminated on Day {day}",
+    "log.unknownRole": "unknown role",
+    "fallen.title": "🪦 Fallen players",
+    "fallen.empty": "No confirmed deaths yet",
     "day.label": "Current day",
     "buttons.nextDay": "Next day",
     "buttons.noMoreDays": "No more days",
@@ -1465,7 +1479,6 @@ const TRANSLATIONS = {
     "setup.specialsHelp": "El Vidente siempre está incluido. Los demás roles dependen del número de jugadores.",
     "roles.availableFrom": "Disponible a partir de {count} jugadores.",
     "roles.masonNote": "Siempre se añaden las dos cartas juntas.",
-    "setup.deckLabel": "📦 Cartas preparadas",
     "buttons.deal": "🎴 Repartir cartas",
     "reveal.title": "🔐 Reparto secreto",
     "reveal.hiddenTeam": "Carta oculta",
@@ -1481,7 +1494,10 @@ const TRANSLATIONS = {
     "buttons.showPlayers": "Mostrar jugadores",
     "log.title": "Eliminaciones",
     "log.empty": "Ningún jugador eliminado todavía",
-    "log.entry": "{name} fue eliminado en el Día {day}",
+    "log.entry": "{name} ({role}) fue eliminado en el Día {day}",
+    "log.unknownRole": "rol desconocido",
+    "fallen.title": "🪦 Jugadores caídos",
+    "fallen.empty": "Aún no hay muertes confirmadas",
     "day.label": "Día actual",
     "buttons.nextDay": "Siguiente día",
     "buttons.noMoreDays": "Sin más días",
@@ -1577,7 +1593,6 @@ const TRANSLATIONS = {
     "setup.specialsHelp": "Il Veggente è sempre incluso. Altri ruoli si sbloccano in base al numero di giocatori.",
     "roles.availableFrom": "Disponibile da {count}+ giocatori.",
     "roles.masonNote": "Aggiungi sempre entrambe le carte.",
-    "setup.deckLabel": "📦 Carte preparate",
     "buttons.deal": "🎴 Distribuisci le carte",
     "reveal.title": "🔐 Distribuzione segreta",
     "reveal.hiddenTeam": "Carta coperta",
@@ -1593,11 +1608,14 @@ const TRANSLATIONS = {
     "buttons.showPlayers": "Mostra giocatori",
     "log.title": "Eliminazioni",
     "log.empty": "Nessun giocatore eliminato",
-    "log.entry": "{name} è stato eliminato al Giorno {day}",
+    "log.entry": "{name} ({role}) è stato eliminato al Giorno {day}",
+    "log.unknownRole": "ruolo sconosciuto",
+    "fallen.title": "🪦 Giocatori caduti",
+    "fallen.empty": "Nessuna morte confermata",
     "day.label": "Giorno attuale",
     "buttons.nextDay": "Giorno successivo",
     "buttons.noMoreDays": "Niente altri giorni",
-    "guide.title": "Guida del narratore",
+    "guide.title": "Guida",
     "guide.progress": "Passo {current} / {total}",
     "buttons.toggleGuide": "Mostra elenco",
     "buttons.showList": "Mostra elenco",
@@ -1710,7 +1728,6 @@ function setLanguage(lang, { skipPersist = false, skipRender = false } = {}) {
   if (!skipRender) {
     updateWolfHint();
     renderSummaryList();
-    renderEliminationLog();
     if (state.view === "summary") {
       updateNarratorUI({ preserveGuideStep: true });
     }
@@ -1771,7 +1788,6 @@ const state = {
         addPlayerBtn: document.getElementById("addPlayerBtn"),
         playerList: document.getElementById("playerList"),
         clearPlayersBtn: document.getElementById("clearPlayersBtn"),
-        selectedCount: document.getElementById("selectedCount"),
         validationMessage: document.getElementById("validationMessage"),
         roleOptions: document.getElementById("roleOptions"),
         revealBtn: document.getElementById("revealBtn"),
@@ -1786,6 +1802,9 @@ const state = {
         playerProgress: document.getElementById("playerProgress"),
         currentPlayerLabel: document.getElementById("currentPlayerLabel"),
         summaryList: document.getElementById("summaryList"),
+        fallenDetails: document.getElementById("fallenDetails"),
+        fallenList: document.getElementById("fallenList"),
+        fallenCount: document.getElementById("fallenCount"),
         togglePlayersBtn: document.getElementById("togglePlayersBtn"),
         restartBtn: document.getElementById("restartBtn"),
         openSummaryBtn: document.getElementById("openSummaryBtn"),
@@ -1798,7 +1817,6 @@ const state = {
         toggleGuideMode: document.getElementById("toggleGuideMode"),
         prevGuideStep: document.getElementById("prevGuideStep"),
         nextGuideStep: document.getElementById("nextGuideStep"),
-        eliminationLog: document.getElementById("eliminationLog"),
         eliminationSelect: document.getElementById("eliminationSelect"),
         eliminateBtn: document.getElementById("eliminateBtn"),
         finalView: document.getElementById("finalView"),
@@ -2145,9 +2163,6 @@ function init() {
         const specialTotal = getSelectedSpecials().reduce((sum, item) => sum + item.copies, 0);
         const selected = wolfTotal + 1 + specialTotal;
         const remaining = playerTotal - selected;
-
-        el.selectedCount.textContent = String(selected);
-
         let message = "";
         if (playerTotal < MIN_PLAYERS) message = t("errors.minPlayers", { count: MIN_PLAYERS });
         else if (wolfTotal < 1) message = t("errors.needWolf");
@@ -2357,9 +2372,10 @@ function init() {
         el.summaryList.innerHTML = "";
         state.players.forEach((player, index) => {
           const card = state.deck[index];
+          const eliminationEntry = state.eliminatedPlayers.find((entry) => entry.name === player);
+          if (eliminationEntry?.locked) return;
           const listItem = document.createElement("li");
           listItem.className = "summary-item";
-          const eliminationEntry = state.eliminatedPlayers.find((entry) => entry.name === player);
           const eliminated = Boolean(eliminationEntry);
           if (eliminated) listItem.classList.add("eliminated");
 
@@ -2401,9 +2417,10 @@ function init() {
             actionBtn.textContent = t("buttons.eliminate");
           }
 
-        listItem.append(info, actionBtn);
-        el.summaryList.appendChild(listItem);
-      });
+          listItem.append(info, actionBtn);
+          el.summaryList.appendChild(listItem);
+        });
+        renderFallenList();
         updatePlayersListVisibility();
         updateEliminationSelect();
       }
@@ -2473,7 +2490,9 @@ function init() {
       }
 
       function addEliminationEntry(name) {
-        state.eliminatedPlayers.push({ name, day: state.narratorDay, locked: false });
+        const playerIndex = state.players.findIndex((player) => player === name);
+        const roleId = playerIndex >= 0 && state.deck[playerIndex] ? state.deck[playerIndex].roleId : null;
+        state.eliminatedPlayers.push({ name, roleId, day: state.narratorDay, locked: false });
         renderSummaryList();
         updateNarratorUI({ preserveGuideStep: true });
       }
@@ -2514,7 +2533,6 @@ function init() {
           state.guideStepIndex = Math.min(previousIndex, state.guideSteps.length - 1);
         }
         renderGuide();
-        renderEliminationLog();
         persistState();
         updateEliminationSelect();
         evaluateVictoryConditions();
@@ -2594,19 +2612,42 @@ function init() {
         persistState();
       }
 
-      function renderEliminationLog() {
-        el.eliminationLog.innerHTML = "";
-        if (!state.eliminatedPlayers.length) {
+      function renderFallenList() {
+        if (!el.fallenList || !el.fallenCount) return;
+        const fallen = state.eliminatedPlayers.filter((entry) => entry.locked);
+        el.fallenCount.textContent = String(fallen.length);
+        el.fallenList.innerHTML = "";
+        if (!fallen.length) {
           const li = document.createElement("li");
-          li.textContent = t("log.empty");
-          el.eliminationLog.appendChild(li);
+          li.className = "fallen-empty";
+          li.textContent = t("fallen.empty");
+          el.fallenList.appendChild(li);
           return;
         }
-        state.eliminatedPlayers.forEach((entry) => {
+        fallen.forEach((entry) => {
           const li = document.createElement("li");
-          li.textContent = t("log.entry", { name: entry.name, day: entry.day ?? "?" });
-          el.eliminationLog.appendChild(li);
+          li.textContent = t("log.entry", {
+            name: entry.name,
+            day: entry.day ?? "?",
+            role: getRoleNameFromEntry(entry),
+          });
+          el.fallenList.appendChild(li);
         });
+      }
+
+      function getRoleNameFromEntry(entry) {
+        if (!entry) return t("log.unknownRole");
+        if (entry.roleId) {
+          const localized = getRoleContent(entry.roleId);
+          if (localized?.name) return localized.name;
+        }
+        const index = state.players.findIndex((player) => player === entry.name);
+        const fallbackCard = index >= 0 ? state.deck[index] : null;
+        if (fallbackCard) {
+          const localized = getRoleContent(fallbackCard.roleId);
+          if (localized?.name) return localized.name;
+        }
+        return t("log.unknownRole");
       }
 
       function advanceDay() {
