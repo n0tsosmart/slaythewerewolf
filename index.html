@@ -460,6 +460,7 @@
         font-family: inherit;
         color: inherit;
         background: var(--color-secondary-bg);
+        touch-action: manipulation;
       }
 
       button:disabled {
@@ -625,8 +626,8 @@
       }
 
       .summary-thumb {
-        width: 56px;
-        height: 56px;
+        width: 80px;
+        height: 80px;
         border-radius: 14px;
         object-fit: cover;
         border: 1px solid rgba(255, 255, 255, 0.2);
@@ -829,8 +830,12 @@
 
         .global-controls {
           flex-direction: column;
-          align-items: stretch;
+          align-items: center;
           gap: 12px;
+        }
+
+        .language-picker {
+          margin-right: 0;
         }
 
         .actions-right {
@@ -847,11 +852,20 @@
         .logo-row {
           flex-direction: column;
           text-align: center;
+          align-items: center;
+          gap: 12px;
+        }
+
+        #restartBtn {
+          width: 100%;
+          font-size: 1.05rem;
+          padding: 12px 20px;
         }
 
         .site-logo {
           width: 200px;
           height: 200px;
+          margin-left: 8px;
         }
 
         .role-card,
@@ -866,8 +880,42 @@
         }
 
         .summary-item {
+          flex-direction: row;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .summary-thumb {
+          width: 90px;
+          height: 90px;
+        }
+
+        .summary-info {
+          width: auto;
+        }
+
+        .mini-action {
+          width: auto;
+          text-align: center;
+        }
+
+        .guide-panel {
+          padding: 18px;
+        }
+
+        .guide-header {
           flex-direction: column;
+          gap: 6px;
           align-items: flex-start;
+        }
+
+        .guide-nav {
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .guide-nav .btn-small {
+          width: 100%;
         }
       }
     </style>
@@ -1018,10 +1066,6 @@
           </div>
         </div>
 
-        <div class="summary-actions actions-right">
-          <button id="backToReveal" class="btn-secondary" type="button" data-i18n="buttons.back">⬅️ Back</button>
-          <button id="newGameBtn" class="btn-primary" type="button" data-i18n="buttons.newMatch">🎮 New game</button>
-        </div>
       </section>
 
       <section id="finalView" class="panel hidden">
@@ -1029,7 +1073,6 @@
         <p id="victorySubtitle" class="help"></p>
         <ul id="victoryList" class="summary-list"></ul>
         <div class="summary-actions actions-right">
-          <button id="finalBackBtn" class="btn-ghost" type="button" data-i18n="buttons.finalBack">📜 View summary</button>
           <button id="finalNewGameBtn" class="btn-primary" type="button" data-i18n="buttons.newMatch">🔁 New game</button>
         </div>
       </section>
@@ -1346,9 +1389,7 @@ const TRANSLATIONS = {
     "elimination.none": "No living players",
     "buttons.revive": "Revive",
     "buttons.locked": "Locked",
-    "buttons.back": "⬅️ Back",
     "buttons.newMatch": "🎮 New game",
-    "buttons.finalBack": "📜 View summary",
     "final.title": "Victory",
     "buttons.finalNew": "🔁 New game",
     "modal.title": "Confirm",
@@ -1460,9 +1501,7 @@ const TRANSLATIONS = {
     "elimination.none": "No quedan jugadores vivos",
     "buttons.revive": "Devolver",
     "buttons.locked": "Bloqueado",
-    "buttons.back": "⬅️ Volver",
     "buttons.newMatch": "🎮 Nueva partida",
-    "buttons.finalBack": "📜 Ver resumen",
     "final.title": "Victoria",
     "buttons.finalNew": "🔁 Nueva partida",
     "modal.title": "Confirmar",
@@ -1572,9 +1611,7 @@ const TRANSLATIONS = {
     "buttons.locked": "Bloccato",
     "elimination.placeholder": "Seleziona un giocatore",
     "elimination.none": "Nessun giocatore vivo",
-    "buttons.back": "⬅️ Indietro",
     "buttons.newMatch": "🎮 Nuova partita",
-    "buttons.finalBack": "📜 Vedi riepilogo",
     "final.title": "Vittoria",
     "buttons.finalNew": "🔁 Nuova partita",
     "modal.title": "Conferma",
@@ -1750,9 +1787,7 @@ const state = {
         currentPlayerLabel: document.getElementById("currentPlayerLabel"),
         summaryList: document.getElementById("summaryList"),
         togglePlayersBtn: document.getElementById("togglePlayersBtn"),
-        backToReveal: document.getElementById("backToReveal"),
         restartBtn: document.getElementById("restartBtn"),
-    newGameBtn: document.getElementById("newGameBtn"),
         openSummaryBtn: document.getElementById("openSummaryBtn"),
         dayCounter: document.getElementById("dayCounter"),
         nextDayBtn: document.getElementById("nextDayBtn"),
@@ -1770,7 +1805,6 @@ const state = {
         victoryTitle: document.getElementById("victoryTitle"),
         victorySubtitle: document.getElementById("victorySubtitle"),
         victoryList: document.getElementById("victoryList"),
-        finalBackBtn: document.getElementById("finalBackBtn"),
         finalNewGameBtn: document.getElementById("finalNewGameBtn"),
         modalOverlay: document.getElementById("modalOverlay"),
         modalTitle: document.getElementById("modalTitle"),
@@ -1966,13 +2000,7 @@ function init() {
             showSummary();
           });
         });
-        el.backToReveal.addEventListener("click", () => {
-          showView("reveal");
-          showCompletionState();
-          persistState();
-        });
         el.restartBtn.addEventListener("click", () => confirmAction(t("confirmation.restart"), resetGame));
-        el.newGameBtn.addEventListener("click", () => confirmAction(t("confirmation.newGame"), resetGame));
         el.nextDayBtn.addEventListener("click", advanceDay);
         el.prevGuideStep.addEventListener("click", () => changeGuideStep(-1));
         el.nextGuideStep.addEventListener("click", () => changeGuideStep(1));
@@ -1982,7 +2010,6 @@ function init() {
           if (!button) return;
           toggleElimination(button.dataset.player || "");
         });
-        el.finalBackBtn.addEventListener("click", () => showView("summary"));
         el.finalNewGameBtn.addEventListener("click", () => confirmAction(t("confirmation.newGame"), resetGame));
         if (el.togglePlayersBtn) el.togglePlayersBtn.addEventListener("click", togglePlayersVisibility);
         if (el.toggleGuideMode) el.toggleGuideMode.addEventListener("click", toggleGuideMode);
