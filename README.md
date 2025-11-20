@@ -1,17 +1,17 @@
 # Slay the Werewolf
 
-Slay the Werewolf è una web app single-page pensata per riprodurre il classico gioco "Lupus in Tabula" senza bisogno di carte fisiche. Permette di inserire i nomi dei giocatori, scegliere il numero di lupi e sbloccare i ruoli speciali quando il gruppo è abbastanza numeroso, distribuendo le carte in modo segreto direttamente dal browser.
+Slay the Werewolf is a single-page web app that recreates the classic “Lupus in Tabula” experience without physical cards. Add player names, pick how many werewolves you want, unlock special roles when the group is large enough, and secretly hand out cards directly from the browser.
 
-## Funzionalità principali
-- **Setup rapido**: aggiungi/rimuovi giocatori, controlla il numero di lupi e sblocca i ruoli extra quando appropriato.
-- **Distribuzione segreta**: ogni giocatore vede la propria carta in maniera riservata, con auto-scroll e promemoria per passare il dispositivo al narratore.
-- **Strumenti per il narratore**: riepilogo dei ruoli, registro delle eliminazioni, guida passo-passo (o in elenco) per scandire le notti e i giorni.
-- **Persistenza locale**: lo stato della partita viene salvato in `localStorage` così puoi riprendere anche dopo un refresh.
-- **Traduzioni**: interfaccia in Inglese, Spagnolo e Italiano.
+## Features
+- **Fast setup** – Add or remove players, tweak the pack size, and enable optional roles only when they’re allowed.
+- **Secret dealing** – Each player views their card privately with auto-scroll prompts and reminders to hand the device to the narrator.
+- **Narrator toolkit** – Player summary, elimination log, collapsible fallen roster, Mythomaniac helper, and a narration guide that works in list or step-by-step mode.
+- **Local persistence** – Game state lives in `localStorage`, so a refresh won’t ruin the session.
+- **Translations** – English, Spanish, and Italian interfaces ship by default.
 
-## Privacy e licenza
-- L'app **non utilizza cookie, tracker o raccolte di dati personali**: tutto avviene localmente nel tuo browser.
-- Il progetto è distribuito sotto licenza **MIT** a nome di **n0tsosmart**.
+## Privacy & License
+- The app **doesn’t use cookies, trackers, or remote storage**—everything stays inside your browser.
+- Released under the **MIT License** by **n0tsosmart**.
 
 ## Feedback
-Hai suggerimenti, segnalazioni o vuoi contribuire? Apri una issue o un pull request su [GitHub](https://github.com/n0tsosmart/slaythewerewolf).
+Have suggestions or want to contribute? Open an issue or pull request on [GitHub](https://github.com/n0tsosmart/slaythewerewolf).
