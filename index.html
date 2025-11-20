@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Slay the Werewolf</title>
     <style>
+      html {
+        font-size: 80%;
+      }
+
       :root {
         scroll-behavior: smooth;
         /* Palette */
@@ -120,7 +124,7 @@
 
       .app-header h1 {
         margin: 10px 0 6px;
-        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-size: clamp(2.75rem, 5.5vw, 3.75rem);
         color: var(--color-gold);
         letter-spacing: 0.15em;
         text-transform: uppercase;
@@ -146,21 +150,94 @@
       }
 
       .language-picker {
+        position: relative;
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        font-size: 0.85rem;
+        gap: 8px;
+        font-size: 0.75rem;
         color: #cbd5f5;
         margin-right: auto;
       }
 
+      .language-picker label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
       .language-picker select {
-        background: rgba(31, 31, 35, 0.8);
-        border: 1px solid var(--color-ghost-border);
-        color: var(--color-text-primary);
-        border-radius: 8px;
-        padding: 6px 12px;
-        font-weight: 600;
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      .language-toggle {
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        background: rgba(31, 31, 35, 0.95);
+        border-radius: 999px;
+        width: 42px;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        cursor: pointer;
+        transition: transform 0.15s ease, border-color 0.15s ease;
+      }
+
+      .language-toggle.active {
+        border-color: var(--color-gold);
+        box-shadow: 0 0 10px rgba(250, 204, 21, 0.25);
+      }
+
+      .language-menu {
+        position: absolute;
+        top: 115%;
+        left: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 10px;
+        background: rgba(12, 8, 12, 0.92);
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        border-radius: 14px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        z-index: 25;
+      }
+
+      .language-menu.hidden {
+        display: none;
+      }
+
+      .language-btn {
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        background: rgba(31, 31, 35, 0.9);
+        border-radius: 999px;
+        width: 38px;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: transform 0.15s ease, border-color 0.15s ease;
+      }
+
+      .language-btn.active {
+        border-color: var(--color-gold);
+        box-shadow: 0 0 12px rgba(250, 204, 21, 0.3);
       }
 
       .btn-link {
@@ -349,7 +426,8 @@
 
       
       .step-btn:active {
-        transform: translateY(1px);
+        transform: none;
+        filter: brightness(0.9);
       }
 
       .field-group {
@@ -746,7 +824,7 @@
       }
 
       .guide-progress {
-        font-size: 0.85rem;
+        font-size: 0.7rem;
         color: #cbd5f5;
       }
 
@@ -999,6 +1077,10 @@
         margin-bottom: 8px;
       }
 
+      .info-footer.hidden {
+        display: none;
+      }
+
       .info-section p {
         font-size: 0.92rem;
         color: #f5ebe0;
@@ -1011,17 +1093,19 @@
         }
 
         .panel {
-          padding: 20px;
+          padding: 16px;
         }
 
         .global-controls {
-          flex-direction: column;
+          flex-direction: row;
+          width: 100%;
+          justify-content: space-between;
           align-items: center;
           gap: 12px;
         }
 
         .language-picker {
-          margin-right: 0;
+          margin-right: auto;
         }
 
         .actions-right {
@@ -1037,20 +1121,21 @@
         }
 
         #restartBtn {
-          width: 100%;
-          font-size: 1.05rem;
-          padding: 12px 20px;
+          width: auto;
+          font-size: 0.95rem;
+          padding: 10px 16px;
+          margin-left: 16px;
         }
 
         .site-logo {
-          width: 150px;
-          height: 150px;
+          width: 140px;
+          height: 140px;
           margin-left: 0;
         }
 
         .app-header h1 {
-          font-size: 2.1rem;
-          letter-spacing: 0.08em;
+          font-size: 1.65rem;
+          letter-spacing: 0.05em;
         }
 
         .role-card,
@@ -1176,12 +1261,14 @@
 
       /* Subtle hover for desktop only */
       @media (hover: hover) and (pointer: fine) {
-        button:hover, .btn:hover {
+        .btn:hover,
+        button:not(.step-btn):hover {
           transform: translateY(-1px);
           box-shadow: 0 3px 10px rgba(185, 28, 28, 0.15);
         }
 
-        button:active, .btn:active {
+        .btn:active,
+        button:not(.step-btn):active {
           transform: translateY(0);
           transition: all 0.1s;
         }
@@ -1189,7 +1276,8 @@
 
       /* Touch devices: simple scale feedback */
       @media (hover: none) and (pointer: coarse) {
-        button:active, .btn:active {
+        .btn:active,
+        button:not(.step-btn):active {
           transform: scale(0.97);
           opacity: 0.9;
         }
@@ -1289,14 +1377,21 @@
   <body>
     <main class="app-shell">
       <div class="global-controls">
-          <label class="language-picker">
-            <select id="languageSelect">
-              <option value="en">🇬🇧 English</option>
-              <option value="es">🇪🇸 Español</option>
-              <option value="it">🇮🇹 Italiano</option>
-            </select>
-          </label>
-          <button id="restartBtn" class="btn-ghost btn-small" type="button" data-i18n="buttons.restart">🔄 New game</button>
+        <div class="language-picker">
+          <label for="languageSelect" data-i18n="language.label">Language</label>
+          <select id="languageSelect">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="it">Italiano</option>
+          </select>
+          <button type="button" id="languageToggle" class="language-toggle"><span id="languageFlag">🇬🇧</span></button>
+          <div id="languageMenu" class="language-menu hidden">
+            <button type="button" class="language-btn" data-lang-button="en" aria-label="English">🇬🇧</button>
+            <button type="button" class="language-btn" data-lang-button="es" aria-label="Español">🇪🇸</button>
+            <button type="button" class="language-btn" data-lang-button="it" aria-label="Italiano">🇮🇹</button>
+          </div>
+        </div>
+        <button id="restartBtn" class="btn-ghost btn-small" type="button" data-i18n="buttons.restart">🔄 New game</button>
       </div>
       <header class="app-header">
         <div class="logo-row">
@@ -1466,12 +1561,14 @@
         </div>
       </section>
 
-      <div class="link-stack">
-        <button id="infoButton" class="btn-link" type="button" data-i18n="info.button">📖 Immersion tips & rules</button>
-        <a class="btn-link" id="feedbackLink" href="https://github.com/n0tsosmart/slaythewerewolf" target="_blank" rel="noopener noreferrer" data-i18n="info.feedback">💬 Send feedback & suggestions on GitHub</a>
+      <div id="infoFooter" class="info-footer">
+        <div class="link-stack">
+          <button id="infoButton" class="btn-link" type="button" data-i18n="info.button">📖 Immersion tips & rules</button>
+          <a class="btn-link" id="feedbackLink" href="https://github.com/n0tsosmart/slaythewerewolf" target="_blank" rel="noopener noreferrer" data-i18n="info.feedback">💬 Send feedback & suggestions on GitHub</a>
+        </div>
+        <p class="app-footer" data-i18n="footer.disclaimer">We do not collect cookies, the artwork is AI-generated, and this free fan-made tribute keeps the Lupus In Tabula spirit alive so friends can play without physical cards.</p>
+        <p class="app-footer" data-i18n="footer.license">Released under the MIT License by n0tsosmart.</p>
       </div>
-      <p class="app-footer" data-i18n="footer.disclaimer">We do not collect cookies, the artwork is AI-generated, and this free fan-made tribute keeps the Lupus In Tabula spirit alive so friends can play without physical cards.</p>
-      <p class="app-footer" data-i18n="footer.license">Released under the MIT License by n0tsosmart.</p>
 
       <div id="modalOverlay" class="modal-overlay hidden">
         <div class="modal-panel">
@@ -2269,6 +2366,7 @@ function applyTranslations() {
 function setLanguage(lang, { skipPersist = false, skipRender = false } = {}) {
   state.language = TRANSLATIONS[lang] ? lang : DEFAULT_LANGUAGE;
   if (el.languageSelect) el.languageSelect.value = state.language;
+  updateLanguageButtons();
   if (typeof document !== "undefined") {
     document.documentElement.lang = state.language;
   }
@@ -2379,6 +2477,7 @@ let handoffTimerId = null;
         mythResultMessage: document.getElementById("mythResultMessage"),
         mythSummary: document.getElementById("mythSummary"),
         mythSummaryText: document.getElementById("mythSummaryText"),
+        infoFooter: document.getElementById("infoFooter"),
         restartBtn: document.getElementById("restartBtn"),
         openSummaryBtn: document.getElementById("openSummaryBtn"),
         dayCounter: document.getElementById("dayCounter"),
@@ -2401,11 +2500,16 @@ let handoffTimerId = null;
         modalTitle: document.getElementById("modalTitle"),
         modalMessage: document.getElementById("modalMessage"),
         modalCancel: document.getElementById("modalCancel"),
-    modalConfirm: document.getElementById("modalConfirm"),
-    languageSelect: document.getElementById("languageSelect"),
-    infoButton: document.getElementById("infoButton"),
-    infoOverlay: document.getElementById("infoOverlay"),
-    infoClose: document.getElementById("infoClose"),
+        modalConfirm: document.getElementById("modalConfirm"),
+        languageSelect: document.getElementById("languageSelect"),
+        languageToggle: document.getElementById("languageToggle"),
+        languageFlag: document.getElementById("languageFlag"),
+        languageMenu: document.getElementById("languageMenu"),
+        languageButtons: document.querySelectorAll("[data-lang-button]"),
+        languagePicker: document.querySelector(".language-picker"),
+        infoButton: document.getElementById("infoButton"),
+        infoOverlay: document.getElementById("infoOverlay"),
+        infoClose: document.getElementById("infoClose"),
   };
 
 init();
@@ -2619,6 +2723,26 @@ function init() {
         if (el.languageSelect) {
           el.languageSelect.addEventListener("change", (event) => {
             setLanguage(event.target.value);
+          });
+        }
+        if (el.languageToggle && el.languageMenu) {
+          el.languageToggle.addEventListener("click", (event) => {
+            event.stopPropagation();
+            toggleLanguageMenu(el.languageMenu.classList.contains("hidden"));
+          });
+          document.addEventListener("click", (event) => {
+            if (!el.languageMenu || el.languageMenu.classList.contains("hidden")) return;
+            if (el.languagePicker && event.target instanceof Node && el.languagePicker.contains(event.target)) return;
+            toggleLanguageMenu(false);
+          });
+        }
+        if (el.languageButtons && el.languageButtons.length) {
+          el.languageButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+              const lang = button.dataset.langButton;
+              if (lang) setLanguage(lang);
+              toggleLanguageMenu(false);
+            });
           });
         }
 
@@ -3071,6 +3195,28 @@ function init() {
         renderFallenList();
         renderMythPanel();
         updateEliminationSelect();
+      }
+
+      function updateLanguageButtons() {
+        if (el.languageButtons && el.languageButtons.length) {
+          el.languageButtons.forEach((button) => {
+            button.classList.toggle("active", button.dataset.langButton === state.language);
+          });
+        }
+        if (el.languageFlag) el.languageFlag.textContent = getLanguageFlag(state.language);
+      }
+
+      function getLanguageFlag(lang) {
+        if (lang === "es") return "🇪🇸";
+        if (lang === "it") return "🇮🇹";
+        return "🇬🇧";
+      }
+
+      function toggleLanguageMenu(forceState) {
+        if (!el.languageMenu || !el.languageToggle) return;
+        const shouldShow = typeof forceState === "boolean" ? forceState : el.languageMenu.classList.contains("hidden");
+        el.languageMenu.classList.toggle("hidden", !shouldShow);
+        el.languageToggle.classList.toggle("active", shouldShow);
       }
 
       function updateEliminationSelect() {
@@ -3555,9 +3701,11 @@ function init() {
           return { team: "loner", survivors: living };
         }
         if (!wolves.length) {
+          if (hamsters.length) return { team: "loner", survivors: hamsters };
           return { team: "humans", survivors: living };
         }
         if (wolves.length >= humans.length) {
+          if (hamsters.length) return { team: "loner", survivors: hamsters };
           return { team: "wolves", survivors: living };
         }
         return null;
@@ -3664,7 +3812,14 @@ function init() {
           if (!hide && el.rolesDetails) el.rolesDetails.open = false;
         }
         state.view = view;
+        updateFooterVisibility();
         persistState();
+      }
+
+
+      function updateFooterVisibility() {
+        if (!el.infoFooter) return;
+        el.infoFooter.classList.toggle("hidden", state.view !== "setup");
       }
 
       function resetGame({ preserveNames = true } = {}) {
