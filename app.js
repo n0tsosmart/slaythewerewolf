@@ -356,7 +356,7 @@ const TRANSLATIONS = {
     "buttons.clearPlayers": "Clear list",
     "setup.specialsTitle": "✨ Special roles",
     "setup.specialsHelp": "The Seer is always included. Other roles unlock based on the player count.",
-    "roles.availableFrom": "Available from {count}+ players.",
+    "roles.availableFrom": "Suggested for {count}+ players.",
     "roles.masonNote": "Always add both cards together.",
     "buttons.deal": "🎴 Deal the cards",
     "reveal.title": "🔐 Secret dealing",
@@ -378,6 +378,7 @@ const TRANSLATIONS = {
     "log.unknownRole": "unknown role",
     "fallen.title": "🪦 Fallen players",
     "fallen.empty": "No confirmed deaths yet",
+    "fallen.pending": "(awaiting resolution)",
     "living.title": "👥 Living players",
     "living.empty": "No players available",
     "myth.title": "Mythomaniac",
@@ -459,6 +460,8 @@ const TRANSLATIONS = {
     "confirmation.eliminationVictory": "Eliminating {player} will trigger {outcome}. Continue?",
     "confirmation.handoff": "Ready to open the summary? Confirm you are the narrator and everyone else is not looking.",
     "accessibility.removePlayer": "Remove {name}",
+    "accessibility.movePlayerUp": "Move {name} up",
+    "accessibility.movePlayerDown": "Move {name} down",
     "info.button": "📖 Immersion tips & rules",
     "info.title": "Keep the village immersive",
     "info.roleplayTitle": "Roleplay suggestions",
@@ -489,7 +492,7 @@ const TRANSLATIONS = {
     "buttons.clearPlayers": "Limpiar lista",
     "setup.specialsTitle": "✨ Roles especiales",
     "setup.specialsHelp": "El Vidente siempre está incluido. Los demás roles dependen del número de jugadores.",
-    "roles.availableFrom": "Disponible a partir de {count} jugadores.",
+    "roles.availableFrom": "Sugerido a partir de {count} jugadores.",
     "roles.masonNote": "Siempre se añaden las dos cartas juntas.",
     "buttons.deal": "🎴 Repartir cartas",
     "reveal.title": "🔐 Reparto secreto",
@@ -511,6 +514,7 @@ const TRANSLATIONS = {
     "log.unknownRole": "rol desconocido",
     "fallen.title": "🪦 Jugadores caídos",
     "fallen.empty": "Aún no hay muertes confirmadas",
+    "fallen.pending": "(pendiente de resolución)",
     "living.title": "👥 Jugadores vivos",
     "living.empty": "Sin jugadores disponibles",
     "myth.title": "Mitómano",
@@ -592,6 +596,8 @@ const TRANSLATIONS = {
     "confirmation.eliminationVictory": "Eliminar a {player} provocará {outcome}. ¿Continuar?",
     "confirmation.handoff": "¿Listo para abrir el resumen? Confirma que eres el narrador y que nadie más está mirando.",
     "accessibility.removePlayer": "Eliminar a {name}",
+    "accessibility.movePlayerUp": "Subir a {name}",
+    "accessibility.movePlayerDown": "Bajar a {name}",
     "info.button": "📖 Consejos de inmersión y reglas",
     "info.title": "Mantén viva la maldición del pueblo",
     "info.roleplayTitle": "Sugerencias de interpretación",
@@ -621,8 +627,8 @@ const TRANSLATIONS = {
     "buttons.addPlayer": "Aggiungi",
     "buttons.clearPlayers": "Svuota elenco",
     "setup.specialsTitle": "✨ Ruoli speciali",
-    "setup.specialsHelp": "Il Veggente è sempre incluso. Altri ruoli si sbloccano in base al numero di giocatori.",
-    "roles.availableFrom": "Disponibile da {count}+ giocatori.",
+    "setup.specialsHelp": "Il Veggente è sempre incluso!",
+    "roles.availableFrom": "Consigliato da {count}+ giocatori.",
     "roles.masonNote": "Aggiungi sempre entrambe le carte.",
     "buttons.deal": "🎴 Distribuisci le carte",
     "reveal.title": "🔐 Distribuzione segreta",
@@ -644,6 +650,7 @@ const TRANSLATIONS = {
     "log.unknownRole": "ruolo sconosciuto",
     "fallen.title": "🪦 Giocatori caduti",
     "fallen.empty": "Nessuna morte confermata",
+    "fallen.pending": "(in attesa di risoluzione)",
     "living.title": "👥 Giocatori vivi",
     "living.empty": "Nessun giocatore disponibile",
     "myth.title": "Mitomane",
@@ -723,6 +730,8 @@ const TRANSLATIONS = {
     "confirmation.eliminationVictory": "Eliminare {player} farà scattare {outcome}. Vuoi procedere?",
     "confirmation.handoff": "Pronto a mostrare il riepilogo? Conferma di essere il narratore e che nessun altro stia guardando.",
     "accessibility.removePlayer": "Rimuovi {name}",
+    "accessibility.movePlayerUp": "Sposta {name} in alto",
+    "accessibility.movePlayerDown": "Sposta {name} in basso",
     "info.button": "📖 Suggerimenti di immersione e regole",
     "info.title": "Mantieni vivo il mistero del villaggio",
     "info.roleplayTitle": "Suggerimenti di interpretazione",
@@ -768,6 +777,8 @@ function setLanguage(lang, { skipPersist = false, skipRender = false } = {}) {
   }
   const selectedRoles = getSelectedSpecials().map((item) => item.roleId);
   renderRoleOptions();
+  if (el.rolesDetails) el.rolesDetails.open = state.rolesDetailsOpen;
+  if (el.rolesDetails) el.rolesDetails.open = state.rolesDetailsOpen;
   selectedRoles.forEach((roleId) => {
     const input = el.roleOptions.querySelector(`.role-option[value="${roleId}"]`);
     if (input) input.checked = true;
@@ -820,6 +831,7 @@ const state = {
         guideStepIndex: 0,
         victory: null,
         playersCollapsed: false,
+  rolesDetailsOpen: true,
   guideExpanded: true,
   language: DEFAULT_LANGUAGE,
   view: "setup",
@@ -931,6 +943,7 @@ function persistState() {
       })),
       guideStepIndex: state.guideStepIndex,
       playersCollapsed: state.playersCollapsed,
+      rolesDetailsOpen: state.rolesDetailsOpen,
       guideExpanded: state.guideExpanded,
       mythStatus: state.mythStatus,
       playerCount: el.playerCount.value,
@@ -991,6 +1004,7 @@ function restoreFromStorage() {
     state.victory = data.victory || null;
     state.guideStepIndex = data.guideStepIndex || 0;
     state.playersCollapsed = Boolean(data.playersCollapsed);
+    state.rolesDetailsOpen = data.rolesDetailsOpen !== undefined ? Boolean(data.rolesDetailsOpen) : true;
     state.guideExpanded = data.guideExpanded !== undefined ? Boolean(data.guideExpanded) : true;
     state.view = data.view || "setup";
     if (state.view === "handoff") {
@@ -999,6 +1013,7 @@ function restoreFromStorage() {
     }
     state.language = data.language || DEFAULT_LANGUAGE;
 
+    if (el.rolesDetails) el.rolesDetails.open = state.rolesDetailsOpen;
     setLanguage(state.language, { skipPersist: true, skipRender: true });
     if (state.view === "reveal" && state.deck.length) {
       if (state.revealComplete) {
@@ -1062,12 +1077,20 @@ function init() {
 
         el.playerList.addEventListener("click", (event) => {
           if (!(event.target instanceof Element)) return;
-          const button = event.target.closest(".chip-remove");
+          const button = event.target.closest("button");
           if (!button) return;
-          const index = Number(button.dataset.index);
-          state.customNames.splice(index, 1);
-          renderPlayerList();
-          persistState();
+          if (button.classList.contains("chip-remove")) {
+            const index = Number(button.dataset.index);
+            state.customNames.splice(index, 1);
+            renderPlayerList();
+            persistState();
+            return;
+          }
+          if (button.classList.contains("chip-move")) {
+            const index = Number(button.dataset.index);
+            const direction = button.dataset.direction === "up" ? -1 : 1;
+            movePlayer(index, direction);
+          }
         });
 
         el.clearPlayersBtn.addEventListener("click", () => {
@@ -1116,6 +1139,12 @@ function init() {
         if (el.toggleGuideMode) el.toggleGuideMode.addEventListener("click", toggleGuideMode);
         if (el.eliminateBtn) el.eliminateBtn.addEventListener("click", eliminateFromSelect);
         if (el.mythConfirmBtn) el.mythConfirmBtn.addEventListener("click", applyMythTransformation);
+        if (el.rolesDetails) {
+          el.rolesDetails.addEventListener("toggle", () => {
+            state.rolesDetailsOpen = el.rolesDetails.open;
+            persistState();
+          });
+        }
         if (el.languageSelect) {
           el.languageSelect.addEventListener("change", (event) => {
             setLanguage(event.target.value);
@@ -1189,13 +1218,20 @@ function init() {
           tag.textContent = localized.teamLabel;
           title.append(tag);
 
+          const subtitle = document.createElement("p");
+          subtitle.className = "help role-subtitle";
+          subtitle.textContent = t("roles.availableFrom", { count: config.minPlayers });
+
           const description = document.createElement("p");
           description.className = "help";
-          const parts = [localized.description, t("roles.availableFrom", { count: config.minPlayers })];
-          if (config.noteKey) parts.push(t(config.noteKey));
-          description.textContent = parts.join(" ");
+          description.textContent = localized.description;
+          if (config.noteKey) {
+            const note = document.createElement("span");
+            note.textContent = ` ${t(config.noteKey)}`;
+            description.appendChild(note);
+          }
 
-          item.append(title, description);
+          item.append(title, subtitle, description);
           el.roleOptions.appendChild(item);
         });
         enforceRoleLimits();
@@ -1245,15 +1281,11 @@ function init() {
       }
 
       function enforceRoleLimits() {
-        const playerTotal = Number(el.playerCount.value) || 0;
         const inputs = el.roleOptions.querySelectorAll("input[type='checkbox']");
         inputs.forEach((input) => {
-          const minPlayers = Number(input.dataset.minPlayers) || MIN_PLAYERS;
-          const isAllowed = playerTotal >= minPlayers;
-          if (!isAllowed && input.checked) input.checked = false;
-          input.disabled = !isAllowed;
+          input.disabled = false;
           const optionItem = input.closest(".option-item");
-          if (optionItem) optionItem.classList.toggle("option-disabled", !isAllowed);
+          if (optionItem) optionItem.classList.remove("option-disabled");
         });
       }
 
@@ -1294,7 +1326,33 @@ function init() {
         state.customNames.forEach((name, index) => {
           const item = document.createElement("li");
           item.className = "player-chip";
-          item.textContent = name;
+          const nameSpan = document.createElement("span");
+          nameSpan.className = "player-name";
+          nameSpan.textContent = name;
+          item.appendChild(nameSpan);
+
+          const actions = document.createElement("div");
+          actions.className = "chip-actions";
+
+          const upButton = document.createElement("button");
+          upButton.type = "button";
+          upButton.className = "chip-move chip-move-up";
+          upButton.dataset.index = String(index);
+          upButton.dataset.direction = "up";
+          upButton.setAttribute("aria-label", t("accessibility.movePlayerUp", { name }));
+          upButton.textContent = "↑";
+          upButton.disabled = index === 0;
+          actions.appendChild(upButton);
+
+          const downButton = document.createElement("button");
+          downButton.type = "button";
+          downButton.className = "chip-move chip-move-down";
+          downButton.dataset.index = String(index);
+          downButton.dataset.direction = "down";
+          downButton.setAttribute("aria-label", t("accessibility.movePlayerDown", { name }));
+          downButton.textContent = "↓";
+          downButton.disabled = index === state.customNames.length - 1;
+          actions.appendChild(downButton);
 
           const removeButton = document.createElement("button");
           removeButton.type = "button";
@@ -1302,12 +1360,22 @@ function init() {
           removeButton.dataset.index = String(index);
           removeButton.setAttribute("aria-label", t("accessibility.removePlayer", { name }));
           removeButton.textContent = "×";
+          actions.appendChild(removeButton);
 
-          item.appendChild(removeButton);
+          item.appendChild(actions);
           el.playerList.appendChild(item);
         });
 
         el.clearPlayersBtn.classList.toggle("hidden", state.customNames.length === 0);
+      }
+
+      function movePlayer(index, delta) {
+        const targetIndex = index + delta;
+        if (targetIndex < 0 || targetIndex >= state.customNames.length) return;
+        const [name] = state.customNames.splice(index, 1);
+        state.customNames.splice(targetIndex, 0, name);
+        renderPlayerList();
+        persistState();
       }
 
       function buildPlayerList(playerTotal) {
@@ -1825,7 +1893,7 @@ function init() {
 
       function renderFallenList() {
         if (!el.fallenList || !el.fallenCount) return;
-        const fallen = state.eliminatedPlayers.filter((entry) => entry.locked);
+        const fallen = state.eliminatedPlayers;
         el.fallenCount.textContent = String(fallen.length);
         el.fallenList.innerHTML = "";
         if (!fallen.length) {
@@ -1837,11 +1905,12 @@ function init() {
         }
         fallen.forEach((entry) => {
           const li = document.createElement("li");
-          li.textContent = t("log.entry", {
+          const pending = entry.locked ? "" : ` ${t("fallen.pending")}`;
+          li.textContent = `${t("log.entry", {
             name: entry.name,
             day: entry.day ?? "?",
             role: getRoleNameFromEntry(entry),
-          });
+          })} ${pending}`.trim();
           el.fallenList.appendChild(li);
         });
       }
@@ -2107,6 +2176,10 @@ function init() {
           if (hamsters.length) return { team: "loner", survivors: hamsters };
           return { team: "humans", survivors: living };
         }
+        const unstoppableWolves = !hamsters.length && wolves.length > 0 && humans.length === wolves.length + 1 && humans.length > 1;
+        if (unstoppableWolves) {
+          return { team: "wolves", survivors: wolves };
+        }
         if (wolves.length >= humans.length) {
           if (hamsters.length) return { team: "loner", survivors: hamsters };
           return { team: "wolves", survivors: living };
@@ -2212,9 +2285,10 @@ function init() {
         if (el.rolesPanel) {
           const hide = view !== "setup";
           el.rolesPanel.classList.toggle("hidden", hide);
-          if (!hide && el.rolesDetails) el.rolesDetails.open = false;
+          if (!hide && el.rolesDetails) el.rolesDetails.open = state.rolesDetailsOpen;
         }
         state.view = view;
+        toggleLanguageMenu(false);
         updateFooterVisibility();
         persistState();
       }
@@ -2226,12 +2300,14 @@ function init() {
       }
 
       function resetGame({ preserveNames = true } = {}) {
+        const preservedPlayerCount = el.playerCount.value;
+        const preservedWolfCount = el.wolfCount.value;
         clearHandoffCountdown();
         state.deck = [];
         state.players = [];
         state.revealIndex = 0;
         if (!preserveNames) state.customNames = [];
-        state.activeSpecialIds = [];
+        state.activeSpecialIds = getSelectedSpecials().map((item) => item.roleId);
         state.eliminatedPlayers = [];
         state.narratorDay = 1;
         state.maxDays = 1;
@@ -2242,10 +2318,9 @@ function init() {
         state.playersCollapsed = false;
         state.guideExpanded = true;
         state.revealComplete = false;
-        el.setupForm.reset();
-        el.roleOptions.querySelectorAll("input[type='checkbox']").forEach((input) => {
-          input.checked = false;
-        });
+        el.playerNameInput.value = "";
+        el.playerCount.value = preservedPlayerCount || el.playerCount.min || String(MIN_PLAYERS);
+        el.wolfCount.value = preservedWolfCount || el.wolfCount.min || "1";
         el.openSummaryBtn.classList.add("hidden");
         renderPlayerList();
         updateWolfHint();

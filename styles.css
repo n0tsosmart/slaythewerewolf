@@ -450,8 +450,8 @@
         gap: 8px;
       }
 
-      .player-chip {
-        display: inline-flex;
+.player-chip {
+        display: flex;
         align-items: center;
         gap: 8px;
         padding: 8px 14px;
@@ -462,7 +462,18 @@
         font-size: 0.9rem;
       }
 
-      .chip-remove {
+      .player-name {
+        flex: 1;
+      }
+
+      .chip-actions {
+        display: inline-flex;
+        gap: 4px;
+        align-items: center;
+      }
+
+      .chip-remove,
+      .chip-move {
         background: var(--color-chip-remove);
         border: none;
         width: 24px;
@@ -477,6 +488,11 @@
         font-weight: bold;
         padding: 0;
         line-height: 1;
+      }
+
+      .chip-move {
+        background: rgba(148, 163, 184, 0.25);
+        color: #f8fafc;
       }
 
       fieldset.options {
@@ -498,6 +514,13 @@
         padding: 12px;
         background: rgba(23, 23, 26, 0.7);
         transition: opacity 0.2s ease;
+      }
+
+      .role-subtitle {
+        font-weight: 600;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
       }
 
       .option-title {
