@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico">
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Slay the Werewolf</title>
+  <link rel="stylesheet" href="css/styles.css?v=1.0.1" />
+</head>
+
+<body>
+  <main class="app-shell">
+    <div class="global-controls">
+      <div class="menu-container">
+        <button type="button" id="menuBtn" class="btn-ghost btn-icon" aria-label="Menu" aria-expanded="false"
+          aria-controls="mainMenu">
+          <span class="hamburger-icon">☰</span>
+        </button>
+        <div id="mainMenu" class="main-menu hidden" role="menu" aria-hidden="true">
+          <div class="menu-section">
+            <p class="menu-label" data-i18n="language.label">Language</p>
+            <div class="language-options">
+              <button type="button" class="language-btn" data-lang-button="en" role="menuitem"
+                aria-label="English">🇬🇧</button>
+              <button type="button" class="language-btn" data-lang-button="es" role="menuitem"
+                aria-label="Español">🇪🇸</button>
+              <button type="button" class="language-btn" data-lang-button="it" role="menuitem"
+                aria-label="Italiano">🇮🇹</button>
+            </div>
+          </div>
+          <hr class="menu-divider">
+          <button type="button" id="menuVotingBtn" class="menu-item" role="menuitem" data-i18n="menu.voting">🗳️ Voting
+            Rules</button>
+          <button type="button" id="menuImmersionBtn" class="menu-item" role="menuitem" data-i18n="info.button">📖
+            Immersion tips & rules</button>
+          <a id="menuFeedbackLink" href="https://github.com/n0tsosmart/slaythewerewolf" target="_blank"
+            rel="noopener noreferrer" class="menu-item" role="menuitem" data-i18n="info.feedback">💬 Send feedback</a>
+        </div>
+      </div>
+      <button id="restartBtn" class="btn-ghost btn-small" type="button" data-i18n="buttons.restart">🔄 New game</button>
+    </div>
+    <header class="app-header">
+      <div class="logo-row">
+        <img src="assets/logo.png" alt="Slay the Werewolf logo" class="site-logo" />
+        <div>
+          <p class="eyebrow" data-i18n="header.label">SLAY THE WEREWOLF</p>
+          <h1 data-i18n="header.title">Slay the Werewolf</h1>
+          <p class="tagline" data-i18n="header.tagline1">Ricordati di uccidere il lupo.</p>
+        </div>
+      </div>
+    </header>
+
+    <section id="setupView" class="panel">
+      <h2 data-i18n="setup.title">⚙️ Setup</h2>
+      <form id="setupForm" class="setup-form">
+        <div class="field-group">
+          <label>
+            <span data-i18n="setup.playersLabel">Number of players</span>
+            <div class="number-stepper">
+              <button type="button" class="step-btn" data-target="playerCount" data-delta="-1">-</button>
+              <input type="number" id="playerCount" min="5" max="24" value="8" required />
+              <button type="button" class="step-btn" data-target="playerCount" data-delta="1">+</button>
+            </div>
+            <span class="help" data-i18n="setup.playersHelp">Minimum 5 players to start</span>
+          </label>
+
+          <label>
+            <span data-i18n="setup.wolvesLabel">Werewolves</span>
+            <div class="number-stepper">
+              <button type="button" class="step-btn" data-target="wolfCount" data-delta="-1">-</button>
+              <input type="number" id="wolfCount" min="1" max="3" value="2" required />
+              <button type="button" class="step-btn" data-target="wolfCount" data-delta="1">+</button>
+            </div>
+            <span id="wolfHint" class="help"></span>
+          </label>
+        </div>
+
+        <div class="player-list-section">
+          <label>
+            <span data-i18n="setup.namesLabel">👥 Player names (optional)</span>
+            <span class="help" data-i18n="setup.namesHelp">We keep this list even after starting a new game.</span>
+          </label>
+          <div class="add-player-row">
+            <input type="text" id="playerNameInput" data-i18n-placeholder="setup.namesPlaceholder"
+              placeholder="e.g. Marcus" autocomplete="off" />
+            <button type="button" id="addPlayerBtn" class="btn-secondary btn-small"
+              data-i18n="buttons.addPlayer">Add</button>
+          </div>
+          <ul id="playerList" class="player-chips"></ul>
+          <p id="reorderHint" class="help hidden" data-i18n="setup.reorderHint" style="margin-bottom: 4px;">Use the
+            arrows to change the player order</p>
+          <button type="button" id="clearPlayersBtn" class="btn-ghost btn-small hidden"
+            data-i18n="buttons.clearPlayers">Clear list</button>
+        </div>
+
+        <p id="validationMessage" class="validation" aria-live="polite"></p>
+
+        <div id="roleSummary" class="role-summary hidden">
+          <h3 data-i18n="setup.rolesSummary">Role composition</h3>
+          <div id="roleSummaryContent" class="role-summary-content"></div>
+        </div>
+
+        <div class="actions-right">
+          <button type="submit" class="btn-primary" data-i18n="buttons.deal">🎴 Deal the cards</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="rolesPanel" class="panel">
+      <details id="rolesDetails" class="roles-details">
+        <summary class="roles-summary">
+          <span data-i18n="setup.specialsTitle">✨ Special roles</span>
+          <span class="roles-caret">⌄</span>
+        </summary>
+        <div class="collapsible-content">
+          <p class="help" data-i18n="setup.specialsHelp">The Seer is always included. Other roles unlock based on the
+            player count.</p>
+          <div id="roleOptions" class="options-grid"></div>
+        </div>
+      </details>
+    </section>
+
+    <section id="revealView" class="panel hidden">
+      <h2 data-i18n="reveal.title">🔐 Secret dealing</h2>
+      <div id="revealStatus" class="reveal-status">
+        <p id="playerProgress">Player 1 / 1</p>
+        <h3 id="currentPlayerLabel">Player 1</h3>
+      </div>
+      <div id="roleCard" class="role-card" data-team="unknown">
+        <img id="roleImage" class="role-image hidden" alt="Immagine del ruolo" />
+        <div class="role-text">
+          <p class="eyebrow" id="roleTeam">Hidden card</p>
+          <h3 id="roleName">Tap to reveal</h3>
+          <p id="roleDescription">Make sure no one else is watching</p>
+        </div>
+      </div>
+      <div id="handoffNotice" class="handoff-notice hidden">
+        <h4 data-i18n="handoffNotice.title">⚠️ Pass the device to the narrator</h4>
+        <p data-i18n="handoffNotice.body">When every card has been seen, nobody else should touch the device. Hand it to
+          the narrator before Day 1 begins.</p>
+        <p id="handoffTimer" class="handoff-timer hidden" aria-live="polite"></p>
+      </div>
+      <div class="actions-right">
+        <button id="revealBtn" class="btn-primary" type="button" data-i18n="buttons.showCard">👁️ Show card</button>
+        <button id="hideBtn" class="btn-secondary hidden" type="button" data-i18n="buttons.nextPlayer">➡️ Next
+          player</button>
+        <button id="openSummaryBtn" class="btn-ghost hidden" type="button" data-i18n="buttons.handoff">📱 I am the
+          narrator</button>
+      </div>
+    </section>
+
+    <section id="summaryView" class="panel hidden">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2 data-i18n="summary.title" style="margin: 0;">📋 Narrator summary</h2>
+        <button id="openVotingFromSummary" type="button" class="btn-link" data-i18n="menu.voting">🗳️ Voting
+          Rules</button>
+      </div>
+      <details id="livingDetails" class="living-details" open>
+        <summary>
+          <span data-i18n="living.title">👥 Living players</span>
+          <span id="livingCount" class="living-count">0</span>
+          <button id="toggleListView" class="btn-icon-small" type="button" title="Toggle view mode"
+            aria-label="Toggle view mode">
+            <span class="view-icon">⊞</span>
+          </button>
+        </summary>
+        <ul id="summaryList" class="summary-list"></ul>
+      </details>
+
+      <details id="fallenDetails" class="fallen-details">
+        <summary>
+          <span data-i18n="fallen.title">🪦 Fallen players</span>
+          <span id="fallenCount" class="fallen-count">0</span>
+        </summary>
+        <ul id="fallenList" class="fallen-list"></ul>
+      </details>
+
+      <div id="mythPanel" class="myth-panel hidden">
+        <div class="myth-header">
+          <h3 data-i18n="myth.title">Mythomaniac</h3>
+          <span id="mythStatusTag" class="myth-status"></span>
+        </div>
+        <p id="mythPlayerLabel" class="help"></p>
+        <p id="mythInstructions" class="help"></p>
+        <label>
+          <span data-i18n="myth.targetLabel">Choose someone to imitate</span>
+          <select id="mythTargetSelect"></select>
+        </label>
+        <button id="mythConfirmBtn" class="btn-secondary btn-small" type="button" data-i18n="myth.confirm">Apply
+          transformation</button>
+        <p id="mythResultMessage" class="myth-result help" aria-live="polite"></p>
+      </div>
+      <div id="mythSummary" class="myth-summary hidden">
+        <span data-i18n="myth.title">Mythomaniac</span>
+        <span id="mythSummaryText"></span>
+      </div>
+
+      <div class="narrator-tools">
+        <div class="day-control">
+          <div>
+            <p class="eyebrow" data-i18n="day.label">Current day</p>
+            <p class="day-number" id="dayCounter">1</p>
+          </div>
+          <button id="nextDayBtn" class="btn-day" type="button" data-i18n="buttons.nextDay">Next day</button>
+        </div>
+
+        <div class="guide-panel">
+          <div class="guide-header">
+            <h3 data-i18n="guide.title">Narration guide</h3>
+            <span id="guideProgress" class="guide-progress">Step 1 / 1</span>
+            <button id="toggleGuideMode" class="btn-ghost btn-small" type="button" data-i18n="buttons.toggleGuide">Show
+              list</button>
+          </div>
+          <p id="guideStepText" class="guide-text">-</p>
+          <ul id="guideFullList" class="guide-list hidden"></ul>
+          <div id="guideNav" class="actions-right guide-nav">
+            <button id="prevGuideStep" class="btn-ghost btn-small" type="button" data-i18n="buttons.prevStep">⬅️
+              Back</button>
+            <button id="nextGuideStep" class="btn-primary btn-small" type="button" data-i18n="buttons.nextStep">Next
+              ➡️</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section id="finalView" class="panel hidden">
+      <h2 id="victoryTitle" class="victory-title">Victory</h2>
+      <p id="victorySubtitle" class="help"></p>
+      <ul id="victoryList" class="summary-list"></ul>
+      <div class="summary-actions actions-right">
+        <button id="finalNewGameBtn" class="btn-primary" type="button" data-i18n="buttons.newMatch">🔁 New game</button>
+      </div>
+    </section>
+
+    <div id="infoFooter" class="info-footer">
+      <p class="app-footer" data-i18n="footer.disclaimer">We do not collect cookies, the artwork is AI-generated, and
+        this free fan-made tribute keeps the Lupus In Tabula spirit alive so friends can play without physical cards.
+      </p>
+      <p class="app-footer" data-i18n="footer.license">Released under the MIT License by n0tsosmart.</p>
+    </div>
+
+    <div id="modalOverlay" class="modal-overlay hidden">
+      <div class="modal-panel">
+        <h3 id="modalTitle" class="modal-title" data-i18n="modal.title">Confirm</h3>
+        <p id="modalMessage" class="help" style="color: #f8fafc"></p>
+        <div class="modal-actions">
+          <button id="modalCancel" class="btn-secondary btn-small" type="button"
+            data-i18n="modal.cancel">Cancel</button>
+          <button id="modalConfirm" class="btn-primary btn-small" type="button"
+            data-i18n="modal.confirm">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="infoOverlay" class="modal-overlay hidden">
+      <div class="modal-panel info-panel">
+        <h3 class="modal-title" data-i18n="info.title">Keep the village immersive</h3>
+        <div class="info-section">
+          <h3 data-i18n="info.roleplayTitle">Roleplay suggestions</h3>
+          <p data-i18n="info.roleplayPlayers">Players: speak in character, whisper suspicions, and describe gestures
+            without breaking immersion. Skip meta remarks like “I was picked third”.</p>
+          <p data-i18n="info.roleplayNarrator">Narrator: set the scene before every phase, give sensory details, and
+            call roles by title instead of names so the mystery stays alive.</p>
+        </div>
+        <div class="info-section">
+          <h3 data-i18n="info.rulesTitle">Rules & metagame</h3>
+          <p data-i18n="info.rulesSummary">No one may show their card, record the night, or discuss outside the table.
+            Eliminated players remain silent unless a role explicitly reintroduces them.</p>
+          <p data-i18n="info.rulesMetagame">Metagame reminders: no nudging, no phone searches, and no coded taps. The
+            narrator can pause or rewind a phase if the table breaks immersion.</p>
+        </div>
+        <div class="modal-actions">
+          <button id="infoClose" class="btn-secondary btn-small" type="button" data-i18n="modal.cancel">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="votingOverlay" class="modal-overlay hidden">
+      <div class="modal-panel info-panel">
+        <h3 class="modal-title" data-i18n="voting.title">Voting Rules</h3>
+        <div class="info-section">
+          <h3 data-i18n="voting.indiziatoTitle">Suspects</h3>
+          <p data-i18n="voting.indiziatoBody">The two players with the most votes become suspects. In case of a tie, the
+            player closest to the one with the 'Welcome!' card (clockwise) is chosen.</p>
+        </div>
+        <div class="info-section">
+          <h3 data-i18n="voting.lynchTitle">Lynching</h3>
+          <p data-i18n="voting.lynchBody">Only living players (excluding suspects and ghosts) vote to lynch one of the
+            suspects. The suspect with the most votes is eliminated.</p>
+        </div>
+        <div class="info-section">
+          <h3 data-i18n="voting.tieTitle">Tie-breaking</h3>
+          <p data-i18n="voting.tieBody">If there is a tie during the lynching vote, the suspect closest to the
+            'Welcome!' player (clockwise) is eliminated.</p>
+        </div>
+        <div class="info-section">
+          <h3 data-i18n="voting.ghostTitle">Ghosts</h3>
+          <p data-i18n="voting.ghostBody">Ghosts can vote to choose suspects but cannot vote for lynching.</p>
+        </div>
+        <div class="modal-actions">
+          <button id="votingClose" class="btn-secondary btn-small" type="button" data-i18n="modal.cancel">Close</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/translations.js"></script>
+  <script src="js/app.js" defer></script>
+</body>
+
+</html>
