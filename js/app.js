@@ -436,7 +436,7 @@ const state = {
   guideStepIndex: 0,
   victory: null,
   playersCollapsed: false,
-  rolesDetailsOpen: true,
+  rolesDetailsOpen: false,
   guideExpanded: true,
   language: DEFAULT_LANGUAGE,
   view: "setup",
@@ -453,7 +453,6 @@ const el = {
   setupView: document.getElementById("setupView"),
   revealView: document.getElementById("revealView"),
   summaryView: document.getElementById("summaryView"),
-  rolesPanel: document.getElementById("rolesPanel"),
   rolesDetails: document.getElementById("rolesDetails"),
   setupForm: document.getElementById("setupForm"),
   playerCount: document.getElementById("playerCount"),
@@ -626,7 +625,7 @@ function restoreFromStorage() {
     state.victory = data.victory || null;
     state.guideStepIndex = data.guideStepIndex || 0;
     state.playersCollapsed = Boolean(data.playersCollapsed);
-    state.rolesDetailsOpen = data.rolesDetailsOpen !== undefined ? Boolean(data.rolesDetailsOpen) : true;
+    state.rolesDetailsOpen = false;  // Always start collapsed on page load
     state.guideExpanded = data.guideExpanded !== undefined ? Boolean(data.guideExpanded) : true;
     state.view = data.view || "setup";
     if (state.view === "handoff") {
@@ -2499,10 +2498,8 @@ function showView(view) {
   if (view === "reveal") el.revealView.classList.remove("hidden");
   if (view === "summary") el.summaryView.classList.remove("hidden");
   if (view === "final") el.finalView.classList.remove("hidden");
-  if (el.rolesPanel) {
-    const hide = view !== "setup";
-    el.rolesPanel.classList.toggle("hidden", hide);
-    if (!hide && el.rolesDetails) el.rolesDetails.open = state.rolesDetailsOpen;
+  if (view === "setup" && el.rolesDetails) {
+    el.rolesDetails.open = state.rolesDetailsOpen;
   }
   state.view = view;
   toggleLanguageMenu(false);
@@ -2533,6 +2530,7 @@ function resetGame({ preserveNames = true } = {}) {
   state.guideStepIndex = 0;
   state.victory = null;
   state.playersCollapsed = false;
+  state.rolesDetailsOpen = false;
   state.guideExpanded = true;
   state.revealComplete = false;
   el.playerNameInput.value = "";

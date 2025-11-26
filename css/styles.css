@@ -296,7 +296,23 @@
       }
 
       .roles-details {
-        border: none;
+        border: 1px solid rgba(250, 204, 21, 0.25);
+        border-radius: 14px;
+        padding: 14px;
+        background: rgba(45, 15, 15, 0.15);
+        margin: 8px 0 4px 0;
+        box-shadow: 0 0 8px rgba(250, 204, 21, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .roles-details:hover {
+        border-color: rgba(250, 204, 21, 0.35);
+        box-shadow: 0 0 12px rgba(250, 204, 21, 0.08);
+      }
+
+      .roles-details[open] {
+        border-color: rgba(250, 204, 21, 0.3);
+        background: rgba(45, 15, 15, 0.2);
       }
 
       .roles-summary {
@@ -308,10 +324,13 @@
         color: var(--color-gold);
         letter-spacing: 0.04em;
         list-style: none;
+        font-weight: 600;
       }
 
       .roles-caret {
         transition: transform 0.2s ease;
+        font-size: 1.3rem;
+        color: var(--color-gold);
       }
 
       details[open] .roles-caret {
@@ -1136,7 +1155,7 @@
 
       /* Role summary */
       .role-summary {
-        margin: 16px 0;
+        margin: 4px 0 16px 0;
         padding: 16px;
         background: rgba(22, 14, 15, 0.6);
         border: 1px solid rgba(127, 29, 29, 0.4);

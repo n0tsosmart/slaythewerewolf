@@ -6,7 +6,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Slay the Werewolf</title>
-  <link rel="stylesheet" href="css/styles.css?v=1.0.1" />
+  <link rel="stylesheet" href="css/styles.css?v=1.0.5" />
 </head>
 
 <body>
@@ -96,6 +96,18 @@
 
         <p id="validationMessage" class="validation" aria-live="polite"></p>
 
+        <details id="rolesDetails" class="roles-details">
+          <summary class="roles-summary">
+            <span data-i18n="setup.specialsTitle">✨ Special roles</span>
+            <span class="roles-caret">⌄</span>
+          </summary>
+          <div class="collapsible-content">
+            <p class="help" data-i18n="setup.specialsHelp">The Seer is always included. Other roles unlock based on the
+              player count.</p>
+            <div id="roleOptions" class="options-grid"></div>
+          </div>
+        </details>
+
         <div id="roleSummary" class="role-summary hidden">
           <h3 data-i18n="setup.rolesSummary">Role composition</h3>
           <div id="roleSummaryContent" class="role-summary-content"></div>
@@ -105,20 +117,6 @@
           <button type="submit" class="btn-primary" data-i18n="buttons.deal">🎴 Deal the cards</button>
         </div>
       </form>
-    </section>
-
-    <section id="rolesPanel" class="panel">
-      <details id="rolesDetails" class="roles-details">
-        <summary class="roles-summary">
-          <span data-i18n="setup.specialsTitle">✨ Special roles</span>
-          <span class="roles-caret">⌄</span>
-        </summary>
-        <div class="collapsible-content">
-          <p class="help" data-i18n="setup.specialsHelp">The Seer is always included. Other roles unlock based on the
-            player count.</p>
-          <div id="roleOptions" class="options-grid"></div>
-        </div>
-      </details>
     </section>
 
     <section id="revealView" class="panel hidden">
@@ -306,8 +304,8 @@
     </div>
   </main>
 
-  <script src="js/translations.js"></script>
-  <script src="js/app.js" defer></script>
+  <script src="js/translations.js?v=1.0.5"></script>
+  <script src="js/app.js?v=1.0.5" defer></script>
 </body>
 
 </html>
