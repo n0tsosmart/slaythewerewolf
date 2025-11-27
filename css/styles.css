@@ -741,6 +741,16 @@ body.online-mode #setupView .form-row:has(#wolfCount) {
     line-height: 1.4;
 }
 
+/* Beta badge positioning in large button */
+.large-btn .beta-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    margin: 0;
+    z-index: 10;
+}
+
+
 /* --------------------------------------------------------------------------
    Responsive Design
    -------------------------------------------------------------------------- */

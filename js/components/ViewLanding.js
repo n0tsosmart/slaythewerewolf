@@ -32,8 +32,9 @@ export class ViewLanding extends HTMLElement {
                     </button>
                     
                     <button id="onlineGameBtn" class="btn-secondary large-btn" type="button">
+                        <span class="beta-badge" data-i18n="general.betaBadge"></span>
                         <span class="btn-icon">🌐</span>
-                        <span data-i18n="landing.onlineGame">Online Game</span>
+                        <span class="mode-title" data-i18n="landing.onlineGame"></span>
                         <span class="btn-desc" data-i18n="landing.onlineDesc">Join with multiple devices</span>
                     </button>
                 </div>

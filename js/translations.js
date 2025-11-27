@@ -246,6 +246,10 @@ window.TRANSLATIONS = {
         "network.connectionError": "Connection with {name} failed: {error}",
         "network.hostConnectionError": "Could not connect to host: {error}",
         "network.roomDoesNotExist": "The room does not exist.",
+        "network.joinError": "Error joining game: {error}",
+        "network.connectionTimeout": "Connection timed out.",
+        // General
+        "general.betaBadge": "BETA",
         "network.playerJoined": "{name} joined the game.",
         "network.playerLeft": "{name} left the game.",
         "network.welcomeClient": "Welcome to the game!",
@@ -463,6 +467,14 @@ window.TRANSLATIONS = {
         "voting.ghostTitle": "Fantasmas",
         "voting.ghostBody": "Los fantasmas pueden votar para elegir sospechosos pero no pueden votar en el linchamiento.",
 
+        // Landing View
+        "landing.title": "Bienvenido",
+        "landing.subtitle": "Elige tu modo de juego",
+        "landing.localGame": "Partida Local",
+        "landing.localDesc": "Pasa un solo dispositivo",
+        "landing.onlineGame": "Partida en Línea",
+        "landing.onlineDesc": "Únete con múltiples dispositivos",
+
         // Lobby View
         "lobby.title": "Juego en Línea",
         "lobby.hostGame": "Crear partida",
@@ -490,6 +502,10 @@ window.TRANSLATIONS = {
         "network.connectionError": "Conexión con {name} fallida: {error}",
         "network.hostConnectionError": "No se pudo conectar al anfitrión: {error}",
         "network.roomDoesNotExist": "La sala no existe.",
+        "network.joinError": "Error al unirse a la partida: {error}",
+        "network.connectionTimeout": "Tiempo de conexión agotado.",
+        // General
+        "general.betaBadge": "BETA",
         "network.playerJoined": "{name} se unió a la partida.",
         "network.playerLeft": "{name} abandonó la partida.",
         "network.welcomeClient": "¡Bienvenido a la partida!",
@@ -742,6 +758,10 @@ window.TRANSLATIONS = {
         "network.connectionError": "Connessione con {name} fallita: {error}",
         "network.hostConnectionError": "Impossibile connettersi all'host: {error}",
         "network.roomDoesNotExist": "La stanza non esiste.",
+        "network.joinError": "Errore nell'unirsi alla partita: {error}",
+        "network.connectionTimeout": "Timeout della connessione.",
+        // General
+        "general.betaBadge": "BETA",
         "network.playerJoined": "{name} si è unito alla partita.",
         "network.playerLeft": "{name} ha lasciato la partita.",
         "network.welcomeClient": "Benvenuto alla partita!",

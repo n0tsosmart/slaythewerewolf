@@ -141,34 +141,69 @@ export async function joinGame(roomId, playerName) {
         await initializePeer(); // Initialize with a random ID for the client
         console.log(`Attempting to join room ${roomId} as ${playerName}`);
 
-        const conn = peer.connect(roomId, { metadata: { playerName: playerName } });
+        return new Promise((resolve, reject) => {
+            let timeout;
+            let peerErrorListener;
 
-        conn.on('open', () => {
-            console.log(`Connected to host ${roomId}`);
-            conn.send({ type: 'JOIN_REQUEST', playerName: playerName });
-        });
+            // Cleanup function to remove listeners and timeout
+            const cleanup = () => {
+                if (timeout) clearTimeout(timeout);
+                if (peerErrorListener) peer.off('error', peerErrorListener);
+            };
 
-        conn.on('data', (data) => {
-            console.log('Data from host:', data);
-            handleClientData(data);
-        });
+            const conn = peer.connect(roomId, { metadata: { playerName: playerName } });
 
-        conn.on('close', () => {
-            console.log('Connection to host closed');
-            hostId = null;
-            onHostDisconnectedCallbacks.forEach(callback => callback());
-        });
+            // Setup timeout
+            timeout = setTimeout(() => {
+                cleanup();
+                conn.close(); // Ensure connection is closed
+                reject(new Error(t("network.connectionTimeout")));
+            }, 5000);
 
-        conn.on('error', (err) => {
-            console.error('Connection to host error:', err);
-            let errorMessage = t("network.hostConnectionError", { error: err.message });
-            if (err.type === 'peer-unavailable') {
-                errorMessage = t("network.roomDoesNotExist");
-            }
-            el.toastError(errorMessage);
-            // TODO: Display error in UI and return to main menu
+            // Handle successful connection
+            conn.on('open', () => {
+                cleanup();
+                console.log(`Connected to host ${roomId}`);
+                conn.send({ type: 'JOIN_REQUEST', playerName: playerName });
+                resolve(conn);
+            });
+
+            // Handle connection data
+            conn.on('data', (data) => {
+                console.log('Data from host:', data);
+                handleClientData(data);
+            });
+
+            // Handle connection close
+            conn.on('close', () => {
+                console.log('Connection to host closed');
+                hostId = null;
+                onHostDisconnectedCallbacks.forEach(callback => callback());
+            });
+
+            // Handle connection error
+            conn.on('error', (err) => {
+                cleanup();
+                console.error('Connection to host error:', err);
+                let errorMessage = t("network.hostConnectionError", { error: err.message });
+                if (err.type === 'peer-unavailable') {
+                    errorMessage = t("network.roomDoesNotExist");
+                }
+                reject(new Error(errorMessage));
+            });
+
+            // Specific PeerJS error listener for 'peer-unavailable' (often fires on peer, not conn)
+            peerErrorListener = (err) => {
+                if (err.type === 'peer-unavailable' && err.message.includes(roomId)) {
+                    cleanup();
+                    const errorMessage = t("network.roomDoesNotExist");
+                    // Close connection attempt
+                    conn.close(); 
+                    reject(new Error(errorMessage));
+                }
+            };
+            peer.on('error', peerErrorListener);
         });
-        return conn;
     } catch (err) {
         console.error("Failed to join game:", err);
         throw err;
