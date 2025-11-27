@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<!--
+  Slay the Werewolf: A web-based adaptation of the classic social deduction game.
+  This file serves as the main entry point and defines the overall structure of the application.
+-->
 <link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico">
 <html lang="en">
 
@@ -6,18 +10,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Slay the Werewolf</title>
-  <link rel="stylesheet" href="css/styles.css?v=1.0.5" />
+  <!-- Main stylesheet, includes versioning for cache busting -->
+  <link rel="stylesheet" href="css/styles.css?v=1.0.6" />
 </head>
 
 <body>
+  <!-- Main application container -->
   <main class="app-shell">
+    <!-- Global controls: Menu button and Restart game button -->
     <div class="global-controls">
+      <!-- Hamburger Menu Container -->
       <div class="menu-container">
         <button type="button" id="menuBtn" class="btn-ghost btn-icon" aria-label="Menu" aria-expanded="false"
           aria-controls="mainMenu">
           <span class="hamburger-icon">☰</span>
         </button>
+        <!-- Main Menu Dropdown -->
         <div id="mainMenu" class="main-menu hidden" role="menu" aria-hidden="true">
+          <!-- Language Selection Section -->
           <div class="menu-section">
             <p class="menu-label" data-i18n="language.label">Language</p>
             <div class="language-options">
@@ -30,6 +40,7 @@
             </div>
           </div>
           <hr class="menu-divider">
+          <!-- Menu Items -->
           <button type="button" id="menuVotingBtn" class="menu-item" role="menuitem" data-i18n="menu.voting">🗳️ Voting
             Rules</button>
           <button type="button" id="menuImmersionBtn" class="menu-item" role="menuitem" data-i18n="info.button">📖
@@ -40,6 +51,7 @@
       </div>
       <button id="restartBtn" class="btn-ghost btn-small" type="button" data-i18n="buttons.restart">🔄 New game</button>
     </div>
+    <!-- Application Header with Logo and Title -->
     <header class="app-header">
       <div class="logo-row">
         <img src="assets/logo.png" alt="Slay the Werewolf logo" class="site-logo" />
@@ -51,9 +63,11 @@
       </div>
     </header>
 
+    <!-- Setup View: Player and Role Configuration -->
     <section id="setupView" class="panel">
       <h2 data-i18n="setup.title">⚙️ Setup</h2>
       <form id="setupForm" class="setup-form">
+        <!-- Player and Werewolf Count -->
         <div class="field-group">
           <label>
             <span data-i18n="setup.playersLabel">Number of players</span>
@@ -76,6 +90,7 @@
           </label>
         </div>
 
+        <!-- Player Name Input and List -->
         <div class="player-list-section">
           <label>
             <span data-i18n="setup.namesLabel">👥 Player names (optional)</span>
@@ -96,6 +111,7 @@
 
         <p id="validationMessage" class="validation" aria-live="polite"></p>
 
+        <!-- Special Roles Details (Collapsible) -->
         <details id="rolesDetails" class="roles-details">
           <summary class="roles-summary">
             <span data-i18n="setup.specialsTitle">✨ Special roles</span>
@@ -108,23 +124,27 @@
           </div>
         </details>
 
+        <!-- Role Composition Summary -->
         <div id="roleSummary" class="role-summary hidden">
           <h3 data-i18n="setup.rolesSummary">Role composition</h3>
           <div id="roleSummaryContent" class="role-summary-content"></div>
         </div>
 
+        <!-- Action Button for Setup -->
         <div class="actions-right">
           <button type="submit" class="btn-primary" data-i18n="buttons.deal">🎴 Deal the cards</button>
         </div>
       </form>
     </section>
 
+    <!-- Reveal View: Player Role Revelation -->
     <section id="revealView" class="panel hidden">
       <h2 data-i18n="reveal.title">🔐 Secret dealing</h2>
       <div id="revealStatus" class="reveal-status">
         <p id="playerProgress">Player 1 / 1</p>
         <h3 id="currentPlayerLabel">Player 1</h3>
       </div>
+      <!-- Role Card Display -->
       <div id="roleCard" class="role-card" data-team="unknown">
         <img id="roleImage" class="role-image hidden" alt="Immagine del ruolo" />
         <div class="role-text">
@@ -133,12 +153,14 @@
           <p id="roleDescription">Make sure no one else is watching</p>
         </div>
       </div>
+      <!-- Narrator Handoff Notice -->
       <div id="handoffNotice" class="handoff-notice hidden">
         <h4 data-i18n="handoffNotice.title">⚠️ Pass the device to the narrator</h4>
         <p data-i18n="handoffNotice.body">When every card has been seen, nobody else should touch the device. Hand it to
           the narrator before Day 1 begins.</p>
         <p id="handoffTimer" class="handoff-timer hidden" aria-live="polite"></p>
       </div>
+      <!-- Reveal View Actions -->
       <div class="actions-right">
         <button id="revealBtn" class="btn-primary" type="button" data-i18n="buttons.showCard">👁️ Show card</button>
         <button id="hideBtn" class="btn-secondary hidden" type="button" data-i18n="buttons.nextPlayer">➡️ Next
@@ -148,12 +170,14 @@
       </div>
     </section>
 
+    <!-- Summary View: Narrator Tools and Game Overview -->
     <section id="summaryView" class="panel hidden">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
         <h2 data-i18n="summary.title" style="margin: 0;">📋 Narrator summary</h2>
         <button id="openVotingFromSummary" type="button" class="btn-link" data-i18n="menu.voting">🗳️ Voting
           Rules</button>
       </div>
+      <!-- Living Players List (Collapsible) -->
       <details id="livingDetails" class="living-details" open>
         <summary>
           <span data-i18n="living.title">👥 Living players</span>
@@ -166,6 +190,7 @@
         <ul id="summaryList" class="summary-list"></ul>
       </details>
 
+      <!-- Fallen Players List (Collapsible) -->
       <details id="fallenDetails" class="fallen-details">
         <summary>
           <span data-i18n="fallen.title">🪦 Fallen players</span>
@@ -174,6 +199,7 @@
         <ul id="fallenList" class="fallen-list"></ul>
       </details>
 
+      <!-- Mythomaniac Special Panel -->
       <div id="mythPanel" class="myth-panel hidden">
         <div class="myth-header">
           <h3 data-i18n="myth.title">Mythomaniac</h3>
@@ -189,12 +215,15 @@
           transformation</button>
         <p id="mythResultMessage" class="myth-result help" aria-live="polite"></p>
       </div>
+      <!-- Mythomaniac Summary -->
       <div id="mythSummary" class="myth-summary hidden">
         <span data-i18n="myth.title">Mythomaniac</span>
         <span id="mythSummaryText"></span>
       </div>
 
+      <!-- Narrator Tools Section -->
       <div class="narrator-tools">
+        <!-- Day Control -->
         <div class="day-control">
           <div>
             <p class="eyebrow" data-i18n="day.label">Current day</p>
@@ -203,6 +232,7 @@
           <button id="nextDayBtn" class="btn-day" type="button" data-i18n="buttons.nextDay">Next day</button>
         </div>
 
+        <!-- Narration Guide Panel -->
         <div class="guide-panel">
           <div class="guide-header">
             <h3 data-i18n="guide.title">Narration guide</h3>
@@ -220,9 +250,9 @@
           </div>
         </div>
       </div>
-
     </section>
 
+    <!-- Final View: Victory/Game End Screen -->
     <section id="finalView" class="panel hidden">
       <h2 id="victoryTitle" class="victory-title">Victory</h2>
       <p id="victorySubtitle" class="help"></p>
@@ -232,6 +262,7 @@
       </div>
     </section>
 
+    <!-- Application Footer with Disclaimers and License -->
     <div id="infoFooter" class="info-footer">
       <p class="app-footer" data-i18n="footer.disclaimer">We do not collect cookies, the artwork is AI-generated, and
         this free fan-made tribute keeps the Lupus In Tabula spirit alive so friends can play without physical cards.
@@ -239,6 +270,8 @@
       <p class="app-footer" data-i18n="footer.license">Released under the MIT License by n0tsosmart.</p>
     </div>
 
+    <!-- Modals (Hidden by default, controlled by JavaScript) -->
+    <!-- Generic Confirmation Modal -->
     <div id="modalOverlay" class="modal-overlay hidden">
       <div class="modal-panel">
         <h3 id="modalTitle" class="modal-title" data-i18n="modal.title">Confirm</h3>
@@ -252,6 +285,7 @@
       </div>
     </div>
 
+    <!-- Immersion Tips & Rules Modal -->
     <div id="infoOverlay" class="modal-overlay hidden">
       <div class="modal-panel info-panel">
         <h3 class="modal-title" data-i18n="info.title">Keep the village immersive</h3>
@@ -275,6 +309,7 @@
       </div>
     </div>
 
+    <!-- Voting Rules Modal -->
     <div id="votingOverlay" class="modal-overlay hidden">
       <div class="modal-panel info-panel">
         <h3 class="modal-title" data-i18n="voting.title">Voting Rules</h3>
@@ -304,8 +339,9 @@
     </div>
   </main>
 
-  <script src="js/translations.js?v=1.0.5"></script>
-  <script src="js/app.js?v=1.0.5" defer></script>
+  <!-- JavaScript files, includes versioning for cache busting and defer attribute for performance -->
+  <script src="js/translations.js?v=1.0.6"></script>
+  <script src="js/app.js?v=1.0.6" defer></script>
 </body>
 
 </html>

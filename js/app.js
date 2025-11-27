@@ -1,8 +1,18 @@
-// ========================================
-// UI/UX ENHANCEMENTS (Mobile-First)
-// ========================================
+/**
+ * @fileoverview
+ * This file contains the main application logic for the "Slay the Werewolf" game.
+ * It manages UI interactions, game state, player and role management,
+ * narration flow, and victory conditions.
+ */
 
-// Smooth page load
+// ==========================================================================
+// UI/UX ENHANCEMENTS (Mobile-First)
+// ==========================================================================
+
+/**
+ * Handles smooth page loading animation.
+ * Fades in the body content after DOM is fully loaded.
+ */
 document.addEventListener('DOMContentLoaded', () => {
   document.body.style.opacity = '0';
   requestAnimationFrame(() => {
@@ -11,7 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// FIXED: Ripple effect only on clicked button
+/**
+ * Implements a ripple effect on button clicks.
+ * Also provides haptic feedback on mobile devices.
+ */
 document.addEventListener('click', (e) => {
   const button = e.target.closest('button, .btn, [role="button"]');
 
@@ -51,7 +64,9 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// Smooth scroll for links
+/**
+ * Provides smooth scrolling for anchor links within the page.
+ */
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function (e) {
     const target = document.querySelector(this.getAttribute('href'));
@@ -62,7 +77,11 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// Toast notification system
+/**
+ * Displays a toast notification with a given message.
+ * @param {string} message - The message to display.
+ * @param {number} [duration=TOAST_DURATION] - How long the toast should be visible in milliseconds.
+ */
 window.showToast = (message, duration = TOAST_DURATION) => {
   const toast = document.createElement('div');
   toast.textContent = message;
@@ -99,7 +118,9 @@ window.showToast = (message, duration = TOAST_DURATION) => {
   }, duration);
 };
 
-// Form validation feedback
+/**
+ * Adds a shake animation for invalid form inputs.
+ */
 document.querySelectorAll('input, select, textarea').forEach(input => {
   input.addEventListener('invalid', (e) => {
     e.preventDefault();
@@ -108,7 +129,12 @@ document.querySelectorAll('input, select, textarea').forEach(input => {
   });
 });
 
-// Debounce utility
+/**
+ * Debounce utility function to limit how often a function can run.
+ * @param {Function} func - The function to debounce.
+ * @param {number} wait - The delay in milliseconds.
+ * @returns {Function} - The debounced function.
+ */
 window.debounce = (func, wait) => {
   let timeout;
   return function (...args) {
@@ -117,14 +143,14 @@ window.debounce = (func, wait) => {
   };
 };
 
-// ========================================
+// ==========================================================================
 // END UI/UX ENHANCEMENTS
-// ========================================
+// ==========================================================================
 
 
-// ========================================
-// CONSTANTS
-// ========================================
+// ==========================================================================
+// CONSTANTS & CONFIGURATION
+// ==========================================================================
 
 const MIN_PLAYERS = 5;
 
@@ -135,6 +161,11 @@ const HAPTIC_VIBRATION_DURATION = 8;
 const ANIMATION_SHAKE_DURATION = 300;
 const PAGE_FADE_DURATION = 400;
 
+/**
+ * Defines the library of all available roles in the game.
+ * Each role includes properties like ID, name, team, image, and description,
+ * along with localized translations.
+ */
 const ROLE_LIBRARY = {
   werewolf: {
     id: "werewolf",
@@ -338,6 +369,9 @@ const ROLE_LIBRARY = {
   },
 };
 
+/**
+ * Configuration for optional special roles, including their copies and minimum player count to be available.
+ */
 const OPTIONAL_CONFIG = [
   { roleId: "medium", copies: 1, minPlayers: 9 },
   { roleId: "possessed", copies: 1, minPlayers: 10 },
@@ -349,19 +383,39 @@ const OPTIONAL_CONFIG = [
 ];
 
 const DEFAULT_LANGUAGE = "en";
+const STORAGE_KEY = "SLAY_STATE"; // Key for localStorage persistence
 
+// ==========================================================================
+// TRANSLATION & LANGUAGE FUNCTIONS
+// ==========================================================================
 
+/**
+ * Formats a translation template string by replacing placeholders with provided variables.
+ * @param {string} template - The template string (e.g., "Hello {name}").
+ * @param {object} [vars={}] - An object of variables to substitute (e.g., { name: "World" }).
+ * @returns {string} The formatted string.
+ */
 function formatString(template, vars = {}) {
   return template.replace(/\{(.*?)\}/g, (_, key) => (vars[key] !== undefined ? vars[key] : `{${key}}`));
 }
 
+/**
+ * Translates a given key into the current language, with fallback to default language and then the key itself.
+ * Supports variable substitution.
+ * @param {string} key - The translation key.
+ * @param {object} [vars] - Variables for string formatting.
+ * @returns {string} The translated string.
+ */
 function t(key, vars) {
   const langPack = TRANSLATIONS[state.language] || TRANSLATIONS[DEFAULT_LANGUAGE];
   const fallback = TRANSLATIONS[DEFAULT_LANGUAGE][key];
-  const template = langPack[key] ?? fallback ?? key;
+  const template = langPack[key] ?? fallback ?? key; // Use provided key as ultimate fallback
   return vars ? formatString(template, vars) : template;
 }
 
+/**
+ * Applies translations to all elements in the DOM that have `data-i18n` or `data-i18n-placeholder` attributes.
+ */
 function applyTranslations() {
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     const key = element.dataset.i18n;
@@ -373,24 +427,32 @@ function applyTranslations() {
   });
 }
 
+/**
+ * Sets the application's language, updates UI, and persists the choice.
+ * @param {string} lang - The language code (e.g., 'en', 'es', 'it').
+ * @param {object} [options] - Options to skip persistence or rendering.
+ * @param {boolean} [options.skipPersist=false] - If true, language choice is not saved to localStorage.
+ * @param {boolean} [options.skipRender=false] - If true, UI rendering is skipped.
+ */
 function setLanguage(lang, { skipPersist = false, skipRender = false } = {}) {
   state.language = TRANSLATIONS[lang] ? lang : DEFAULT_LANGUAGE;
-  if (el.languageSelect) el.languageSelect.value = state.language;
-  updateLanguageButtons();
+  if (el.languageSelect) el.languageSelect.value = state.language; // For a native select, if used
+  updateLanguageButtons(); // Update active state for language buttons
   if (typeof document !== "undefined") {
-    document.documentElement.lang = state.language;
+    document.documentElement.lang = state.language; // Set HTML lang attribute
   }
+  // Re-render role options and enforce limits based on new language descriptions
   const selectedRoles = getSelectedSpecials().map((item) => item.roleId);
   renderRoleOptions();
-  if (el.rolesDetails) el.rolesDetails.open = state.rolesDetailsOpen;
+  if (el.rolesDetails) el.rolesDetails.open = state.rolesDetailsOpen; // Maintain details panel state
   selectedRoles.forEach((roleId) => {
     const input = el.roleOptions.querySelector(`.role-option[value="${roleId}"]`);
-    if (input) input.checked = true;
+    if (input) input.checked = true; // Re-check previously selected roles
   });
-  enforceRoleLimits();
-  applyTranslations();
-  renderPlayerList();
-  updateHandoffTimer();
+  enforceRoleLimits(); // Re-enforce limits with potentially new player count due to UI adjustments
+  applyTranslations(); // Apply new translations to UI text
+  renderPlayerList(); // Re-render player list (accessibility labels might change)
+  updateHandoffTimer(); // Update handoff timer message
   if (!skipRender) {
     updateWolfHint();
     renderSummaryList();
@@ -399,17 +461,23 @@ function setLanguage(lang, { skipPersist = false, skipRender = false } = {}) {
     }
     if (state.view === "reveal") {
       if (el.hideBtn && !el.hideBtn.classList.contains("hidden")) {
-        revealCard();
+        revealCard(); // Re-reveal current card in new language
       } else {
-        prepareReveal();
+        prepareReveal(); // Re-prepare reveal in new language
       }
     }
     if (state.view === "final" && state.victory) renderVictoryFromState();
   }
-  updateRoleSummary();
-  if (!skipPersist) persistState();
+  updateRoleSummary(); // Update role summary in new language
+  if (!skipPersist) persistState(); // Save language preference
 }
 
+/**
+ * Retrieves localized content for a given role ID.
+ * Falls back to default English content if locale-specific content is not found.
+ * @param {string} roleId - The ID of the role.
+ * @returns {object} An object containing the localized name, team label, and description.
+ */
 function getRoleContent(roleId) {
   const base = ROLE_LIBRARY[roleId] || ROLE_LIBRARY.villager;
   const locale = base.locales?.[state.language] || {};
@@ -420,123 +488,45 @@ function getRoleContent(roleId) {
   };
 }
 
-const STORAGE_KEY = "SLAY_STATE";
+// ==========================================================================
+// STATE MANAGEMENT & PERSISTENCE
+// ==========================================================================
 
+/**
+ * The main application state object.
+ * Holds all dynamic data related to the game's current status.
+ */
 const state = {
-  deck: [],
-  players: [],
-  revealIndex: 0,
-  revealComplete: false,
-  customNames: [],
-  activeSpecialIds: [],
-  narratorDay: 1,
-  maxDays: 1,
-  eliminatedPlayers: [],
-  guideSteps: [],
-  guideStepIndex: 0,
-  victory: null,
-  playersCollapsed: false,
-  rolesDetailsOpen: false,
-  guideExpanded: true,
-  language: DEFAULT_LANGUAGE,
-  view: "setup",
-  mythStatus: null,
-  handoffCountdown: 0,
-  playerVotes: {},  // { playerName: voteCount }
-  benvenutoPlayer: null,  // Name of the most recently lynched player
+  deck: [], // Array of role cards
+  players: [], // Array of player names
+  revealIndex: 0, // Current index in the deck being revealed
+  revealComplete: false, // Flag if all cards have been revealed
+  customNames: [], // User-defined player names
+  activeSpecialIds: [], // IDs of currently selected special roles
+  narratorDay: 1, // Current day in the game
+  maxDays: 1, // Max days (relevant for bodyguard role)
+  eliminatedPlayers: [], // List of eliminated players
+  guideSteps: [], // Current narration guide steps
+  guideStepIndex: 0, // Current step in the narration guide
+  victory: null, // Stores victory state once game ends
+  playersCollapsed: false, // UI state for player list summary
+  rolesDetailsOpen: false, // UI state for roles details panel
+  guideExpanded: true, // UI state for narration guide display mode
+  language: DEFAULT_LANGUAGE, // Current language
+  view: "setup", // Current view/screen (setup, reveal, summary, final)
+  mythStatus: null, // Status object for the Mythomaniac role
+  handoffCountdown: 0, // Countdown for narrator handoff
+  playerVotes: {},  // Stores votes for players during lynching phase: { playerName: voteCount }
+  benvenutoPlayer: null,  // Name of the most recently lynched player (important for tie-breaking)
 };
 
-let suppressLivingToggle = false;
-let handoffTimerId = null;
+let suppressLivingToggle = false; // Internal flag to prevent infinite loops with UI toggles
+let handoffTimerId = null; // Timer ID for handoff countdown
 
-const el = {
-  setupView: document.getElementById("setupView"),
-  revealView: document.getElementById("revealView"),
-  summaryView: document.getElementById("summaryView"),
-  rolesDetails: document.getElementById("rolesDetails"),
-  setupForm: document.getElementById("setupForm"),
-  playerCount: document.getElementById("playerCount"),
-  wolfCount: document.getElementById("wolfCount"),
-  wolfHint: document.getElementById("wolfHint"),
-  playerNameInput: document.getElementById("playerNameInput"),
-  addPlayerBtn: document.getElementById("addPlayerBtn"),
-  playerList: document.getElementById("playerList"),
-  reorderHint: document.getElementById("reorderHint"),
-  clearPlayersBtn: document.getElementById("clearPlayersBtn"),
-  validationMessage: document.getElementById("validationMessage"),
-  roleOptions: document.getElementById("roleOptions"),
-  revealBtn: document.getElementById("revealBtn"),
-  hideBtn: document.getElementById("hideBtn"),
-  roleCard: document.getElementById("roleCard"),
-  roleImage: document.getElementById("roleImage"),
-  handoffNotice: document.getElementById("handoffNotice"),
-  handoffTimer: document.getElementById("handoffTimer"),
-  revealStatus: document.getElementById("revealStatus"),
-  roleTeam: document.getElementById("roleTeam"),
-  roleName: document.getElementById("roleName"),
-  roleDescription: document.getElementById("roleDescription"),
-  playerProgress: document.getElementById("playerProgress"),
-  currentPlayerLabel: document.getElementById("currentPlayerLabel"),
-  summaryList: document.getElementById("summaryList"),
-  livingDetails: document.getElementById("livingDetails"),
-  livingCount: document.getElementById("livingCount"),
-  fallenDetails: document.getElementById("fallenDetails"),
-  fallenList: document.getElementById("fallenList"),
-  fallenCount: document.getElementById("fallenCount"),
-  mythPanel: document.getElementById("mythPanel"),
-  mythStatusTag: document.getElementById("mythStatusTag"),
-  mythPlayerLabel: document.getElementById("mythPlayerLabel"),
-  mythInstructions: document.getElementById("mythInstructions"),
-  mythTargetSelect: document.getElementById("mythTargetSelect"),
-  mythConfirmBtn: document.getElementById("mythConfirmBtn"),
-  mythResultMessage: document.getElementById("mythResultMessage"),
-  mythSummary: document.getElementById("mythSummary"),
-  mythSummaryText: document.getElementById("mythSummaryText"),
-  infoFooter: document.getElementById("infoFooter"),
-  restartBtn: document.getElementById("restartBtn"),
-  openSummaryBtn: document.getElementById("openSummaryBtn"),
-  dayCounter: document.getElementById("dayCounter"),
-  nextDayBtn: document.getElementById("nextDayBtn"),
-  guideProgress: document.getElementById("guideProgress"),
-  guideStepText: document.getElementById("guideStepText"),
-  guideFullList: document.getElementById("guideFullList"),
-  guideNav: document.getElementById("guideNav"),
-  toggleGuideMode: document.getElementById("toggleGuideMode"),
-  prevGuideStep: document.getElementById("prevGuideStep"),
-  nextGuideStep: document.getElementById("nextGuideStep"),
-  eliminationSelect: document.getElementById("eliminationSelect"),
-  eliminateBtn: document.getElementById("eliminateBtn"),
-  finalView: document.getElementById("finalView"),
-  victoryTitle: document.getElementById("victoryTitle"),
-  victorySubtitle: document.getElementById("victorySubtitle"),
-  victoryList: document.getElementById("victoryList"),
-  finalNewGameBtn: document.getElementById("finalNewGameBtn"),
-  modalOverlay: document.getElementById("modalOverlay"),
-  modalTitle: document.getElementById("modalTitle"),
-  modalMessage: document.getElementById("modalMessage"),
-  modalCancel: document.getElementById("modalCancel"),
-  modalConfirm: document.getElementById("modalConfirm"),
-  languageSelect: document.getElementById("languageSelect"),
-  languageToggle: document.getElementById("languageToggle"),
-  languageFlag: document.getElementById("languageFlag"),
-  languageMenu: document.getElementById("languageMenu"),
-  languageButtons: document.querySelectorAll("[data-lang-button]"),
-  languagePicker: document.querySelector(".language-picker"),
-  infoButton: document.getElementById("infoButton"),
-  infoOverlay: document.getElementById("infoOverlay"),
-  infoClose: document.getElementById("infoClose"),
-  roleSummary: document.getElementById("roleSummary"),
-  roleSummaryContent: document.getElementById("roleSummaryContent"),
-  menuBtn: document.getElementById("menuBtn"),
-  mainMenu: document.getElementById("mainMenu"),
-  menuVotingBtn: document.getElementById("menuVotingBtn"),
-  menuImmersionBtn: document.getElementById("menuImmersionBtn"),
-  votingOverlay: document.getElementById("votingOverlay"),
-  votingClose: document.getElementById("votingClose"),
-};
-
-init();
-
+/**
+ * Stores the current game state into localStorage.
+ * Skips saving if localStorage is not available or if in development mode.
+ */
 function persistState() {
   if (typeof localStorage === "undefined") return;
   try {
@@ -551,8 +541,8 @@ function persistState() {
       activeSpecialIds: state.activeSpecialIds,
       victory: state.victory,
       revealComplete: state.revealComplete,
-      deckRoleIds: state.deck.map((card) => card.roleId),
-      assignments: state.players.map((name, index) => ({
+      deckRoleIds: state.deck.map((card) => card.roleId), // Store only role IDs for deck
+      assignments: state.players.map((name, index) => ({ // Store player-role assignments
         name,
         roleId: state.deck[index]?.roleId || null,
       })),
@@ -572,19 +562,24 @@ function persistState() {
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
   } catch (error) {
-    // Only log in development
     if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
       console.warn("Unable to save the game state", error);
     }
   }
 }
 
+/**
+ * Restores the game state from localStorage upon application load.
+ * Handles migration of older state structures if necessary.
+ */
 function restoreFromStorage() {
   if (typeof localStorage === "undefined") return;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return;
     const data = JSON.parse(raw);
+
+    // Restore setup inputs
     if (data.playerCount) el.playerCount.value = data.playerCount;
     if (data.wolfCount) el.wolfCount.value = data.wolfCount;
     if (Array.isArray(data.selectedSpecialIds)) {
@@ -592,12 +587,18 @@ function restoreFromStorage() {
         input.checked = data.selectedSpecialIds.includes(input.value);
       });
     }
+
+    // Restore player names and list
     state.customNames = Array.isArray(data.customNames) ? [...data.customNames] : [];
-    renderPlayerList();
+    renderPlayerList(); // Render immediately to allow other functions to use `state.customNames`
+
+    // Apply role rules
     clampWolfCount();
     enforceRoleLimits();
     updateDeckPreview();
     updateRoleSummary();
+
+    // Restore deck and player assignments
     const assignments = Array.isArray(data.assignments) ? data.assignments : null;
     if (assignments && assignments.length) {
       const fallbackPlayers = Array.isArray(data.players) ? data.players : [];
@@ -610,25 +611,27 @@ function restoreFromStorage() {
       });
     } else {
       state.players = Array.isArray(data.players) ? data.players : [];
-      state.deck = deckFromRoleIds(data.deckRoleIds);
+      state.deck = deckFromRoleIds(data.deckRoleIds); // Legacy support for deckRoleIds
     }
+
+    // Restore game progress
     state.revealIndex = Math.min(data.revealIndex || 0, Math.max(state.players.length - 1, 0));
     state.revealComplete = Boolean(data.revealComplete);
     state.narratorDay = data.narratorDay || 1;
     state.eliminatedPlayers = Array.isArray(data.eliminatedPlayers) ? data.eliminatedPlayers : [];
     state.activeSpecialIds = Array.isArray(data.activeSpecialIds) ? data.activeSpecialIds : [];
-    if (state.activeSpecialIds.includes("bodyguard")) state.maxDays = null;
+    if (state.activeSpecialIds.includes("bodyguard")) state.maxDays = null; // Bodyguard can extend max days
     else if (data.maxDays === null) state.maxDays = null;
     else if (typeof data.maxDays === "number" && Number.isFinite(data.maxDays)) state.maxDays = data.maxDays;
-    else state.maxDays = Math.max(1, state.players.length || 1);
+    else state.maxDays = Math.max(1, state.players.length || 1); // Default max days
     state.mythStatus = normalizeMythStatus(data.mythStatus);
     state.victory = data.victory || null;
     state.guideStepIndex = data.guideStepIndex || 0;
     state.playersCollapsed = Boolean(data.playersCollapsed);
-    state.rolesDetailsOpen = false;  // Always start collapsed on page load
+    state.rolesDetailsOpen = false;  // Always start collapsed on page load for cleaner UI
     state.guideExpanded = data.guideExpanded !== undefined ? Boolean(data.guideExpanded) : true;
     state.view = data.view || "setup";
-    if (state.view === "handoff") {
+    if (state.view === "handoff") { // Backward compatibility for old handoff state
       state.view = "reveal";
       state.revealComplete = true;
     }
@@ -636,8 +639,9 @@ function restoreFromStorage() {
     state.playerVotes = data.playerVotes || {};
     state.benvenutoPlayer = data.benvenutoPlayer || null;
 
+    // Apply restored states to UI
     if (el.rolesDetails) el.rolesDetails.open = state.rolesDetailsOpen;
-    setLanguage(state.language, { skipPersist: true, skipRender: true });
+    setLanguage(state.language, { skipPersist: true, skipRender: true }); // Apply language without re-persisting
     if (state.view === "reveal" && state.deck.length) {
       if (state.revealComplete) {
         showCompletionState();
@@ -650,14 +654,127 @@ function restoreFromStorage() {
     } else if (state.view === "final" && state.victory) {
       renderVictoryFromState();
     }
-    updateEliminationSelect();
+    updateEliminationSelect(); // Ensure elimination dropdown reflects current state
   } catch (error) {
-    // Only log in development
     if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
       console.warn("Unable to restore the game state", error);
     }
   }
 }
+
+// ==========================================================================
+// DOM ELEMENT REFERENCES
+// ==========================================================================
+
+/**
+ * Object to hold references to commonly used DOM elements for efficient access.
+ */
+const el = {
+  // Main Views
+  setupView: document.getElementById("setupView"),
+  revealView: document.getElementById("revealView"),
+  summaryView: document.getElementById("summaryView"),
+  finalView: document.getElementById("finalView"),
+
+  // Setup View Elements
+  rolesDetails: document.getElementById("rolesDetails"), // Collapsible roles panel
+  setupForm: document.getElementById("setupForm"),
+  playerCount: document.getElementById("playerCount"),
+  wolfCount: document.getElementById("wolfCount"),
+  wolfHint: document.getElementById("wolfHint"),
+  playerNameInput: document.getElementById("playerNameInput"),
+  addPlayerBtn: document.getElementById("addPlayerBtn"),
+  playerList: document.getElementById("playerList"), // Container for player chips
+  reorderHint: document.getElementById("reorderHint"),
+  clearPlayersBtn: document.getElementById("clearPlayersBtn"),
+  validationMessage: document.getElementById("validationMessage"),
+  roleOptions: document.getElementById("roleOptions"), // Container for special role checkboxes
+  roleSummary: document.getElementById("roleSummary"), // Summary of role distribution
+  roleSummaryContent: document.getElementById("roleSummaryContent"),
+
+  // Reveal View Elements
+  revealBtn: document.getElementById("revealBtn"),
+  hideBtn: document.getElementById("hideBtn"),
+  roleCard: document.getElementById("roleCard"), // The card displaying role info
+  roleImage: document.getElementById("roleImage"),
+  handoffNotice: document.getElementById("handoffNotice"),
+  handoffTimer: document.getElementById("handoffTimer"),
+  revealStatus: document.getElementById("revealStatus"), // Status of card revealing progress
+  roleTeam: document.getElementById("roleTeam"),
+  roleName: document.getElementById("roleName"),
+  roleDescription: document.getElementById("roleDescription"),
+  playerProgress: document.getElementById("playerProgress"), // "Player X / Y" text
+  currentPlayerLabel: document.getElementById("currentPlayerLabel"), // Current player's name
+
+  // Summary View Elements
+  summaryList: document.getElementById("summaryList"), // List of living players
+  livingDetails: document.getElementById("livingDetails"), // Collapsible living players panel
+  livingCount: document.getElementById("livingCount"),
+  fallenDetails: document.getElementById("fallenDetails"), // Collapsible fallen players panel
+  fallenList: document.getElementById("fallenList"), // List of fallen players
+  fallenCount: document.getElementById("fallenCount"),
+  mythPanel: document.getElementById("mythPanel"), // Mythomaniac action panel
+  mythStatusTag: document.getElementById("mythStatusTag"),
+  mythPlayerLabel: document.getElementById("mythPlayerLabel"),
+  mythInstructions: document.getElementById("mythInstructions"),
+  mythTargetSelect: document.getElementById("mythTargetSelect"), // Dropdown for Mythomaniac target
+  mythConfirmBtn: document.getElementById("mythConfirmBtn"),
+  mythResultMessage: document.getElementById("mythResultMessage"),
+  mythSummary: document.getElementById("mythSummary"), // Mythomaniac summary display
+  mythSummaryText: document.getElementById("mythSummaryText"),
+  dayCounter: document.getElementById("dayCounter"),
+  nextDayBtn: document.getElementById("nextDayBtn"), // Button to advance to next day
+  guideProgress: document.getElementById("guideProgress"), // "Step X / Y" text for guide
+  guideStepText: document.getElementById("guideStepText"), // Current guide step description
+  guideFullList: document.getElementById("guideFullList"), // Full list of guide steps
+  guideNav: document.getElementById("guideNav"), // Navigation for guide steps
+  toggleGuideMode: document.getElementById("toggleGuideMode"), // Button to toggle guide view
+  prevGuideStep: document.getElementById("prevGuideStep"),
+  nextGuideStep: document.getElementById("nextGuideStep"),
+  eliminationSelect: document.getElementById("eliminationSelect"), // Dropdown for player elimination
+  eliminateBtn: document.getElementById("eliminateBtn"), // Button to confirm elimination
+
+  // Global UI Elements
+  infoFooter: document.getElementById("infoFooter"), // Footer containing disclaimers
+  restartBtn: document.getElementById("restartBtn"), // Global restart button
+  openSummaryBtn: document.getElementById("openSummaryBtn"), // Button to go to summary from reveal
+  modalOverlay: document.getElementById("modalOverlay"), // Generic confirmation modal
+  modalTitle: document.getElementById("modalTitle"),
+  modalMessage: document.getElementById("modalMessage"),
+  modalCancel: document.getElementById("modalCancel"),
+  modalConfirm: document.getElementById("modalConfirm"),
+  languageSelect: document.getElementById("languageSelect"), // Native select (if used)
+  languageToggle: document.getElementById("languageToggle"), // Custom language toggle button
+  languageFlag: document.getElementById("languageFlag"),
+  languageMenu: document.getElementById("languageMenu"), // Language dropdown menu
+  languageButtons: document.querySelectorAll("[data-lang-button]"), // Individual language selection buttons
+  languagePicker: document.querySelector(".language-picker"),
+  infoButton: document.getElementById("infoButton"), // Button to open info modal
+  infoOverlay: document.getElementById("infoOverlay"), // Immersion tips modal
+  infoClose: document.getElementById("infoClose"),
+  menuBtn: document.getElementById("menuBtn"), // Hamburger menu button
+  mainMenu: document.getElementById("mainMenu"), // Main menu dropdown
+  menuVotingBtn: document.getElementById("menuVotingBtn"), // Voting rules button in menu
+  menuImmersionBtn: document.getElementById("menuImmersionBtn"), // Immersion tips button in menu
+  votingOverlay: document.getElementById("votingOverlay"), // Voting rules modal
+  votingClose: document.getElementById("votingClose"),
+
+  // Final View Elements
+  victoryTitle: document.getElementById("victoryTitle"),
+  victorySubtitle: document.getElementById("victorySubtitle"),
+  victoryList: document.getElementById("victoryList"),
+  finalNewGameBtn: document.getElementById("finalNewGameBtn"),
+};
+
+// ==========================================================================
+// INITIALIZATION
+// ==========================================================================
+
+/**
+ * Initializes the application: renders role options, attaches event listeners,
+ * restores state from storage, and sets the initial language and view.
+ */
+init();
 
 function init() {
   renderRoleOptions();
@@ -668,12 +785,20 @@ function init() {
   updateDeckPreview();
   updateRoleSummary();
   renderPlayerList();
-  restoreFromStorage();
-  setLanguage(state.language, { skipPersist: true });
-  showView(state.view || "setup");
+  restoreFromStorage(); // Restore previous session
+  setLanguage(state.language, { skipPersist: true }); // Apply language without re-persisting
+  showView(state.view || "setup"); // Display the appropriate view
 }
 
+// ==========================================================================
+// EVENT HANDLERS
+// ==========================================================================
+
+/**
+ * Attaches all necessary event listeners to DOM elements.
+ */
 function attachEvents() {
+  // Player count and role selection changes
   el.playerCount.addEventListener("input", () => {
     autoAdjustWolvesFromPlayers();
     updateWolfHint();
@@ -696,10 +821,11 @@ function attachEvents() {
     persistState();
   });
 
+  // Player name input and list management
   el.addPlayerBtn.addEventListener("click", handleAddPlayer);
   el.playerNameInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
-      event.preventDefault();
+      event.preventDefault(); // Prevent form submission
       handleAddPlayer();
     }
   });
@@ -710,23 +836,25 @@ function attachEvents() {
     if (!button) return;
     if (button.classList.contains("chip-remove")) {
       const index = Number(button.dataset.index);
-      state.customNames.splice(index, 1);
+      state.customNames.splice(index, 1); // Remove player by index
       renderPlayerList();
       persistState();
     }
   });
 
   el.clearPlayersBtn.addEventListener("click", () => {
-    state.customNames = [];
+    state.customNames = []; // Clear all custom names
     renderPlayerList();
     persistState();
   });
 
+  // Game start
   el.setupForm.addEventListener("submit", (event) => {
     event.preventDefault();
     startGame();
   });
 
+  // Reveal Phase interactions
   if (el.roleCard) {
     el.roleCard.addEventListener("click", () => {
       if (el.roleCard.classList.contains("can-reveal") && el.revealBtn && !el.revealBtn.classList.contains("hidden")) {
@@ -741,14 +869,20 @@ function attachEvents() {
       showSummary();
     });
   });
+
+  // Global actions
   el.restartBtn.addEventListener("click", () => confirmAction(t("confirmation.restart"), resetGame));
   el.nextDayBtn.addEventListener("click", advanceDay);
+
+  // Narrator Guide navigation
   el.prevGuideStep.addEventListener("click", () => changeGuideStep(-1));
   el.nextGuideStep.addEventListener("click", () => changeGuideStep(1));
+
+  // Summary list actions (vote, eliminate, revive, lynch)
   el.summaryList.addEventListener("click", (event) => {
     if (!(event.target instanceof Element)) return;
 
-    // Handle vote buttons
+    // Handle vote buttons (+/-)
     const voteBtn = event.target.closest(".vote-btn");
     if (voteBtn) {
       const player = voteBtn.dataset.player;
@@ -759,15 +893,13 @@ function attachEvents() {
         } else if (action === "decrement") {
           state.playerVotes[player] = Math.max(0, (state.playerVotes[player] || 0) - 1);
         }
-        renderSummaryList();
+        renderSummaryList(); // Re-render to update vote counts
         persistState();
       }
       return;
     }
 
-
-
-    // Handle eliminate/revive/lynch button
+    // Handle eliminate/revive/lynch buttons
     const button = event.target.closest(".mini-action");
     if (!button) return;
 
@@ -777,26 +909,36 @@ function attachEvents() {
       toggleElimination(button.dataset.player || "");
     }
   });
+
+  // Final view new game button
   el.finalNewGameBtn.addEventListener("click", () => confirmAction(t("confirmation.newGame"), resetGame));
+
+  // Toggle for living players list collapse state
   if (el.livingDetails) {
     el.livingDetails.addEventListener("toggle", () => {
-      if (suppressLivingToggle) return;
+      if (suppressLivingToggle) return; // Prevent loop when setting from state
       state.playersCollapsed = !el.livingDetails.open;
       persistState();
     });
   }
+
+  // Guide mode toggle (step-by-step vs. full list)
   if (el.toggleGuideMode) el.toggleGuideMode.addEventListener("click", toggleGuideMode);
+
+  // Elimination from select dropdown
   if (el.eliminateBtn) el.eliminateBtn.addEventListener("click", eliminateFromSelect);
+
+  // Mythomaniac transformation confirmation
   if (el.mythConfirmBtn) el.mythConfirmBtn.addEventListener("click", applyMythTransformation);
 
-  // Toggle list view mode (grid vs horizontal scroll)
+  // Toggle list view mode (vertical vs horizontal scroll) for summary
   const toggleListViewBtn = document.getElementById("toggleListView");
   if (toggleListViewBtn && el.summaryList) {
-    const VIEW_MODE_KEY = "slay_werewolf_view_mode";
+    const VIEW_MODE_KEY = "slay_werewolf_view_mode"; // localStorage key
 
-    // Load saved state or default to vertical list
+    // Load saved preference or default
     const savedMode = localStorage.getItem(VIEW_MODE_KEY);
-    const isHorizontal = savedMode === "horizontal"; // Default to vertical list
+    const isHorizontal = savedMode === "horizontal"; // Default to vertical
 
     if (isHorizontal) {
       el.summaryList.classList.add("horizontal-scroll");
@@ -804,14 +946,14 @@ function attachEvents() {
       el.summaryList.classList.remove("horizontal-scroll");
     }
 
-    // Update initial icon
+    // Update initial icon to reflect current mode
     const icon = toggleListViewBtn.querySelector(".view-icon");
     if (icon) {
-      icon.textContent = isHorizontal ? "☰" : "⊞";
+      icon.textContent = isHorizontal ? "☰" : "⊞"; // ☰ for horizontal (more compact), ⊞ for vertical (grid-like)
     }
 
     toggleListViewBtn.addEventListener("click", (e) => {
-      e.stopPropagation(); // Prevent details toggle
+      e.stopPropagation(); // Prevent parent details element from toggling
       el.summaryList.classList.toggle("horizontal-scroll");
 
       const isNowHorizontal = el.summaryList.classList.contains("horizontal-scroll");
@@ -824,42 +966,51 @@ function attachEvents() {
     });
   }
 
+  // Roles details collapse state persistence
   if (el.rolesDetails) {
     el.rolesDetails.addEventListener("toggle", () => {
       state.rolesDetailsOpen = el.rolesDetails.open;
       persistState();
     });
   }
+
+  // Language selection (for native select dropdown)
   if (el.languageSelect) {
     el.languageSelect.addEventListener("change", (event) => {
       setLanguage(event.target.value);
     });
   }
+
+  // Custom language toggle menu
   if (el.languageToggle && el.languageMenu) {
     el.languageToggle.addEventListener("click", (event) => {
-      event.stopPropagation();
+      event.stopPropagation(); // Prevent document click from closing it immediately
       toggleLanguageMenu(el.languageMenu.classList.contains("hidden"));
     });
+    // Close language menu if clicking outside
     document.addEventListener("click", (event) => {
       if (!el.languageMenu || el.languageMenu.classList.contains("hidden")) return;
       if (el.languagePicker && event.target instanceof Node && el.languagePicker.contains(event.target)) return;
       toggleLanguageMenu(false);
     });
+    // Close on Escape key
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") toggleLanguageMenu(false);
     });
   }
+
+  // Individual language buttons within the custom menu
   if (el.languageButtons && el.languageButtons.length) {
     el.languageButtons.forEach((button) => {
       button.addEventListener("click", () => {
         const lang = button.dataset.langButton;
         if (lang) setLanguage(lang);
-        // Don't close menu here to allow user to see change
+        // Don't close menu immediately; allow user to see change or pick another
       });
     });
   }
 
-  // Hamburger Menu
+  // Hamburger Menu functionality
   if (el.menuBtn && el.mainMenu) {
     el.menuBtn.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -868,7 +1019,7 @@ function attachEvents() {
     document.addEventListener("click", (event) => {
       if (!el.mainMenu || el.mainMenu.classList.contains("hidden")) return;
       if (el.menuBtn && event.target instanceof Node && el.menuBtn.contains(event.target)) return;
-      if (el.mainMenu.contains(event.target)) return; // Don't close if clicking inside menu
+      if (el.mainMenu.contains(event.target)) return; // Keep open if clicking inside the menu
       toggleMainMenu(false);
     });
     document.addEventListener("keydown", (event) => {
@@ -876,14 +1027,14 @@ function attachEvents() {
     });
   }
 
-  // Voting Modal
+  // Voting Rules Modal (from main menu)
   if (el.menuVotingBtn) {
     el.menuVotingBtn.addEventListener("click", () => {
-      toggleMainMenu(false);
+      toggleMainMenu(false); // Close main menu first
       openVotingModal();
     });
   }
-  // Voting Modal from Summary View
+  // Voting Rules Modal (from summary view)
   const openVotingFromSummary = document.getElementById("openVotingFromSummary");
   if (openVotingFromSummary) {
     openVotingFromSummary.addEventListener("click", openVotingModal);
@@ -892,7 +1043,7 @@ function attachEvents() {
     el.votingClose.addEventListener("click", closeVotingModal);
   }
 
-  // Immersion Modal (from menu)
+  // Immersion Tips Modal (from main menu)
   if (el.menuImmersionBtn) {
     el.menuImmersionBtn.addEventListener("click", () => {
       toggleMainMenu(false);
@@ -900,6 +1051,7 @@ function attachEvents() {
     });
   }
 
+  // General number stepper buttons (+/- for player/wolf count)
   document.querySelectorAll(".step-btn").forEach((button) => {
     const targetId = button.dataset.target;
     const delta = Number(button.dataset.delta) || 0;
@@ -908,8 +1060,10 @@ function attachEvents() {
     button.addEventListener("click", () => adjustNumberInput(targetInput, delta));
   });
 
+  // Immersion Tips Modal (from direct button, if any)
   if (el.infoButton) el.infoButton.addEventListener("click", openInfoModal);
   if (el.infoClose) el.infoClose.addEventListener("click", closeInfoModal);
+  // Close info modal if clicking on the overlay backdrop
   if (el.infoOverlay) {
     el.infoOverlay.addEventListener("click", (event) => {
       if (event.target === el.infoOverlay) closeInfoModal();
@@ -917,11 +1071,20 @@ function attachEvents() {
   }
 }
 
+// ==========================================================================
+// GAME SETUP LOGIC
+// ==========================================================================
+
+/**
+ * Renders the optional special role checkboxes and their descriptions
+ * in the setup view.
+ */
 function renderRoleOptions() {
   el.roleOptions.innerHTML = "";
   OPTIONAL_CONFIG.forEach((config) => {
     const role = ROLE_LIBRARY[config.roleId];
-    const localized = getRoleContent(role.id);
+    if (!role) return; // Skip if role not found in library
+    const localized = getRoleContent(role.id); // Get localized role details
     const item = document.createElement("label");
     item.className = "option-item";
     const checkbox = document.createElement("input");
@@ -940,7 +1103,7 @@ function renderRoleOptions() {
     title.append(name);
 
     const tag = document.createElement("span");
-    tag.className = `tag ${role.team}`;
+    tag.className = `tag ${role.team}`; // Apply team-based styling to tag
     tag.textContent = localized.teamLabel;
     title.append(tag);
 
@@ -960,30 +1123,48 @@ function renderRoleOptions() {
     item.append(title, subtitle, description);
     el.roleOptions.appendChild(item);
   });
-  enforceRoleLimits();
+  enforceRoleLimits(); // Ensure roles are disabled if player count is too low
 }
 
+/**
+ * Updates the hint text for the wolf count based on the current player count.
+ */
 function updateWolfHint() {
   const playerTotal = Number(el.playerCount.value) || 0;
   const recommended = recommendWolves(playerTotal);
   el.wolfHint.textContent = t("setup.wolfHint", { count: recommended });
 }
 
+/**
+ * Recommends an optimal number of werewolves based on the total player count.
+ * @param {number} playerTotal - The total number of players.
+ * @returns {number} The recommended number of werewolves.
+ */
 function recommendWolves(playerTotal) {
   if (playerTotal < 8) return 1;
   if (playerTotal < 16) return 2;
   return 3;
 }
 
+/**
+ * Automatically adjusts the werewolf count input based on recommended values
+ * and current player count, ensuring it stays within valid bounds.
+ */
 function autoAdjustWolvesFromPlayers() {
   const playerTotal = Number(el.playerCount.value) || 0;
   if (playerTotal <= 0) return;
   const recommended = recommendWolves(playerTotal);
-  const limit = Math.max(1, playerTotal - 1);
-  const adjusted = Math.max(1, Math.min(recommended, limit));
+  const limit = Math.max(1, playerTotal - 1); // Max wolves is always one less than total players
+  const adjusted = Math.max(1, Math.min(recommended, limit)); // Clamp to 1 and limit
   el.wolfCount.value = String(adjusted);
 }
 
+/**
+ * Adjusts the value of a number input by a given delta, respecting min/max attributes.
+ * Dispatches an 'input' event to trigger associated listeners.
+ * @param {HTMLInputElement} input - The input element to adjust.
+ * @param {number} delta - The amount to add or subtract from the input's value.
+ */
 function adjustNumberInput(input, delta) {
   const min = Number(input.min) || Number.NEGATIVE_INFINITY;
   const max = Number(input.max) || Number.POSITIVE_INFINITY;
@@ -991,28 +1172,48 @@ function adjustNumberInput(input, delta) {
   value += delta;
   value = Math.min(max, Math.max(min, value));
   input.value = String(value);
-  input.dispatchEvent(new Event("input", { bubbles: true }));
+  input.dispatchEvent(new Event("input", { bubbles: true })); // Trigger listeners
 }
 
+/**
+ * Ensures the werewolf count is within valid ranges based on the total player count.
+ */
 function clampWolfCount() {
   const playerTotal = Number(el.playerCount.value) || 0;
   let wolves = Number(el.wolfCount.value) || 1;
-  if (wolves < 1) wolves = 1;
+  if (wolves < 1) wolves = 1; // Minimum 1 wolf
   if (playerTotal > 0) {
-    wolves = Math.min(wolves, Math.max(1, playerTotal - 1));
+    wolves = Math.min(wolves, Math.max(1, playerTotal - 1)); // Max wolves is playerTotal - 1
   }
   el.wolfCount.value = String(wolves);
 }
 
+/**
+ * Disables special role checkboxes if the current player count is too low
+ * for that role, and adds 'option-disabled' class for visual feedback.
+ */
 function enforceRoleLimits() {
+  const playerTotal = Number(el.playerCount.value) || 0;
   const inputs = el.roleOptions.querySelectorAll("input[type='checkbox']");
   inputs.forEach((input) => {
-    input.disabled = false;
+    const minPlayers = Number(input.dataset.minPlayers || "0");
     const optionItem = input.closest(".option-item");
-    if (optionItem) optionItem.classList.remove("option-disabled");
+
+    if (playerTotal < minPlayers) {
+      input.disabled = true;
+      input.checked = false; // Uncheck if disabled due to player count
+      if (optionItem) optionItem.classList.add("option-disabled");
+    } else {
+      input.disabled = false;
+      if (optionItem) optionItem.classList.remove("option-disabled");
+    }
   });
 }
 
+/**
+ * Retrieves an array of currently selected special roles with their copies.
+ * @returns {Array<object>} An array of objects, each containing `roleId` and `copies`.
+ */
 function getSelectedSpecials() {
   return Array.from(el.roleOptions.querySelectorAll("input:checked")).map((input) => ({
     roleId: input.value,
@@ -1020,22 +1221,30 @@ function getSelectedSpecials() {
   }));
 }
 
+/**
+ * Validates the current game setup (player count, wolf count, special roles)
+ * and displays an appropriate error message if invalid.
+ * @returns {boolean} True if the setup is valid, false otherwise.
+ */
 function updateDeckPreview() {
   const playerTotal = Number(el.playerCount.value) || 0;
   const wolfTotal = Number(el.wolfCount.value) || 0;
   const specialTotal = getSelectedSpecials().reduce((sum, item) => sum + item.copies, 0);
-  const selected = wolfTotal + 1 + specialTotal;
-  const remaining = playerTotal - selected;
+  const selected = wolfTotal + 1 + specialTotal; // Wolves + Seer (always 1) + other specials
+  const remaining = playerTotal - selected; // Number of villagers needed (can be negative if too many roles)
   let message = "";
   if (playerTotal < MIN_PLAYERS) message = t("errors.minPlayers", { count: MIN_PLAYERS });
   else if (wolfTotal < 1) message = t("errors.needWolf");
   else if (wolfTotal >= playerTotal) message = t("errors.tooManyWolves");
-  else if (remaining < 0) message = t("errors.tooManySpecials");
+  else if (remaining < 0) message = t("errors.tooManySpecials"); // Too many roles selected for player count
 
   el.validationMessage.textContent = message;
-  return message === "";
+  return message === ""; // Return true if valid, false if there's a message
 }
 
+/**
+ * Updates and renders a summary of the role distribution (e.g., "2x Werewolf, 1x Seer, 5x Villager").
+ */
 function updateRoleSummary() {
   if (!el.roleSummary || !el.roleSummaryContent) return;
 
@@ -1048,7 +1257,7 @@ function updateRoleSummary() {
     return;
   }
 
-  // Build role counts
+  // Build role counts map: { "Role Name": count }
   const roleCounts = {};
 
   // Add werewolves
@@ -1061,21 +1270,21 @@ function updateRoleSummary() {
   const seerRole = getRoleContent("seer");
   roleCounts[seerRole.name] = 1;
 
-  // Add special roles
+  // Add other special roles
   specialsSelected.forEach((special) => {
     const roleContent = getRoleContent(special.roleId);
     roleCounts[roleContent.name] = (roleCounts[roleContent.name] || 0) + special.copies;
   });
 
-  // Calculate villagers
+  // Calculate remaining villagers
   const specialTotal = wolfTotal + 1 + specialsSelected.reduce((sum, item) => sum + item.copies, 0);
   const villagerCount = playerTotal - specialTotal;
   if (villagerCount > 0) {
     const villagerRole = getRoleContent("villager");
-    roleCounts[villagerRole.name] = villagerCount;
+    roleCounts[villagerRole.name] = (roleCounts[villagerRole.name] || 0) + villagerCount; // Add to existing if any
   }
 
-  // Render summary
+  // Render summary items
   el.roleSummaryContent.innerHTML = "";
   Object.entries(roleCounts).forEach(([roleName, count]) => {
     const item = document.createElement("span");
@@ -1087,35 +1296,41 @@ function updateRoleSummary() {
   el.roleSummary.classList.remove("hidden");
 }
 
+/**
+ * Adds a new player name from the input field to the custom names list.
+ */
 function handleAddPlayer() {
   const name = el.playerNameInput.value.trim();
-  if (!name) return;
+  if (!name) return; // Ignore empty names
   state.customNames.push(name);
-  el.playerNameInput.value = "";
+  el.playerNameInput.value = ""; // Clear input field
   renderPlayerList();
   persistState();
 }
 
+/**
+ * Renders the list of custom player names as draggable chips.
+ * Includes drag-and-drop and touch reordering functionality.
+ */
 function renderPlayerList() {
   el.playerList.innerHTML = "";
   state.customNames.forEach((name, index) => {
     const item = document.createElement("li");
     item.className = "player-chip";
-    item.draggable = true;
+    item.draggable = true; // Enable drag for desktop
     item.dataset.index = String(index);
 
-
-    // Player name
+    // Player name display
     const nameSpan = document.createElement("span");
     nameSpan.className = "player-name";
     nameSpan.textContent = name;
     item.appendChild(nameSpan);
 
-    // Actions container
+    // Actions container for buttons
     const actions = document.createElement("div");
     actions.className = "chip-actions";
 
-    // Remove button
+    // Remove player button
     const removeButton = document.createElement("button");
     removeButton.type = "button";
     removeButton.className = "chip-remove";
@@ -1125,6 +1340,7 @@ function renderPlayerList() {
     actions.appendChild(removeButton);
 
     item.appendChild(actions);
+    el.playerList.appendChild(item);
 
     // Drag event listeners (desktop)
     item.addEventListener("dragstart", handleDragStart);
@@ -1134,33 +1350,32 @@ function renderPlayerList() {
     item.addEventListener("dragenter", handleDragEnter);
     item.addEventListener("dragleave", handleDragLeave);
 
-    // Touch event listeners (mobile)
+    // Touch event listeners (mobile) for reordering
     item.addEventListener("touchstart", handleTouchStart, { passive: false });
     item.addEventListener("touchmove", handleTouchMove, { passive: false });
     item.addEventListener("touchend", handleTouchEnd);
-
-    el.playerList.appendChild(item);
   });
 
+  // Toggle visibility of "Clear list" and "Reorder hint" based on list emptiness
   const isEmpty = state.customNames.length === 0;
   el.clearPlayersBtn.classList.toggle("hidden", isEmpty);
   if (el.reorderHint) el.reorderHint.classList.toggle("hidden", isEmpty);
 }
 
-// Drag-and-drop handlers for player list
+// Drag-and-drop logic for player list reordering (Desktop)
 let draggedItem = null;
 let draggedIndex = null;
 
 function handleDragStart(event) {
   draggedItem = event.currentTarget;
   draggedIndex = Number(draggedItem.dataset.index);
-  draggedItem.classList.add("dragging");
+  draggedItem.classList.add("dragging"); // Add visual feedback
   event.dataTransfer.effectAllowed = "move";
-  event.dataTransfer.setData("text/html", draggedItem.innerHTML);
+  event.dataTransfer.setData("text/html", draggedItem.innerHTML); // Required for Firefox
 }
 
 function handleDragOver(event) {
-  event.preventDefault();
+  event.preventDefault(); // Allow dropping
   event.dataTransfer.dropEffect = "move";
   return false;
 }
@@ -1168,13 +1383,13 @@ function handleDragOver(event) {
 function handleDragEnter(event) {
   const target = event.currentTarget;
   if (target !== draggedItem && target.classList.contains("player-chip")) {
-    target.classList.add("drag-over");
+    target.classList.add("drag-over"); // Highlight potential drop target
   }
 }
 
 function handleDragLeave(event) {
   const target = event.currentTarget;
-  target.classList.remove("drag-over");
+  target.classList.remove("drag-over"); // Remove highlight
 }
 
 function handleDrop(event) {
@@ -1187,23 +1402,21 @@ function handleDrop(event) {
   if (target !== draggedItem && target.classList.contains("player-chip")) {
     const targetIndex = Number(target.dataset.index);
 
-    // Reorder the array
+    // Reorder the customNames array
     const [draggedName] = state.customNames.splice(draggedIndex, 1);
     state.customNames.splice(targetIndex, 0, draggedName);
 
-    // Re-render and persist
-    renderPlayerList();
+    renderPlayerList(); // Re-render the updated list
     persistState();
   }
-
   return false;
 }
 
 function handleDragEnd(event) {
   const target = event.currentTarget;
-  target.classList.remove("dragging");
+  target.classList.remove("dragging"); // Remove visual feedback
 
-  // Clean up any remaining drag-over classes
+  // Clean up any lingering drag-over highlights
   document.querySelectorAll(".player-chip").forEach((item) => {
     item.classList.remove("drag-over");
   });
@@ -1212,13 +1425,13 @@ function handleDragEnd(event) {
   draggedIndex = null;
 }
 
-// Touch event handlers for mobile
+// Touch event handlers for player list reordering (Mobile)
 let touchStartY = 0;
-let touchCurrentItem = null;
+let touchCurrentItem = null; // The item currently being touched/dragged
 
 function handleTouchStart(event) {
   touchCurrentItem = event.currentTarget;
-  draggedItem = touchCurrentItem;
+  draggedItem = touchCurrentItem; // Use draggedItem for consistency with desktop D&D
   draggedIndex = Number(touchCurrentItem.dataset.index);
   touchStartY = event.touches[0].clientY;
 
@@ -1229,23 +1442,23 @@ function handleTouchStart(event) {
 function handleTouchMove(event) {
   if (!touchCurrentItem) return;
 
-  event.preventDefault(); // Prevent scrolling while dragging
+  event.preventDefault(); // Prevent page scrolling while dragging an item
 
   const touch = event.touches[0];
   const touchY = touch.clientY;
 
-  // Find the element under the touch point
+  // Find the element directly under the touch point
   const elementBelow = document.elementFromPoint(touch.clientX, touchY);
-  const targetChip = elementBelow?.closest(".player-chip");
+  const targetChip = elementBelow?.closest(".player-chip"); // Check if it's a player chip
 
-  // Remove drag-over from all items
+  // Remove drag-over from all items except the one being dragged
   document.querySelectorAll(".player-chip").forEach((item) => {
     if (item !== touchCurrentItem) {
       item.classList.remove("drag-over");
     }
   });
 
-  // Add drag-over to the target if it's different from the dragged item
+  // Add drag-over to the potential drop target
   if (targetChip && targetChip !== touchCurrentItem) {
     targetChip.classList.add("drag-over");
   }
@@ -1268,20 +1481,26 @@ function handleTouchEnd(event) {
   if (targetChip && targetChip !== touchCurrentItem) {
     const targetIndex = Number(targetChip.dataset.index);
 
-    // Reorder the array
+    // Reorder the customNames array
     const [draggedName] = state.customNames.splice(draggedIndex, 1);
     state.customNames.splice(targetIndex, 0, draggedName);
 
-    // Re-render and persist
-    renderPlayerList();
+    renderPlayerList(); // Re-render to update order
     persistState();
   }
 
+  // Reset touch state variables
   touchCurrentItem = null;
   draggedItem = null;
   draggedIndex = null;
 }
 
+/**
+ * Generates an array of player names, using custom names if provided,
+ * or default "Player X" names otherwise.
+ * @param {number} playerTotal - The total number of players.
+ * @returns {Array<string>} An array of player names.
+ */
 function buildPlayerList(playerTotal) {
   const players = [];
   for (let i = 0; i < playerTotal; i += 1) {
@@ -1290,11 +1509,22 @@ function buildPlayerList(playerTotal) {
   return players;
 }
 
+/**
+ * Constructs the game deck with roles based on player count, wolf count, and selected special roles.
+ * @param {object} options - Configuration for building the deck.
+ * @param {number} options.playerTotal - Total number of players.
+ * @param {number} options.wolfTotal - Total number of werewolves.
+ * @param {Array<object>} options.specials - Array of selected special roles.
+ * @returns {Array<object>} A shuffled array of role cards.
+ */
 function buildDeck({ playerTotal, wolfTotal, specials }) {
   const deck = [];
+  // Add werewolves
   for (let i = 0; i < wolfTotal; i += 1) deck.push(createCard(ROLE_LIBRARY.werewolf));
+  // Add seer (always included)
   deck.push(createCard(ROLE_LIBRARY.seer));
 
+  // Add other special roles
   specials.forEach((special) => {
     const role = ROLE_LIBRARY[special.roleId];
     if (!role) return;
@@ -1303,12 +1533,18 @@ function buildDeck({ playerTotal, wolfTotal, specials }) {
     }
   });
 
+  // Fill remaining slots with villagers
   while (deck.length < playerTotal) deck.push(createCard(ROLE_LIBRARY.villager));
-  return shuffle(deck);
+  return shuffle(deck); // Randomize the deck
 }
 
+/**
+ * Creates a new role card object based on a role definition from `ROLE_LIBRARY`.
+ * @param {object} role - The base role object.
+ * @returns {object} A new card object.
+ */
 function createCard(role) {
-  const base = role || ROLE_LIBRARY.villager;
+  const base = role || ROLE_LIBRARY.villager; // Default to villager if role is undefined
   return {
     roleId: base.id,
     name: base.name,
@@ -1319,11 +1555,20 @@ function createCard(role) {
   };
 }
 
+/**
+ * Reconstructs a deck from an array of role IDs (used for state restoration).
+ * @param {Array<string>} roleIds - An array of role IDs.
+ * @returns {Array<object>} An array of role card objects.
+ */
 function deckFromRoleIds(roleIds) {
   if (!Array.isArray(roleIds)) return [];
   return roleIds.map((roleId) => createCard(ROLE_LIBRARY[roleId] || ROLE_LIBRARY.villager));
 }
 
+/**
+ * Detects if a Mythomaniac is present in the current deck and initializes its status.
+ * @returns {object|null} The initial mythStatus object, or null if no Mythomaniac.
+ */
 function detectMythStatusFromDeck() {
   if (!state.players.length || !state.deck.length) return null;
   const playerIndex = state.deck.findIndex((card) => card.roleId === "mythomaniac");
@@ -1337,6 +1582,11 @@ function detectMythStatusFromDeck() {
   };
 }
 
+/**
+ * Normalizes the Mythomaniac status object from saved data, ensuring player names and indices are correct.
+ * @param {object} savedStatus - The Mythomaniac status object loaded from storage.
+ * @returns {object|null} The normalized mythStatus object, or null.
+ */
 function normalizeMythStatus(savedStatus) {
   if (!state.players.length) return null;
   if (savedStatus) {
@@ -1344,6 +1594,7 @@ function normalizeMythStatus(savedStatus) {
     if (savedStatus.playerName) {
       index = state.players.findIndex((name) => name === savedStatus.playerName);
     }
+    // Fallback if player name not found (e.g., player renamed or removed)
     if (index === -1 && typeof savedStatus.playerIndex === "number") {
       index = savedStatus.playerIndex;
     }
@@ -1357,9 +1608,14 @@ function normalizeMythStatus(savedStatus) {
       };
     }
   }
-  return detectMythStatusFromDeck();
+  return detectMythStatusFromDeck(); // Re-detect if no valid saved status
 }
 
+/**
+ * Shuffles an array (Fisher-Yates algorithm).
+ * @param {Array<any>} deck - The array to shuffle.
+ * @returns {Array<any>} The shuffled array.
+ */
 function shuffle(deck) {
   const arr = [...deck];
   for (let i = arr.length - 1; i > 0; i -= 1) {
@@ -1369,9 +1625,13 @@ function shuffle(deck) {
   return arr;
 }
 
+/**
+ * Initiates a new game: builds the deck, assigns roles to players,
+ * resets game state, and transitions to the reveal phase.
+ */
 function startGame() {
-  enforceRoleLimits();
-  if (!updateDeckPreview()) return;
+  enforceRoleLimits(); // Re-validate selected roles one last time
+  if (!updateDeckPreview()) return; // Prevent starting if setup is invalid
 
   const playerTotal = Number(el.playerCount.value) || 0;
   const wolfTotal = Number(el.wolfCount.value) || 0;
@@ -1380,26 +1640,33 @@ function startGame() {
   state.players = buildPlayerList(playerTotal);
   state.deck = buildDeck({ playerTotal, wolfTotal, specials });
   state.revealIndex = 0;
-  state.activeSpecialIds = Array.from(new Set(specials.map((item) => item.roleId)));
+  state.activeSpecialIds = Array.from(new Set(specials.map((item) => item.roleId))); // Unique special roles
   state.mythStatus = detectMythStatusFromDeck();
   state.eliminatedPlayers = [];
   state.narratorDay = 1;
-  state.maxDays = state.activeSpecialIds.includes("bodyguard") ? null : Math.max(1, state.players.length);
-  state.guideSteps = [];
+  state.maxDays = state.activeSpecialIds.includes("bodyguard") ? null : Math.max(1, state.players.length); // Max days if bodyguard is present
+  state.guideSteps = []; // Reset guide steps
   state.guideStepIndex = 0;
   state.victory = null;
   state.revealComplete = false;
-  state.playerVotes = {};
-  state.benvenutoPlayer = null;
+  state.playerVotes = {}; // Reset votes
+  state.benvenutoPlayer = null; // Reset Benvenuto
 
-  prepareReveal();
+  prepareReveal(); // Set up the first card reveal
   showView("reveal");
   persistState();
 }
 
+// ==========================================================================
+// REVEAL PHASE LOGIC
+// ==========================================================================
+
+/**
+ * Prepares the UI to reveal the next player's role card.
+ */
 function prepareReveal() {
   if (!state.deck.length) return;
-  clearHandoffCountdown();
+  clearHandoffCountdown(); // Clear any existing handoff timer
   state.revealComplete = false;
   if (el.revealStatus) el.revealStatus.classList.remove("hidden");
   if (el.roleCard) el.roleCard.classList.remove("hidden");
@@ -1407,7 +1674,7 @@ function prepareReveal() {
   el.hideBtn.classList.add("hidden");
   el.openSummaryBtn.classList.add("hidden");
   el.roleImage.classList.add("hidden");
-  el.roleImage.removeAttribute("src");
+  el.roleImage.removeAttribute("src"); // Clear previous image
   el.roleCard.classList.remove("with-image");
   el.handoffNotice.classList.add("hidden");
 
@@ -1416,6 +1683,7 @@ function prepareReveal() {
   el.playerProgress.textContent = t("status.player", { current, total });
   el.currentPlayerLabel.textContent = state.players[state.revealIndex];
 
+  // Reset role card display to "hidden" state
   el.roleCard.dataset.team = "unknown";
   el.roleCard.classList.add("can-reveal");
   el.roleTeam.textContent = t("reveal.hiddenTeam");
@@ -1423,12 +1691,15 @@ function prepareReveal() {
   el.roleDescription.textContent = t("reveal.prompt");
 }
 
+/**
+ * Reveals the current player's role card by updating the UI with role details.
+ */
 function revealCard() {
   const card = state.deck[state.revealIndex];
   if (!card) return;
-  el.roleCard.classList.remove("can-reveal");
-  const roleText = getRoleContent(card.roleId);
-  el.roleCard.dataset.team = card.team;
+  el.roleCard.classList.remove("can-reveal"); // Cannot tap again to reveal
+  const roleText = getRoleContent(card.roleId); // Get localized role text
+  el.roleCard.dataset.team = card.team; // Set team for styling
   el.roleTeam.textContent = roleText.teamLabel;
   el.roleName.textContent = roleText.name;
   el.roleDescription.textContent = roleText.description;
@@ -1441,11 +1712,15 @@ function revealCard() {
     el.roleImage.classList.add("hidden");
     el.roleCard.classList.remove("with-image");
   }
-  el.revealBtn.classList.add("hidden");
-  el.hideBtn.classList.remove("hidden");
-  scrollToBottom();
+  el.revealBtn.classList.add("hidden"); // Hide reveal button
+  el.hideBtn.classList.remove("hidden"); // Show next player button
+  scrollToBottom(); // Ensure card is visible
 }
 
+/**
+ * Advances to the next player's card in the reveal sequence, or
+ * shows the completion state if all cards have been revealed.
+ */
 function nextPlayer() {
   if (state.revealIndex < state.players.length - 1) {
     state.revealIndex += 1;
@@ -1458,9 +1733,14 @@ function nextPlayer() {
   scrollToBottom();
 }
 
+/**
+ * Displays the completion state after all role cards have been revealed,
+ * prompting for handoff to the narrator.
+ */
 function showCompletionState() {
   state.revealComplete = true;
-  el.roleCard.dataset.team = "humans";
+  // Reset card display
+  el.roleCard.dataset.team = "humans"; // Default to humans for generic styling
   el.roleCard.classList.remove("can-reveal");
   el.roleTeam.textContent = "";
   el.roleName.textContent = "";
@@ -1470,24 +1750,37 @@ function showCompletionState() {
   el.roleImage.classList.add("hidden");
   el.roleImage.removeAttribute("src");
   el.roleCard.classList.remove("with-image");
-  if (el.roleCard) el.roleCard.classList.add("hidden");
-  if (el.revealStatus) el.revealStatus.classList.add("hidden");
-  el.handoffNotice.classList.remove("hidden");
+
+  if (el.roleCard) el.roleCard.classList.add("hidden"); // Hide the card itself
+  if (el.revealStatus) el.revealStatus.classList.add("hidden"); // Hide reveal progress
+  el.handoffNotice.classList.remove("hidden"); // Show handoff message
   el.revealBtn.classList.add("hidden");
   el.hideBtn.classList.add("hidden");
-  el.openSummaryBtn.classList.remove("hidden");
-  startHandoffCountdown(5);
+  el.openSummaryBtn.classList.remove("hidden"); // Show narrator handoff button
+  startHandoffCountdown(5); // Start a brief countdown
   scrollToBottom();
 }
 
+/**
+ * Transitions to the summary view for the narrator.
+ */
 function showSummary() {
   clearHandoffCountdown();
-  renderSummaryList();
-  updateNarratorUI();
+  renderSummaryList(); // Render the list of living/fallen players
+  updateNarratorUI(); // Update narrator controls and guide
   showView("summary");
   persistState();
 }
 
+// ==========================================================================
+// SUMMARY & NARRATION LOGIC
+// ==========================================================================
+
+/**
+ * Handles the lynching of a player.
+ * Confirms the action and checks for immediate victory conditions.
+ * @param {string} player - The name of the player to lynch.
+ */
 function lynchPlayer(player) {
   if (!player) return;
 
@@ -1495,24 +1788,24 @@ function lynchPlayer(player) {
     // Predict if this lynch will trigger a victory
     const outcome = predictVictoryOnElimination(player);
     const doLynch = () => {
+      // Add player to eliminated list if not already there, mark as lynched
       if (!state.eliminatedPlayers.some((e) => e.name === player)) {
         state.eliminatedPlayers.push({
           name: player,
-          locked: false,
+          locked: false, // Can be revived if needed (e.g., for testing)
           type: 'lynched',
           day: state.narratorDay
         });
       }
-      // Assign Benvenuto to this player
-      state.benvenutoPlayer = player;
-      // Reset votes after lynch
-      state.playerVotes = {};
+      state.benvenutoPlayer = player; // Set this player as the most recently lynched (Benvenuto)
+      state.playerVotes = {}; // Reset votes for next round
       renderSummaryList();
       persistState();
-      evaluateVictoryConditions();
+      evaluateVictoryConditions(); // Check if game ends
     };
+
     if (outcome) {
-      // Confirm victory trigger with translated outcome
+      // If a victory is predicted, confirm with the user, including the winning team
       const victoryText = getVictoryText(outcome.team);
       confirmAction(t("confirmation.eliminationVictory", { player, outcome: victoryText.title }), () => {
         doLynch();
@@ -1523,12 +1816,17 @@ function lynchPlayer(player) {
   });
 }
 
+/**
+ * Computes which players are "Indiziato" (suspects) based on current votes and Benvenuto player.
+ * Follows specific tie-breaking rules.
+ * @returns {Array<string>} An array of player names who are suspects.
+ */
 function computeIndiziatoPlayers() {
   const votes = state.playerVotes;
   const candidates = [];
   const voteCounts = {};
 
-  // Calculate votes for alive players only
+  // Count votes for alive players only
   state.players.forEach((player) => {
     const isAlive = !state.eliminatedPlayers.some((e) => e.name === player);
     if (isAlive) {
@@ -1539,59 +1837,54 @@ function computeIndiziatoPlayers() {
   const sortedPlayers = Object.keys(voteCounts).sort((a, b) => voteCounts[b] - voteCounts[a]);
   if (sortedPlayers.length === 0) return [];
 
-  // If no votes at all, no suspects
+  // If top player has 0 votes, no suspects
   if (voteCounts[sortedPlayers[0]] === 0) return [];
 
-  // Top 1
+  // Always include the top voter as a candidate
   candidates.push(sortedPlayers[0]);
 
-  // Find second place
   if (sortedPlayers.length > 1) {
     const firstScore = voteCounts[sortedPlayers[0]];
-    // Check for ties for first place
+    // Filter players who tied for the top score
     const firstTies = sortedPlayers.filter((p) => voteCounts[p] === firstScore);
 
     if (firstTies.length >= 2) {
-      // Tie for first place: pick the two closest to Benvenuto (clockwise)
-      // Actually, rules say: "The two players with most votes... In case of tie, choose who is closest to Benvenuto"
-      // If 3 people have 5 votes, we pick the 2 closest to Benvenuto.
+      // If multiple players tied for first place, select the two closest to Benvenuto (clockwise)
       const benIdx = state.benvenutoPlayer ? state.players.indexOf(state.benvenutoPlayer) : -1;
       firstTies.sort((a, b) => {
         const idxA = state.players.indexOf(a);
         const idxB = state.players.indexOf(b);
-        // If benIdx is -1 (no benvenuto), fallback to index order or random? Standard index order is fine.
-        if (benIdx === -1) return idxA - idxB;
-
-        // Distance clockwise from Benvenuto (starting from left)
-        // (TargetIndex - StartIndex + Length) % Length
-        // We want the one to the LEFT of Benvenuto to be "closest" in clockwise order?
-        // Rules: "partendo da chi è a sinistra di quello che ha il “Benvenuto!”" -> starting from left of Benvenuto.
-        // Left of Benvenuto means index + 1 (clockwise).
-        const distA = (idxA - benIdx + state.players.length) % state.players.length;
-        const distB = (idxB - benIdx + state.players.length) % state.players.length;
+        if (benIdx === -1) return idxA - idxB; // Fallback to natural order if no Benvenuto
+        // Calculate clockwise distance from player to the left of Benvenuto
+        const benvenutoLeftIdx = (benIdx + 1) % state.players.length;
+        const distA = (idxA - benvenutoLeftIdx + state.players.length) % state.players.length;
+        const distB = (idxB - benvenutoLeftIdx + state.players.length) % state.players.length;
         return distA - distB;
       });
-      return [firstTies[0], firstTies[1]];
+      // Ensure we pick at most two even if more tied
+      return [firstTies[0], firstTies[1]].filter(Boolean);
     } else {
-      // No tie for first place. Look for second place.
+      // No tie for first place. Look for the second highest vote getter.
       const secondScore = voteCounts[sortedPlayers[1]];
 
-      // IMPORTANT: Second place must have > 0 votes
+      // Second place must have > 0 votes to be a suspect
       if (secondScore === 0) return candidates;
 
       const secondTies = sortedPlayers.filter((p) => voteCounts[p] === secondScore);
 
       if (secondTies.length === 1) {
+        // If only one player has the second highest score
         candidates.push(secondTies[0]);
       } else {
-        // Tie for second place
+        // If multiple players tied for second place, select the one closest to Benvenuto (clockwise)
         const benIdx = state.benvenutoPlayer ? state.players.indexOf(state.benvenutoPlayer) : -1;
         secondTies.sort((a, b) => {
           const idxA = state.players.indexOf(a);
           const idxB = state.players.indexOf(b);
           if (benIdx === -1) return idxA - idxB;
-          const distA = (idxA - benIdx + state.players.length) % state.players.length;
-          const distB = (idxB - benIdx + state.players.length) % state.players.length;
+          const benvenutoLeftIdx = (benIdx + 1) % state.players.length;
+          const distA = (idxA - benvenutoLeftIdx + state.players.length) % state.players.length;
+          const distB = (idxB - benvenutoLeftIdx + state.players.length) % state.players.length;
           return distA - distB;
         });
         candidates.push(secondTies[0]);
@@ -1599,43 +1892,56 @@ function computeIndiziatoPlayers() {
     }
   }
 
-  return candidates;
+  // Ensure only up to 2 candidates are returned
+  return candidates.slice(0, 2);
 }
 
+/**
+ * Renders the summary list of players, including living and fallen.
+ * Displays vote controls, elimination options, and status badges.
+ */
 function renderSummaryList() {
+  // If summaryList element is not ready, just update related components
   if (!el.summaryList) {
     renderFallenList();
     renderMythPanel();
     updateEliminationSelect();
     return;
   }
+
+  // Control the collapse state of the living players details panel
   if (el.livingDetails) {
-    suppressLivingToggle = true;
+    suppressLivingToggle = true; // Prevent state update loop
     el.livingDetails.open = !state.playersCollapsed;
     suppressLivingToggle = false;
   }
+
   el.summaryList.innerHTML = "";
+  // If there's a victory, filter players to show only winners
   const winnerEntries = state.victory ? getVictorySurvivors() : null;
   const winnersSet = winnerEntries ? new Set(winnerEntries.map((entry) => entry.name)) : null;
   let renderedCount = 0;
 
-  // Compute automatic indiziato players
+  // Compute "Indiziato" (suspect) players for the current voting round
   const indiziatoPlayers = computeIndiziatoPlayers();
 
   state.players.forEach((player, index) => {
+    // If game has ended, only render players on the winning team
     if (winnersSet && !winnersSet.has(player)) return;
+
     const card = state.deck[index];
     const eliminationEntry = state.eliminatedPlayers.find((entry) => entry.name === player);
     const eliminated = Boolean(eliminationEntry);
     const isAlive = !eliminated;
-    const isBenvenuto = player === state.benvenutoPlayer;
-    const isIndiziato = indiziatoPlayers.includes(player);
+    const isBenvenuto = player === state.benvenutoPlayer; // The most recently lynched player
+    const isIndiziato = indiziatoPlayers.includes(player); // Player is a suspect
 
     const listItem = document.createElement("li");
     listItem.className = "summary-item";
-    if (eliminated) listItem.classList.add("eliminated");
-    if (isBenvenuto) listItem.classList.add("benvenuto");
+    if (eliminated) listItem.classList.add("eliminated"); // Visually mark eliminated players
+    if (isBenvenuto) listItem.classList.add("benvenuto"); // Highlight Benvenuto player
 
+    // Add role image if available
     if (card && card.image) {
       const localized = getRoleContent(card.roleId);
       const img = document.createElement("img");
@@ -1648,7 +1954,7 @@ function renderSummaryList() {
     const info = document.createElement("div");
     info.className = "summary-info";
 
-    // Name row with badges
+    // Player name with dynamic badges
     const nameRow = document.createElement("div");
     nameRow.className = "summary-name-row";
     const name = document.createElement("span");
@@ -1657,7 +1963,7 @@ function renderSummaryList() {
     nameRow.appendChild(name);
     info.appendChild(nameRow);
 
-    // Badges container (absolute positioned)
+    // Container for status badges (Benvenuto, Indiziato)
     const badgeContainer = document.createElement("div");
     badgeContainer.className = "badge-container";
 
@@ -1677,6 +1983,7 @@ function renderSummaryList() {
     }
     listItem.appendChild(badgeContainer);
 
+    // Player role (displayed below name)
     const role = document.createElement("span");
     role.className = "summary-role";
     const roleText = card ? getRoleContent(card.roleId) : null;
@@ -1717,35 +2024,34 @@ function renderSummaryList() {
 
     listItem.appendChild(info);
 
-    // Action buttons container
+    // Action buttons container (Eliminate, Lynch, Revive)
     const actions = document.createElement("div");
     actions.className = "summary-actions";
 
-
-
-    // Eliminate/Revive button
     const actionBtn = document.createElement("button");
     actionBtn.type = "button";
     actionBtn.className = "mini-action";
     actionBtn.dataset.player = player;
 
-    // Check if player is wolf or hamster (cannot be sbranato)
+    // Determine if player is a wolf or werehamster (cannot be "mauled" or "sbranato")
     const isWolfOrHamster = card && (card.team === "wolves" || card.roleId === "werehamster");
 
     if (eliminated) {
+      // Player is eliminated, show "Revive" button
       if (eliminationEntry?.locked) {
         actionBtn.classList.add("revive");
         actionBtn.textContent = t("buttons.locked");
-        actionBtn.disabled = true;
+        actionBtn.disabled = true; // Cannot revive if locked
       } else {
         actionBtn.classList.add("revive");
         actionBtn.textContent = t("buttons.revive");
       }
     } else {
-      // Only humans can be sbranato
+      // Player is alive, show "Eliminate" (night kill) button
       if (isWolfOrHamster) {
+        // Wolves/Hamsters can't be "mauled" by wolves (only lynched or seen by seer)
         actionBtn.classList.add("remove");
-        actionBtn.textContent = t("buttons.eliminate");
+        actionBtn.textContent = t("buttons.eliminate"); // "Sbranato" in Italian, for example
         actionBtn.disabled = true;
         actionBtn.style.opacity = "0.5";
       } else {
@@ -1755,7 +2061,7 @@ function renderSummaryList() {
     }
     actions.appendChild(actionBtn);
 
-    // Lynch button (only for alive players and if no one has been lynched this turn)
+    // Lynch button: only available for alive players and if no one has been lynched this turn yet
     const alreadyLynchedThisTurn = state.eliminatedPlayers.some(
       (e) => e.type === 'lynched' && e.day === state.narratorDay && !e.locked
     );
@@ -1766,27 +2072,30 @@ function renderSummaryList() {
       lynchBtn.dataset.player = player;
       lynchBtn.textContent = "🔥 " + t("buttons.lynch");
       lynchBtn.title = t("buttons.lynch");
-      actions.insertBefore(lynchBtn, actionBtn);
+      actions.insertBefore(lynchBtn, actionBtn); // Place lynch button before eliminate button
     }
 
     listItem.appendChild(actions);
     el.summaryList.appendChild(listItem);
-    if (isAlive) renderedCount += 1;
+    if (isAlive) renderedCount += 1; // Count living players
   });
 
+  // Display message if no living players (e.g., game over scenarios)
   if (renderedCount === 0) {
     const empty = document.createElement("li");
     empty.className = "help";
     empty.textContent = t("living.empty");
     el.summaryList.appendChild(empty);
   }
-  // Always use single column in list view (removed two-column toggle)
-  if (el.livingCount) el.livingCount.textContent = String(renderedCount);
-  renderFallenList();
-  renderMythPanel();
-  updateEliminationSelect();
+  if (el.livingCount) el.livingCount.textContent = String(renderedCount); // Update living count display
+  renderFallenList(); // Re-render fallen players list
+  renderMythPanel(); // Re-render Mythomaniac panel
+  updateEliminationSelect(); // Update elimination dropdown
 }
 
+/**
+ * Updates the active state of language selection buttons.
+ */
 function updateLanguageButtons() {
   if (el.languageButtons && el.languageButtons.length) {
     el.languageButtons.forEach((button) => {
@@ -1795,9 +2104,14 @@ function updateLanguageButtons() {
       button.setAttribute("aria-selected", String(isActive));
     });
   }
+  // If there's a flag icon, update it
   if (el.languageFlag) el.languageFlag.textContent = getLanguageFlag(state.language);
 }
 
+/**
+ * Toggles the visibility of the main hamburger menu.
+ * @param {boolean} [forceState] - Optional: true to show, false to hide. If omitted, toggles current state.
+ */
 function toggleMainMenu(forceState) {
   if (!el.mainMenu || !el.menuBtn) return;
   const shouldShow = typeof forceState === "boolean" ? forceState : el.mainMenu.classList.contains("hidden");
@@ -1806,24 +2120,39 @@ function toggleMainMenu(forceState) {
   el.menuBtn.setAttribute("aria-expanded", String(shouldShow));
 }
 
+/**
+ * Opens the voting rules modal.
+ */
 function openVotingModal() {
   if (!el.votingOverlay) return;
   el.votingOverlay.classList.remove("hidden");
-  document.body.style.overflow = "hidden";
+  document.body.style.overflow = "hidden"; // Prevent background scrolling
 }
 
+/**
+ * Closes the voting rules modal.
+ */
 function closeVotingModal() {
   if (!el.votingOverlay) return;
   el.votingOverlay.classList.add("hidden");
-  document.body.style.overflow = "";
+  document.body.style.overflow = ""; // Restore background scrolling
 }
 
+/**
+ * Returns the Unicode flag emoji for a given language code.
+ * @param {string} lang - The language code (e.g., 'en', 'es', 'it').
+ * @returns {string} The flag emoji.
+ */
 function getLanguageFlag(lang) {
   if (lang === "es") return "🇪🇸";
   if (lang === "it") return "🇮🇹";
-  return "🇬🇧";
+  return "🇬🇧"; // Default to UK flag for English
 }
 
+/**
+ * Toggles the visibility of the custom language selection menu.
+ * @param {boolean} [forceState] - Optional: true to show, false to hide.
+ */
 function toggleLanguageMenu(forceState) {
   if (!el.languageMenu || !el.languageToggle) return;
   const shouldShow = typeof forceState === "boolean" ? forceState : el.languageMenu.classList.contains("hidden");
@@ -1833,6 +2162,9 @@ function toggleLanguageMenu(forceState) {
   el.languageToggle.setAttribute("aria-expanded", String(shouldShow));
 }
 
+/**
+ * Updates the dropdown list of alive players for elimination.
+ */
 function updateEliminationSelect() {
   if (!el.eliminationSelect) return;
   const alivePlayers = getLivingPlayers();
@@ -1851,51 +2183,68 @@ function updateEliminationSelect() {
   });
   const disabled = alivePlayers.length === 0;
   el.eliminationSelect.disabled = disabled;
-  if (el.eliminateBtn) el.eliminateBtn.disabled = disabled;
+  if (el.eliminateBtn) el.eliminateBtn.disabled = disabled; // Disable eliminate button if no players
 }
 
+/**
+ * Triggers player elimination based on the selection in the dropdown.
+ */
 function eliminateFromSelect() {
   if (!el.eliminationSelect) return;
   const name = el.eliminationSelect.value;
-  if (!name || isEliminated(name)) return;
+  if (!name || isEliminated(name)) return; // Don't eliminate if already eliminated or no name selected
   promptElimination(name, {
     afterConfirm: () => {
-      el.eliminationSelect.value = "";
+      el.eliminationSelect.value = ""; // Clear selection after elimination
     },
   });
 }
 
+/**
+ * Toggles a player's elimination status (eliminates if alive, revives if eliminated).
+ * @param {string} player - The name of the player to toggle.
+ */
 function toggleElimination(player) {
-  if (state.victory) return;
+  if (state.victory) return; // Cannot eliminate/revive if game has ended
   if (!player) return;
   const index = state.eliminatedPlayers.findIndex((e) => e.name === player);
   if (index >= 0) {
-    // Revive
-    if (state.eliminatedPlayers[index].locked) return; // Cannot revive locked players
-    state.eliminatedPlayers.splice(index, 1);
+    // Player is eliminated, so revive them
+    if (state.eliminatedPlayers[index].locked) return; // Cannot revive locked players (e.g., from previous days)
+    state.eliminatedPlayers.splice(index, 1); // Remove from eliminated list
 
-    // If this player was Benvenuto, clear it
+    // If this player was Benvenuto, clear that status
     if (state.benvenutoPlayer === player) {
       state.benvenutoPlayer = null;
     }
   } else {
-    // Eliminate (Sbranato) - DO NOT assign Benvenuto
+    // Player is alive, so eliminate them (as a night kill, not lynched)
     state.eliminatedPlayers.push({ name: player, locked: false, type: 'sbranato', day: state.narratorDay });
   }
-  renderSummaryList();
-  updateNarratorUI({ preserveGuideStep: true });
+  renderSummaryList(); // Re-render UI
+  updateNarratorUI({ preserveGuideStep: true }); // Update narrator UI (guide, next day button)
 }
 
+/**
+ * Checks if a player is currently eliminated.
+ * @param {string} name - The name of the player.
+ * @returns {boolean} True if the player is eliminated, false otherwise.
+ */
 function isEliminated(name) {
   return state.eliminatedPlayers.some((entry) => entry.name === name);
 }
 
+/**
+ * Adds an entry to the eliminated players list.
+ * @param {string} name - The name of the player eliminated.
+ * @param {string} [type='lynch'] - The type of elimination ('lynch' or 'sbranato').
+ */
 function addEliminationEntry(name, type = "lynch") {
   const playerIndex = state.players.findIndex((player) => player === name);
   const roleId = playerIndex >= 0 && state.deck[playerIndex] ? state.deck[playerIndex].roleId : null;
   state.eliminatedPlayers.push({ name, roleId, day: state.narratorDay, locked: false, type });
 
-  // If lynch, update benvenuto to this player (most recent lynched)
+  // If this is a lynch, set the Benvenuto player for tie-breaking next round
   if (type === "lynch") {
     state.benvenutoPlayer = name;
   }
@@ -1904,65 +2253,89 @@ function addEliminationEntry(name, type = "lynch") {
   updateNarratorUI({ preserveGuideStep: true });
 }
 
+/**
+ * Prompts the user for confirmation before eliminating a player.
+ * Checks for victory conditions immediately after elimination.
+ * @param {string} name - The name of the player to eliminate.
+ * @param {object} [options] - Options object.
+ * @param {Function} [options.afterConfirm] - Callback function to execute after confirmation.
+ */
 function promptElimination(name, { afterConfirm } = {}) {
   const proceed = () => {
-    addEliminationEntry(name, "lynch");
+    addEliminationEntry(name, "lynch"); // Default to 'lynch' type for this prompt
     if (typeof afterConfirm === "function") afterConfirm();
   };
-  const outcome = predictVictoryOnElimination(name);
+  const outcome = predictVictoryOnElimination(name); // Check if this elimination leads to victory
   if (outcome) {
     const texts = getVictoryText(outcome.team);
     confirmAction(t("confirmation.eliminationVictory", { player: name, outcome: texts.title }), proceed);
   } else {
-    proceed();
+    confirmAction(t("confirmation.lynch", { player: name }), proceed); // Generic lynch confirmation
   }
 }
 
+/**
+ * Predicts the game's victory outcome if a specific player were to be eliminated.
+ * This is used to warn the narrator before a game-ending elimination.
+ * @param {string} name - The name of the player whose elimination is being simulated.
+ * @param {boolean} [isNightKill=false] - True if simulating a night kill (affects wolf win condition slightly).
+ * @returns {object|null} An object { team: string, survivors: Array } if a victory is predicted, otherwise null.
+ */
 function predictVictoryOnElimination(name, isNightKill = false) {
   const eliminatedSet = new Set(state.eliminatedPlayers.map((entry) => entry.name));
-  eliminatedSet.add(name);
+  eliminatedSet.add(name); // Add the currently targeted player to the hypothetical eliminated set
   return computeVictoryOutcomeFromSet(eliminatedSet, isNightKill);
 }
 
+/**
+ * Updates the Narrator UI elements: day counter, next day button state, guide steps, etc.
+ * @param {object} [options] - Options for UI update.
+ * @param {boolean} [options.preserveGuideStep=false] - If true, tries to maintain current guide step index.
+ */
 function updateNarratorUI({ preserveGuideStep = false } = {}) {
   el.dayCounter.textContent = String(state.narratorDay);
   const hasCap = typeof state.maxDays === "number" && Number.isFinite(state.maxDays);
   const maxReached = hasCap && state.narratorDay >= state.maxDays;
-  const mythBlocked = mythRequiresAction();
-  const disableNext = maxReached || mythBlocked || Boolean(state.victory);
+  const mythBlocked = mythRequiresAction(); // Check if Mythomaniac needs action
+  const disableNext = maxReached || mythBlocked || Boolean(state.victory); // Disable 'Next Day' if game is over or Mythomaniac needs action
   el.nextDayBtn.disabled = disableNext;
   el.nextDayBtn.textContent = mythBlocked
-    ? t("myth.blockedButton")
+    ? t("myth.blockedButton") // Special text if Mythomaniac is blocking
     : maxReached
       ? t("buttons.noMoreDays")
       : t("buttons.nextDay");
 
   const previousIndex = state.guideStepIndex;
-  state.guideSteps = buildNarrationSteps(state.narratorDay);
+  state.guideSteps = buildNarrationSteps(state.narratorDay); // Rebuild guide for current day
   if (state.guideSteps.length === 0) {
     state.guideStepIndex = 0;
   } else if (!preserveGuideStep) {
-    state.guideStepIndex = 0;
+    state.guideStepIndex = 0; // Reset guide step for new day
   } else {
-    state.guideStepIndex = Math.min(previousIndex, state.guideSteps.length - 1);
+    state.guideStepIndex = Math.min(previousIndex, state.guideSteps.length - 1); // Keep current step if possible
   }
-  renderGuide();
-  renderMythPanel();
+  renderGuide(); // Render the narration guide
+  renderMythPanel(); // Update Mythomaniac panel
   persistState();
   updateEliminationSelect();
-  evaluateVictoryConditions();
+  evaluateVictoryConditions(); // Re-evaluate victory conditions
 }
 
+/**
+ * Constructs the narration guide steps for a given day.
+ * @param {number} day - The current game day.
+ * @returns {Array<string>} An array of localized guide step messages.
+ */
 function buildNarrationSteps(day) {
   const steps = [];
   steps.push(t("guide.step.closeEyes", { day }));
   if (hasSpecial("mason") && day === 1) steps.push(t("guide.step.masons"));
   if (hasSpecial("bodyguard") && day >= 2) steps.push(t("guide.step.bodyguard"));
-  steps.push(t("guide.step.seer"));
+  steps.push(t("guide.step.seer")); // Seer always active
   if (hasSpecial("medium") && day >= 2) steps.push(t("guide.step.medium"));
   if (hasSpecial("owl")) steps.push(t("guide.step.owl"));
   if (isMythActive() && day === 2) steps.push(t("guide.step.mythomaniac"));
-  steps.push(t("guide.step.wolves"));
+  steps.push(t("guide.step.wolves")); // Werewolves always active
   if (hasSpecial("werehamster")) steps.push(t("guide.step.hamster"));
   steps.push(t("guide.step.dawn", { day }));
   if (hasSpecial("owl")) steps.push(t("guide.step.owlReveal"));
@@ -1971,32 +2344,49 @@ function buildNarrationSteps(day) {
   return steps;
 }
 
+/**
+ * Checks if a specific special role is active in the current game.
+ * @param {string} roleId - The ID of the role to check.
+ * @returns {boolean} True if the role is active, false otherwise.
+ */
 function hasSpecial(roleId) {
   return state.activeSpecialIds.includes(roleId);
 }
 
+/**
+ * Checks if the Mythomaniac role is currently active and unresolved.
+ * @returns {boolean} True if Mythomaniac is active and needs attention.
+ */
 function isMythActive() {
   return Boolean(
     state.mythStatus &&
     !state.mythStatus.completed &&
     state.mythStatus.playerName &&
-    !isEliminated(state.mythStatus.playerName),
+    !isEliminated(state.mythStatus.playerName), // Must be alive
   );
 }
 
+/**
+ * Determines if the Mythomaniac requires immediate action from the narrator.
+ * This happens on Day 2 or later if the Mythomaniac is alive and hasn't completed their action.
+ * @returns {boolean} True if Mythomaniac action is pending.
+ */
 function mythRequiresAction() {
   return Boolean(
     state.mythStatus &&
     !state.mythStatus.completed &&
     state.mythStatus.playerName &&
     !isEliminated(state.mythStatus.playerName) &&
-    state.narratorDay >= 2,
+    state.narratorDay >= 2, // Mythomaniac acts from Day 2 onwards
   );
 }
 
+/**
+ * Renders the narration guide, either as a step-by-step display or a full list.
+ */
 function renderGuide() {
   const total = state.guideSteps.length;
-  if (el.guideProgress) el.guideProgress.classList.toggle("hidden", state.guideExpanded);
+  if (el.guideProgress) el.guideProgress.classList.toggle("hidden", state.guideExpanded); // Hide progress bar if full list
   if (total === 0) {
     el.guideProgress.textContent = t("guide.progress", { current: 0, total: 0 });
     el.guideStepText.textContent = t("guide.empty");
@@ -2004,7 +2394,7 @@ function renderGuide() {
     el.nextGuideStep.disabled = true;
     el.guideStepText.classList.remove("hidden");
     el.guideFullList.classList.add("hidden");
-    el.guideNav.classList.remove("hidden");
+    el.guideNav.classList.remove("hidden"); // Ensure nav buttons are visible if no steps
     return;
   }
   const current = state.guideStepIndex;
@@ -2032,21 +2422,31 @@ function renderGuide() {
   }
 }
 
+/**
+ * Toggles the display mode of the narration guide (step-by-step vs. full list).
+ */
 function toggleGuideMode() {
   state.guideExpanded = !state.guideExpanded;
   renderGuide();
   persistState();
 }
 
+/**
+ * Changes the current step in the narration guide.
+ * @param {number} delta - The amount to change the step index by (e.g., -1 for previous, 1 for next).
+ */
 function changeGuideStep(delta) {
   if (!state.guideSteps.length) return;
   const nextIndex = state.guideStepIndex + delta;
-  if (nextIndex < 0 || nextIndex >= state.guideSteps.length) return;
+  if (nextIndex < 0 || nextIndex >= state.guideSteps.length) return; // Stay within bounds
   state.guideStepIndex = nextIndex;
   renderGuide();
   persistState();
 }
 
+/**
+ * Renders the list of fallen (eliminated) players.
+ */
 function renderFallenList() {
   if (!el.fallenList || !el.fallenCount) return;
   const fallen = state.eliminatedPlayers;
@@ -2061,6 +2461,7 @@ function renderFallenList() {
   }
   fallen.forEach((entry) => {
     const li = document.createElement("li");
+    // Show "(awaiting resolution)" for players eliminated this turn but not yet locked
     const pending = entry.locked ? "" : ` ${t("fallen.pending")}`;
     li.textContent = `${t("log.entry", {
       name: entry.name,
@@ -2071,11 +2472,18 @@ function renderFallenList() {
   });
 }
 
+/**
+ * Hides both the Mythomaniac panel and its summary.
+ */
 function hideMythUI() {
   if (el.mythPanel) el.mythPanel.classList.add("hidden");
   if (el.mythSummary) el.mythSummary.classList.add("hidden");
 }
 
+/**
+ * Displays the Mythomaniac summary text.
+ * @param {string} text - The summary message to display.
+ */
 function showMythSummary(text) {
   if (!el.mythSummary) return;
   if (!text) {
@@ -2087,6 +2495,9 @@ function showMythSummary(text) {
   if (el.mythSummaryText) el.mythSummaryText.textContent = text;
 }
 
+/**
+ * Renders the Mythomaniac panel, handling its various states (waiting, ready, done).
+ */
 function renderMythPanel() {
   if (!el.mythPanel && !el.mythSummary) return;
   if (!state.mythStatus) {
@@ -2094,6 +2505,7 @@ function renderMythPanel() {
     return;
   }
   const status = state.mythStatus;
+  // If Mythomaniac player is eliminated, clear status
   if (!status.playerName || isEliminated(status.playerName)) {
     state.mythStatus = null;
     hideMythUI();
@@ -2103,16 +2515,17 @@ function renderMythPanel() {
     el.mythPlayerLabel.textContent = t("myth.playerLabel", { name: status.playerName });
   }
   const completed = Boolean(status.completed);
-  const waiting = state.narratorDay < 2;
-  const livingTargets = getLivingPlayers().filter((entry) => entry.name !== status.playerName);
+  const waiting = state.narratorDay < 2; // Mythomaniac acts from Day 2
+  const livingTargets = getLivingPlayers().filter((entry) => entry.name !== status.playerName); // Exclude self
   const hasTargets = livingTargets.length > 0;
-  const actionable = !completed && !waiting && hasTargets;
+  const actionable = !completed && !waiting && hasTargets; // Mythomaniac can act
   const statusKey = completed
     ? "myth.status.done"
     : waiting
       ? "myth.status.waiting"
       : "myth.status.ready";
   if (el.mythStatusTag) el.mythStatusTag.textContent = t(statusKey);
+
   if (!actionable) {
     if (el.mythPanel) el.mythPanel.classList.add("hidden");
     const summaryText = completed
@@ -2125,8 +2538,12 @@ function renderMythPanel() {
     showMythSummary(summaryText);
     return;
   }
+
+  // If actionable, show the panel and hide summary
   if (el.mythPanel) el.mythPanel.classList.remove("hidden");
-  showMythSummary("");
+  showMythSummary(""); // Clear summary text
+
+  // Populate target selection dropdown
   if (el.mythTargetSelect) {
     el.mythTargetSelect.innerHTML = "";
     const placeholder = document.createElement("option");
@@ -2148,10 +2565,14 @@ function renderMythPanel() {
     el.mythInstructions.textContent = t("myth.pendingDescription");
   }
   if (el.mythResultMessage) {
-    el.mythResultMessage.textContent = "";
+    el.mythResultMessage.textContent = ""; // Clear previous messages
   }
 }
 
+/**
+ * Starts a countdown timer for the narrator handoff.
+ * @param {number} [seconds=5] - The number of seconds for the countdown.
+ */
 function startHandoffCountdown(seconds = 5) {
   clearHandoffCountdown();
   state.handoffCountdown = Math.max(0, seconds);
@@ -2167,45 +2588,63 @@ function startHandoffCountdown(seconds = 5) {
   }, 1000);
 }
 
+/**
+ * Clears any active handoff countdown timer.
+ */
 function clearHandoffCountdown() {
   if (handoffTimerId) {
     clearInterval(handoffTimerId);
     handoffTimerId = null;
   }
   if (state.handoffCountdown !== 0) {
-    state.handoffCountdown = 0;
+    state.handoffCountdown = 0; // Reset counter
   }
-  updateHandoffTimer();
+  updateHandoffTimer(); // Update UI to reflect cleared timer
 }
 
+/**
+ * Updates the display of the handoff countdown timer.
+ */
 function updateHandoffTimer() {
   if (!el.handoffTimer || !el.openSummaryBtn) return;
   if (state.handoffCountdown > 0) {
     el.handoffTimer.textContent = t("handoffNotice.timer", { seconds: state.handoffCountdown });
     el.handoffTimer.classList.remove("hidden");
-    el.openSummaryBtn.disabled = true;
+    el.openSummaryBtn.disabled = true; // Disable button during countdown
   } else {
     el.handoffTimer.textContent = "";
     el.handoffTimer.classList.add("hidden");
-    el.openSummaryBtn.disabled = false;
+    el.openSummaryBtn.disabled = false; // Enable button after countdown
   }
 }
 
+/**
+ * Generates the localized result text for the Mythomaniac's transformation.
+ * @param {object} status - The Mythomaniac status object.
+ * @returns {string} The result message.
+ */
 function getMythResultText(status) {
   if (!status || !status.playerName) return "";
   const mythName = status.playerName;
-  const target = status.targetName || t("myth.noTargets");
+  const target = status.targetName || t("myth.noTargets"); // Display target name or a fallback
   if (status.outcome === "wolf") return t("myth.result.wolf", { name: mythName, target });
   if (status.outcome === "seer") return t("myth.result.seer", { name: mythName, target });
   return t("myth.result.human", { name: mythName, target });
 }
 
+/**
+ * Retrieves the localized role name from an eliminated player entry.
+ * Provides fallback if role information is missing.
+ * @param {object} entry - The eliminated player entry.
+ * @returns {string} The localized role name or a fallback.
+ */
 function getRoleNameFromEntry(entry) {
   if (!entry) return t("log.unknownRole");
   if (entry.roleId) {
     const localized = getRoleContent(entry.roleId);
     if (localized?.name) return localized.name;
   }
+  // Fallback to deck if roleId not directly on entry (old data structure compatibility)
   const index = state.players.findIndex((player) => player === entry.name);
   const fallbackCard = index >= 0 ? state.deck[index] : null;
   if (fallbackCard) {
@@ -2215,21 +2654,28 @@ function getRoleNameFromEntry(entry) {
   return t("log.unknownRole");
 }
 
+/**
+ * Applies the Mythomaniac's transformation based on the selected target.
+ * Updates the Mythomaniac's role in the deck and marks the action as completed.
+ */
 function applyMythTransformation() {
   if (!state.mythStatus || state.mythStatus.completed) return;
-  if (state.narratorDay < 2) return;
+  if (state.narratorDay < 2) return; // Mythomaniac acts on Day 2 or later
   if (!el.mythTargetSelect) return;
   const targetName = el.mythTargetSelect.value;
-  if (!targetName) return;
+  if (!targetName) return; // No target selected
   const targetIndex = state.players.findIndex((name) => name === targetName);
-  if (targetIndex === -1) return;
+  if (targetIndex === -1) return; // Target player not found
   const targetCard = state.deck[targetIndex];
-  const outcome = determineMythOutcome(targetCard);
+  const outcome = determineMythOutcome(targetCard); // Determine outcome based on target's role
+
+  // Change Mythomaniac's role based on outcome
   if (outcome === "wolf") {
     state.deck[state.mythStatus.playerIndex] = createCard(ROLE_LIBRARY.werewolf);
   } else if (outcome === "seer") {
     state.deck[state.mythStatus.playerIndex] = createCard(ROLE_LIBRARY.seer);
   }
+  // Update Mythomaniac status
   state.mythStatus = {
     ...state.mythStatus,
     completed: true,
@@ -2241,32 +2687,41 @@ function applyMythTransformation() {
   persistState();
 }
 
+/**
+ * Determines the outcome of the Mythomaniac's transformation based on the target's card.
+ * @param {object} card - The target player's role card.
+ * @returns {string} The outcome ('wolf', 'seer', or 'human').
+ */
 function determineMythOutcome(card) {
-  if (!card) return "human";
+  if (!card) return "human"; // Default if no card (e.g., target invalid)
   if (card.roleId === "seer") return "seer";
   if (card.team === "wolves") return "wolf";
   return "human";
 }
 
+/**
+ * Advances the game to the next day.
+ * Prompts for confirmation and resets relevant game state for the new day.
+ */
 function advanceDay() {
-  if (state.victory) return;
+  if (state.victory) return; // Cannot advance day if game is over
   if (mythRequiresAction()) {
-    renderMythPanel();
+    renderMythPanel(); // Re-render to show warning
     if (el.mythResultMessage) el.mythResultMessage.textContent = t("myth.completeWarning");
     return;
   }
   const hasCap = typeof state.maxDays === "number" && Number.isFinite(state.maxDays);
-  if (hasCap && state.narratorDay >= state.maxDays) return;
+  if (hasCap && state.narratorDay >= state.maxDays) return; // Prevent advancing past max days if capped
+
   const nextDay = state.narratorDay + 1;
   confirmAction(
     t("confirmation.nextDay", { day: nextDay }),
     () => {
       state.narratorDay += 1;
-      state.guideStepIndex = 0;
-      // Reset votes for the new day
-      state.playerVotes = {};
-      // Clear indiziato status for the new day
-      state.indiziatoPlayers = [];
+      state.guideStepIndex = 0; // Reset guide to first step for new day
+      state.playerVotes = {}; // Reset votes for the new day's voting
+      state.indiziatoPlayers = []; // Clear suspects for the new day
+      // Lock all existing eliminated players; they cannot be revived from previous days
       state.eliminatedPlayers = state.eliminatedPlayers.map((entry) => ({
         ...entry,
         locked: true,
@@ -2277,11 +2732,22 @@ function advanceDay() {
   );
 }
 
+// ==========================================================================
+// MODAL & OVERLAY MANAGEMENT
+// ==========================================================================
+
+/**
+ * Displays a generic confirmation modal.
+ * @param {string} message - The message to display in the modal.
+ * @param {Function} onConfirm - The callback function to execute if the user confirms.
+ */
 function confirmAction(message, onConfirm) {
   el.modalTitle.textContent = t("modal.title");
   el.modalMessage.textContent = message;
   el.modalOverlay.classList.remove("hidden");
-  document.body.style.overflow = "hidden";
+  document.body.style.overflow = "hidden"; // Prevent background scrolling
+
+  // Event handlers for modal buttons
   const cleanup = () => {
     el.modalOverlay.classList.add("hidden");
     document.body.style.overflow = "";
@@ -2291,24 +2757,37 @@ function confirmAction(message, onConfirm) {
   const cancelHandler = () => cleanup();
   const confirmHandler = () => {
     cleanup();
-    if (typeof onConfirm === "function") onConfirm();
+    if (typeof onConfirm === "function") onConfirm(); // Execute callback on confirm
   };
   el.modalCancel.addEventListener("click", cancelHandler);
   el.modalConfirm.addEventListener("click", confirmHandler);
 }
 
+/**
+ * Opens the immersion tips and rules modal.
+ */
 function openInfoModal() {
   if (!el.infoOverlay) return;
   el.infoOverlay.classList.remove("hidden");
   document.body.style.overflow = "hidden";
 }
 
+/**
+ * Closes the immersion tips and rules modal.
+ */
 function closeInfoModal() {
   if (!el.infoOverlay) return;
   el.infoOverlay.classList.add("hidden");
   document.body.style.overflow = "";
 }
 
+// ==========================================================================
+// UTILITY FUNCTIONS
+// ==========================================================================
+
+/**
+ * Scrolls the window to the bottom of the page, typically used during reveal phase.
+ */
 function scrollToBottom() {
   if (state.view !== "reveal") return;
   window.requestAnimationFrame(() => {
@@ -2316,51 +2795,78 @@ function scrollToBottom() {
   });
 }
 
+/**
+ * Retrieves a list of currently living players and their assigned cards.
+ * @returns {Array<object>} An array of objects { name: string, card: object }.
+ */
 function getLivingPlayers() {
   return state.players
     .map((name, index) => ({ name, card: state.deck[index] }))
     .filter((entry) => !isEliminated(entry.name));
 }
 
+/**
+ * Computes the victory outcome based on the current set of eliminated players.
+ * This is the core logic for determining if a team has won.
+ * @param {Set<string>} eliminatedSet - A set of names of currently eliminated players.
+ * @param {boolean} [isNightKill=false] - True if simulating a night kill scenario (affects wolf win condition).
+ * @returns {object|null} An object { team: string, survivors: Array } if a victory is detected, otherwise null.
+ */
 function computeVictoryOutcomeFromSet(eliminatedSet, isNightKill = false) {
   if (!state.deck.length || !state.players.length) return null;
-  if (state.deck.length < state.players.length) return null;
+  if (state.deck.length < state.players.length) return null; // Deck must match players
+
+  // Filter for living players
   const living = state.players
     .map((name, index) => ({ name, card: state.deck[index] }))
     .filter((entry) => !eliminatedSet.has(entry.name));
-  if (!living.length) return null;
+
+  if (!living.length) return null; // No one left alive
+
   const wolves = living.filter((entry) => entry.card?.team === "wolves");
   const humans = living.filter((entry) => entry.card?.team === "humans");
   const hamsters = living.filter((entry) => entry.card?.roleId === "werehamster");
 
+  // Werehamster wins alone if they are the only one left
   if (hamsters.length && hamsters.length === living.length) {
     return { team: "loner", survivors: living };
   }
+
+  // Village wins if no wolves remain
   if (!wolves.length) {
-    if (hamsters.length) return { team: "loner", survivors: hamsters };
+    if (hamsters.length) return { team: "loner", survivors: hamsters }; // If hamsters are left, they win
     return { team: "humans", survivors: living };
   }
-  // Wolves win if they are >= humans (for lynch) or will be >= humans after night kill (for sbranato)
+
+  // Wolves win if their count is greater than or equal to humans
+  // Special case for night kill: if wolves + 1 (the one being killed) >= humans, wolves win
   const unstoppableWolves = isNightKill && !hamsters.length && wolves.length > 0 && humans.length === wolves.length + 1 && humans.length > 1;
   if (unstoppableWolves) {
     return { team: "wolves", survivors: wolves };
   }
   if (wolves.length >= humans.length) {
-    if (hamsters.length) return { team: "loner", survivors: hamsters };
+    if (hamsters.length) return { team: "loner", survivors: hamsters }; // If hamsters are left, they win
     return { team: "wolves", survivors: living };
   }
-  return null;
+  return null; // No victory condition met yet
 }
 
+/**
+ * Retrieves the players who are considered "survivors" for the victory screen.
+ * This can be all living players or specific winners based on the victory type.
+ * @returns {Array<object>} An array of player objects ({ name, card }).
+ */
 function getVictorySurvivors() {
-  if (!state.victory) return getLivingPlayers();
+  if (!state.victory) return getLivingPlayers(); // If no victory, just return all living
   if (state.victory.winners) {
+    // If specific winners are stored, reconstruct their cards
     return state.victory.winners.map((entry) => ({
       name: entry.name,
-      card: entry.card ? createCard(ROLE_LIBRARY[entry.card.roleId]) : null,
+      card: entry.card ? createCard(ROLE_LIBRARY[entry.card.roleId]) : null, // Recreate card object
     }));
   }
   if (Array.isArray(state.victory.survivors)) {
+    // Legacy support for older state structure
     return state.victory.survivors.map((entry) => ({
       name: entry.name,
       card: entry.roleId ? createCard(ROLE_LIBRARY[entry.roleId]) : null,
@@ -2369,17 +2875,25 @@ function getVictorySurvivors() {
   return getLivingPlayers();
 }
 
+/**
+ * Evaluates the current game state for victory conditions and triggers the
+ * victory screen if a team has won.
+ */
 function evaluateVictoryConditions() {
-  if (state.victory) return;
+  if (state.victory) return; // Don't re-evaluate if game is already over
   const eliminatedSet = new Set(state.eliminatedPlayers.map((entry) => entry.name));
-  const outcome = computeVictoryOutcomeFromSet(eliminatedSet, false);
+  const outcome = computeVictoryOutcomeFromSet(eliminatedSet, false); // Check for victory after lynch
   if (outcome) {
     showVictoryScreen(outcome);
   }
 }
 
+/**
+ * Displays the final victory screen, showing the winning team and surviving players.
+ * @param {object} outcome - The victory outcome object { team: string, survivors: Array }.
+ */
 function showVictoryScreen({ team }) {
-  // Calculate all winners (living and dead)
+  // Calculate all players (living and dead) and their roles for display
   const allPlayers = state.players.map((name, index) => ({
     name,
     card: state.deck[index],
@@ -2395,6 +2909,7 @@ function showVictoryScreen({ team }) {
     winners = allPlayers.filter(p => p.card.roleId === "werehamster");
   }
 
+  // Store the victory state
   state.victory = {
     team,
     winners: winners.map((entry) => ({
@@ -2410,12 +2925,12 @@ function showVictoryScreen({ team }) {
   el.victorySubtitle.textContent = texts.subtitle;
   el.victoryList.innerHTML = "";
 
+  // Render winning players
   state.victory.winners.forEach((entry) => {
     const li = document.createElement("li");
     li.className = "summary-item";
-    if (entry.eliminated) li.classList.add("dead");
+    if (entry.eliminated) li.classList.add("dead"); // Mark dead winners
 
-    // Add card image
     if (entry.card && entry.card.image) {
       const localized = getRoleContent(entry.card.roleId);
       const img = document.createElement("img");
@@ -2441,9 +2956,13 @@ function showVictoryScreen({ team }) {
   showView("final");
 }
 
+/**
+ * Renders the victory screen using the already stored `state.victory` data.
+ * Used when restoring state or re-rendering.
+ */
 function renderVictoryFromState() {
   if (!state.victory) return;
-  const winners = state.victory.winners || []; // Use stored winners
+  const winners = state.victory.winners || [];
   const texts = getVictoryText(state.victory.team);
   el.victoryTitle.textContent = texts.title;
   el.victorySubtitle.textContent = texts.subtitle;
@@ -2454,7 +2973,6 @@ function renderVictoryFromState() {
     li.className = "summary-item";
     if (entry.eliminated) li.classList.add("dead");
 
-    // Add card image
     if (entry.card && entry.card.image) {
       const localized = getRoleContent(entry.card.roleId);
       const img = document.createElement("img");
@@ -2479,6 +2997,11 @@ function renderVictoryFromState() {
   });
 }
 
+/**
+ * Returns localized title and subtitle for a given winning team.
+ * @param {string} team - The winning team ('wolves', 'humans', 'loner').
+ * @returns {object} An object { title: string, subtitle: string }.
+ */
 function getVictoryText(team) {
   if (team === "wolves") {
     return { title: t("victory.wolves.title"), subtitle: t("victory.wolves.subtitle") };
@@ -2489,39 +3012,56 @@ function getVictoryText(team) {
   return { title: t("victory.village.title"), subtitle: t("victory.village.subtitle") };
 }
 
+/**
+ * Hides all main view sections and displays the specified view.
+ * @param {string} view - The ID of the view to show ('setup', 'reveal', 'summary', 'final').
+ */
 function showView(view) {
-  if (view !== "reveal") clearHandoffCountdown();
+  if (view !== "reveal") clearHandoffCountdown(); // Clear handoff timer if not in reveal view
+  // Hide all main views
   [el.setupView, el.revealView, el.summaryView, el.finalView].forEach((section) => {
     section.classList.add("hidden");
   });
+  // Show the requested view
   if (view === "setup") el.setupView.classList.remove("hidden");
   if (view === "reveal") el.revealView.classList.remove("hidden");
   if (view === "summary") el.summaryView.classList.remove("hidden");
   if (view === "final") el.finalView.classList.remove("hidden");
+
+  // Restore roles details panel state if returning to setup
   if (view === "setup" && el.rolesDetails) {
     el.rolesDetails.open = state.rolesDetailsOpen;
   }
-  state.view = view;
-  toggleLanguageMenu(false);
-  updateFooterVisibility();
-  persistState();
+  state.view = view; // Update current view in state
+  toggleLanguageMenu(false); // Close language menu when changing views
+  updateFooterVisibility(); // Update footer visibility based on view
+  persistState(); // Persist view change
 }
 
-
+/**
+ * Toggles the visibility of the info footer based on the current view.
+ */
 function updateFooterVisibility() {
   if (!el.infoFooter) return;
-  el.infoFooter.classList.toggle("hidden", state.view !== "setup");
+  el.infoFooter.classList.toggle("hidden", state.view !== "setup"); // Show only on setup view
 }
 
+/**
+ * Resets the game to its initial state.
+ * @param {object} [options] - Options for resetting the game.
+ * @param {boolean} [options.preserveNames=true] - If true, keeps custom player names.
+ */
 function resetGame({ preserveNames = true } = {}) {
+  // Preserve current player and wolf counts for convenience
   const preservedPlayerCount = el.playerCount.value;
   const preservedWolfCount = el.wolfCount.value;
+
   clearHandoffCountdown();
   state.deck = [];
   state.players = [];
   state.revealIndex = 0;
-  if (!preserveNames) state.customNames = [];
-  state.activeSpecialIds = getSelectedSpecials().map((item) => item.roleId);
+  if (!preserveNames) state.customNames = []; // Clear custom names if not preserving
+  state.activeSpecialIds = getSelectedSpecials().map((item) => item.roleId); // Keep selected special roles
   state.eliminatedPlayers = [];
   state.narratorDay = 1;
   state.maxDays = 1;
@@ -2533,16 +3073,20 @@ function resetGame({ preserveNames = true } = {}) {
   state.rolesDetailsOpen = false;
   state.guideExpanded = true;
   state.revealComplete = false;
-  el.playerNameInput.value = "";
+  state.playerVotes = {}; // Reset votes
+  state.benvenutoPlayer = null; // Reset Benvenuto
+
+  el.playerNameInput.value = ""; // Clear player name input
+  // Restore preserved player/wolf counts
   el.playerCount.value = preservedPlayerCount || el.playerCount.min || String(MIN_PLAYERS);
   el.wolfCount.value = preservedWolfCount || el.wolfCount.min || "1";
-  el.openSummaryBtn.classList.add("hidden");
-  renderPlayerList();
+
+  el.openSummaryBtn.classList.add("hidden"); // Hide summary button
+  renderPlayerList(); // Re-render player list (will be empty if names not preserved)
   updateWolfHint();
   clampWolfCount();
   enforceRoleLimits();
   updateDeckPreview();
-  el.handoffNotice.classList.add("hidden");
-  showView("setup");
+  el.handoffNotice.classList.add("hidden"); // Hide handoff notice
+  showView("setup"); // Return to setup view
 }
-

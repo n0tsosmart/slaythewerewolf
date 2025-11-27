@@ -1,0 +1,89 @@
+/* ==========================================================================
+   Base, Reset, and Variables
+   ========================================================================== */
+
+/* Base Settings */
+html {
+  font-size: 80%; /* Scales down the base font size */
+}
+
+/* CSS Variables (Custom Properties) */
+:root {
+  scroll-behavior: smooth;
+  accent-color: rgba(190, 24, 93, 0.9);
+
+  /* --- Color Palette --- */
+  
+  /* Backgrounds */
+  --color-bg-base: #050303;
+  --color-bg-accent: #120505;
+  --color-panel-bg: rgba(6, 3, 4, 0.78); /* Semi-transparent for glassmorphism */
+  
+  /* Text */
+  --color-text-primary: #e7dfd7;
+  
+  /* Borders & Highlights */
+  --color-header-border: rgba(127, 29, 29, 0.35);
+  --color-header-highlight: rgba(220, 38, 38, 0.08);
+  --color-panel-border: rgba(68, 32, 32, 0.35);
+  --color-card-border: rgba(127, 29, 29, 0.4);
+  
+  /* Interactive Elements */
+  --color-chip-bg: rgba(45, 15, 15, 0.9);
+  --color-chip-remove: rgba(251, 113, 133, 0.2);
+  --color-secondary-bg: rgba(41, 28, 28, 0.55);
+  --color-secondary-border: rgba(107, 33, 33, 0.5);
+  
+  /* Brand / Theme Colors */
+  --color-primary-from: #b91c1c;
+  --color-primary-to: #7f1d1d;
+  --color-gold: #facc15;
+  
+  /* Status & Utility Colors */
+  --color-ghost-border: rgba(248, 113, 113, 0.35);
+  --color-danger-border: rgba(185, 28, 28, 0.6);
+  --color-danger-bg: rgba(120, 20, 20, 0.35);
+  
+  /* Grays */
+  --color-gray-light: #cbd5f5;
+  --color-gray-medium: #94a3b8;
+  --color-gray-dark: #9ca3af;
+
+  /* --- Typography --- */
+  --font-display: "Cinzel", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  
+  font-family: var(--font-body);
+  line-height: 1.5;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-base);
+}
+
+/* Reset Box Sizing */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Body Styling */
+body {
+  padding: 20px;
+  /* Dark gradient overlay on top of the background image */
+  background-image:
+    linear-gradient(180deg, rgba(5, 3, 5, 0.92), rgba(12, 4, 5, 0.85)),
+    url("../assets/backgrounds/background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  font-family: var(--font-display);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  body {
+    padding: 16px;
+  }
+}
