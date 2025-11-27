@@ -26,6 +26,7 @@ import { detectMythStatusFromDeck, determineMythOutcome } from './logic.js';
 // --- APP INITIALIZATION ---
 
 export function initApp() {
+  console.log("[SlayTheWerewolf] Engine initializing...");
   initUI();
   renderRoleOptions();
   attachEvents();

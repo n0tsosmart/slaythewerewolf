@@ -52,8 +52,6 @@ export function restoreFromStorage() {
 
     if (data.playerCount && el.playerCount) el.playerCount.value = data.playerCount;
     if (data.wolfCount && el.wolfCount) el.wolfCount.value = data.wolfCount;
-    // Note: Checking checkboxes is UI work, maybe should be done by caller? 
-    // But we do it here to ensure state is consistent before UI render.
     if (Array.isArray(data.selectedSpecialIds) && el.roleOptions) {
       el.roleOptions.querySelectorAll(".role-option").forEach((input) => {
         input.checked = data.selectedSpecialIds.includes(input.value);
@@ -62,8 +60,6 @@ export function restoreFromStorage() {
 
     state.customNames = Array.isArray(data.customNames) ? [...data.customNames] : [];
     
-    // Note: logic to update deck preview / clamp counts should be called by engine after restore.
-
     const assignments = Array.isArray(data.assignments) ? data.assignments : null;
     if (assignments && assignments.length) {
       const fallbackPlayers = Array.isArray(data.players) ? data.players : [];
@@ -90,14 +86,12 @@ export function restoreFromStorage() {
     else if (typeof data.maxDays === "number" && Number.isFinite(data.maxDays)) state.maxDays = data.maxDays;
     else state.maxDays = Math.max(1, state.players.length || 1);
 
-    // We need normalizeMythStatus logic. To avoid cycle, we implement a basic version here 
-    // or move it to roles.js. Let's use a simple inline check or move to roles.js.
     state.mythStatus = normalizeMythStatus(data.mythStatus, state.players, state.deck);
     
     state.victory = data.victory || null;
     state.guideStepIndex = data.guideStepIndex || 0;
     state.playersCollapsed = Boolean(data.playersCollapsed);
-    state.rolesDetailsOpen = false; // Reset to false for cleaner UI on reload
+    state.rolesDetailsOpen = false;
     state.guideExpanded = data.guideExpanded !== undefined ? Boolean(data.guideExpanded) : true;
     state.view = data.view || "setup";
     if (state.view === "handoff") {
@@ -112,4 +106,3 @@ export function restoreFromStorage() {
     console.warn("Unable to restore the game state", error);
   }
 }
-

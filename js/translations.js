@@ -7,7 +7,7 @@
  * Each key represents a specific text string displayed to the user, and its value is the
  * translated text for the corresponding language.
  */
-const TRANSLATIONS = {
+window.TRANSLATIONS = {
     // --------------------------------------------------------------------------
     // English (en) Translations
     // --------------------------------------------------------------------------
