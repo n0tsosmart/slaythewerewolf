@@ -475,6 +475,13 @@ export function startGame() {
     allPlayerNames = [...state.customNames];
   }
 
+  if (!isHost() && !isClient()) {
+    if (allPlayerNames.length > 0 && allPlayerNames.length !== playerTotal) {
+      el.validationMessage.textContent = t("errors.playerCountMismatch", { count: playerTotal, current: allPlayerNames.length });
+      return;
+    }
+  }
+
   state.players = buildPlayerList(allPlayerNames.length > 0 ? allPlayerNames : playerTotal);
 
 

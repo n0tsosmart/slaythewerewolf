@@ -150,6 +150,7 @@ window.TRANSLATIONS = {
 
         // Error Messages
         "errors.minPlayers": "⚠️ At least {count} players are required",
+        "errors.playerCountMismatch": "⚠️ Player count mismatch: defined {count}, listed {current}",
         "errors.needWolf": "⚠️ You need at least one werewolf",
         "errors.tooManyWolves": "⚠️ Werewolves must be fewer than the players",
         "errors.tooManySpecials": "⚠️ Too many special roles for this group",
