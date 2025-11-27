@@ -18,12 +18,12 @@ export function t(key, vars) {
   return vars ? formatString(template, vars) : template;
 }
 
-export function applyTranslations() {
-  document.querySelectorAll("[data-i18n]").forEach((element) => {
+export function applyTranslations(root = document) {
+  root.querySelectorAll("[data-i18n]").forEach((element) => {
     const key = element.dataset.i18n;
     if (key) element.textContent = t(key);
   });
-  document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+  root.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
     const key = element.dataset.i18nPlaceholder;
     if (key) element.placeholder = t(key);
   });

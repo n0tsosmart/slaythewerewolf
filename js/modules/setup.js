@@ -194,10 +194,17 @@ export function handleAddPlayer() {
 // Re-export these for engine.js
 export { createCard, deckFromRoleIds };
 
-export function buildPlayerList(playerTotal) {
+export function buildPlayerList(playerCountOrNames) {
   const players = [];
-  for (let i = 0; i < playerTotal; i += 1) {
-    players.push(state.customNames[i] || t("status.defaultPlayer", { number: i + 1 }));
+  if (Array.isArray(playerCountOrNames)) {
+    // If an array of names is provided, use them directly
+    playerCountOrNames.forEach(name => players.push(name));
+  } else {
+    // If a number (total players) is provided, use customNames and generate defaults
+    const playerTotal = playerCountOrNames;
+    for (let i = 0; i < playerTotal; i += 1) {
+      players.push(state.customNames[i] || t("status.defaultPlayer", { number: i + 1 }));
+    }
   }
   return players;
 }
