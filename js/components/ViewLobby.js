@@ -3,8 +3,9 @@ import { el } from '../modules/dom.js';
 import { state } from '../modules/state.js';
 import { t, applyTranslations } from '../modules/i18n.js';
 import { hostGame, joinGame, setNetworkCallbacks, disconnect, getRoomCode, getConnectedPlayers, isHost, getLocalPlayerName, getHostPeerId } from '../modules/network.js';
-import { showView, showClientRoleView, showLobbyView } from '../modules/engine.js'; 
+import { showView, showClientRoleView, showLobbyView } from '../modules/engine.js';
 import { renderPlayerList } from '../modules/setup.js';
+import { persistState } from '../modules/store.js';
 
 export class ViewLobby extends HTMLElement {
     constructor() {
@@ -18,6 +19,11 @@ export class ViewLobby extends HTMLElement {
     connectedCallback() {
         this.style.display = 'contents';
         this.render();
+
+        // Sync local state with network state in case of re-render
+        const existingPlayers = getConnectedPlayers();
+        existingPlayers.forEach(p => this.connectedPlayerPeers.set(p.id, p.name));
+
         this.attachEvents();
         setNetworkCallbacks({
             connected: this.handlePeerConnected.bind(this),
@@ -25,11 +31,12 @@ export class ViewLobby extends HTMLElement {
             gameStart: this.handleGameStart.bind(this),
             hostDisconnected: this.handleHostDisconnected.bind(this),
             receiveRole: this.handleReceiveRole.bind(this),
+            playerListUpdate: this.handlePlayerListUpdate.bind(this),
         });
 
         // Check if we are resuming from a client role view
         if (state.view === "client-role" && getHostPeerId()) {
-             // If we were a client, try to re-join and go straight to client role view
+            // If we were a client, try to re-join and go straight to client role view
             this.handleRejoinAsClient();
         }
     }
@@ -72,8 +79,8 @@ export class ViewLobby extends HTMLElement {
                     <p data-i18n="lobby.waitingForHost"></p>
                     <button id="leaveGameBtn" class="btn-ghost" type="button" data-i18n="buttons.leave"></button>
                 </div>
-            </section>
-        `;
+            </section >
+    `;
         // Apply initial translations
         applyTranslations(this);
     }
@@ -93,15 +100,31 @@ export class ViewLobby extends HTMLElement {
         el.leaveGameBtn?.removeEventListener('click', this.onLeaveGame.bind(this));
     }
 
+    resetToMainMenu() {
+        // Show only the main menu, hide host and client sections
+        if (el.lobbyMainMenu) el.lobbyMainMenu.classList.remove('hidden');
+        if (el.lobbyHost) el.lobbyHost.classList.add('hidden');
+        if (el.lobbyClient) el.lobbyClient.classList.add('hidden');
+    }
+
     async onHostGame() {
         this.isHostMode = true;
+
+        // Clear manual player list when hosting online game
+        state.customNames = [];
+        persistState();
+
         this.roomCode = await hostGame();
         if (this.roomCode) {
             el.lobbyMainMenu.classList.add('hidden');
             el.lobbyHost.classList.remove('hidden');
             el.hostRoomCodeDisplay.textContent = this.roomCode;
             this.updateHostPlayerList();
-            showLobbyView();
+
+            // Add online-mode class to hide player configurator
+            document.body.classList.add('online-mode');
+
+            showView('lobby');
         }
     }
 
@@ -120,7 +143,8 @@ export class ViewLobby extends HTMLElement {
             el.lobbyMainMenu.classList.add('hidden');
             el.lobbyClient.classList.remove('hidden');
             el.clientPlayerNameDisplay.textContent = playerName;
-            showLobbyView();
+            this.updateClientPlayerList(); // Initial player list update
+            showView('lobby');
         } catch (error) {
             console.error("Error joining game:", error);
             el.toastError(t("network.joinError", { error: error.message }));
@@ -131,8 +155,8 @@ export class ViewLobby extends HTMLElement {
         // This will trigger the game start in engine.js
         // and network.js will broadcast to all clients
         if (state.customNames.length < 1) { // Narrator + at least 1 player
-             el.toastError(t("network.needAtLeastOnePlayer"));
-             return;
+            el.toastError(t("network.needAtLeastOnePlayer"));
+            return;
         }
         showView("setup"); // Transition to setup to finalize game config
     }
@@ -147,6 +171,9 @@ export class ViewLobby extends HTMLElement {
         el.toastInfo(t("network.hostCancelled"));
         // Clear player list added by network joins
         state.customNames = state.customNames.filter(name => !this.connectedPlayerPeers.has(name));
+
+        // Remove online-mode class
+        document.body.classList.remove('online-mode');
     }
 
     onLeaveGame() {
@@ -154,6 +181,11 @@ export class ViewLobby extends HTMLElement {
         el.lobbyClient.classList.add('hidden');
         el.lobbyMainMenu.classList.remove('hidden');
         el.toastInfo(t("network.leftGame"));
+
+        // Clear assigned role when explicitly leaving
+        state.assignedRole = null;
+        persistState();
+
         showView("setup"); // Return to setup view as default
     }
 
@@ -193,22 +225,49 @@ export class ViewLobby extends HTMLElement {
         showClientRoleView(getLocalPlayerName(), roleData); // showClientRoleView will populate with roleData
     }
 
+    handlePlayerListUpdate(players) {
+        console.log("Player list updated:", players);
+        this.updateClientPlayerList();
+    }
+
 
     updateHostPlayerList() {
         if (!el.hostPlayerList) return;
+        console.log("Updating host player list with:", this.connectedPlayerPeers);
         el.hostPlayerList.innerHTML = '';
-        getConnectedPlayers().forEach(player => {
+
+        // Use local map as source of truth
+        this.connectedPlayerPeers.forEach((name, id) => {
             const li = document.createElement('li');
-            li.textContent = player.name;
+            li.textContent = name;
             el.hostPlayerList.appendChild(li);
         });
 
         // Add narrator's own name to the list (implicitly local player)
         if (this.isHostMode) {
-             const narratorLi = document.createElement('li');
-             narratorLi.textContent = t("lobby.narratorPlayerName"); // "Narrator (You)"
-             el.hostPlayerList.appendChild(narratorLi);
+            const narratorLi = document.createElement('li');
+            narratorLi.textContent = t("lobby.narratorPlayerName"); // "Narrator (You)"
+            el.hostPlayerList.appendChild(narratorLi);
         }
+    }
+
+    updateClientPlayerList() {
+        const clientPlayerList = document.getElementById('clientPlayerList');
+        if (!clientPlayerList) return;
+        console.log("Updating client player list with:", state.customNames);
+        clientPlayerList.innerHTML = '';
+
+        // Display all players from state.customNames (updated by PLAYER_LIST_UPDATE message)
+        state.customNames.forEach((name) => {
+            const li = document.createElement('li');
+            li.textContent = name;
+            clientPlayerList.appendChild(li);
+        });
+
+        // Add the local player's name with indicator
+        const localLi = document.createElement('li');
+        localLi.textContent = `${getLocalPlayerName()} (${t("lobby.you") || "You"})`;
+        clientPlayerList.appendChild(localLi);
     }
 
     handleRejoinAsClient() {
@@ -219,7 +278,7 @@ export class ViewLobby extends HTMLElement {
             el.lobbyMainMenu.classList.add('hidden');
             el.lobbyClient.classList.remove('hidden');
             el.clientPlayerNameDisplay.textContent = playerName;
-            showLobbyView();
+            showView('lobby');
             // Re-joining game should be handled by the network module itself if the connection is dropped.
             // For now, we assume if hostPeerId exists, the connection is still active or will attempt to re-establish.
         } else {

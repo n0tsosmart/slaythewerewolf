@@ -1,6 +1,8 @@
 // js/components/ViewClientRole.js
 import { el } from '../modules/dom.js';
-import { t, getRoleContent, applyTranslations } from '../modules/i18n.js'; 
+import { t, getRoleContent, applyTranslations } from '../modules/i18n.js';
+import { state } from '../modules/state.js';
+import { persistState } from '../modules/store.js';
 
 export class ViewClientRole extends HTMLElement {
     constructor() {
@@ -42,6 +44,10 @@ export class ViewClientRole extends HTMLElement {
             return;
         }
 
+        // Save the role data to state for persistence
+        state.assignedRole = roleData;
+        persistState();
+
         const localized = getRoleContent(roleData.roleId);
 
         if (el.clientRoleImage) {
@@ -64,9 +70,10 @@ export class ViewClientRole extends HTMLElement {
         if (el.returnToLobbyBtn) {
             el.returnToLobbyBtn.classList.remove('hidden');
             el.returnToLobbyBtn.onclick = () => {
-                // In a real scenario, this might disconnect or go to a client-side summary
-                // For now, it will return to the setup screen.
-                window.location.reload(); // Simple way to clear state for now
+                // Clear role from state and storage
+                state.assignedRole = null;
+                persistState();
+                window.location.reload();
             };
         }
     }

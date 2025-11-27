@@ -1,6 +1,5 @@
-// js/components/ViewLanding.js
 import { el } from '../modules/dom.js';
-import { showView } from '../modules/engine.js';
+import { showView, showLobbyView } from '../modules/engine.js';
 import { applyTranslations } from '../modules/i18n.js';
 
 export class ViewLanding extends HTMLElement {
@@ -44,8 +43,12 @@ export class ViewLanding extends HTMLElement {
     }
 
     attachEvents() {
-        el.localGameBtn?.addEventListener('click', () => showView('setup'));
-        el.onlineGameBtn?.addEventListener('click', () => showView('lobby'));
+        el.localGameBtn?.addEventListener('click', () => {
+            // Remove online-mode class when switching to local game
+            document.body.classList.remove('online-mode');
+            showView('setup');
+        });
+        el.onlineGameBtn?.addEventListener('click', () => showLobbyView());
     }
 
     removeEvents() {

@@ -9,9 +9,10 @@ export const el = {
   get revealView() { return document.getElementById("revealView"); },
   get summaryView() { return document.getElementById("summaryView"); },
   get finalView() { return document.getElementById("finalView"); },
-  get lobbyView() { return document.getElementById("lobbyView"); }, 
-  get clientRoleView() { return document.getElementById("clientRoleView"); }, 
-  get clientRole() { return document.querySelector("view-client-role"); }, 
+  get lobbyView() { return document.getElementById("lobbyView"); },
+  get viewLobby() { return document.querySelector("view-lobby"); }, // Custom element
+  get clientRoleView() { return document.getElementById("clientRoleView"); },
+  get clientRole() { return document.querySelector("view-client-role"); },
 
   // Landing View Elements
   get localGameBtn() { return document.getElementById("localGameBtn"); },
@@ -146,7 +147,7 @@ export const el = {
     container.appendChild(toastElement);
 
     // Force reflow to enable transition
-    void toastElement.offsetWidth; 
+    void toastElement.offsetWidth;
     toastElement.classList.add('show');
 
     setTimeout(() => {

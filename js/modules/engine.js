@@ -3,17 +3,17 @@ import { persistState, restoreFromStorage } from './store.js';
 import { el } from './dom.js';
 import { t, getRoleContent, setLanguage, applyTranslations } from './i18n.js';
 import { ROLE_LIBRARY, MIN_PLAYERS } from './config.js';
-import { 
-  getSelectedSpecials, 
-  buildPlayerList, 
-  buildDeck, 
-  updateWolfHint, 
-  clampWolfCount, 
-  enforceRoleLimits, 
-  updateDeckPreview, 
-  createCard, 
-  renderPlayerList, 
-  renderRoleOptions, 
+import {
+  getSelectedSpecials,
+  buildPlayerList,
+  buildDeck,
+  updateWolfHint,
+  clampWolfCount,
+  enforceRoleLimits,
+  updateDeckPreview,
+  createCard,
+  renderPlayerList,
+  renderRoleOptions,
   updateRoleSummary,
   handleAddPlayer,
   autoAdjustWolvesFromPlayers,
@@ -69,23 +69,27 @@ export function initApp() {
   // Use handleLanguageChange to ensure all UI is updated according to the restored language
   handleLanguageChange(state.language, { skipPersist: true });
 
-  // Determine initial view based on network state
-  if (isClient()) {
-      showClientRoleView(getLocalPlayerName());
+  // Determine initial view based on network state and assigned role
+  // Only show client role view if there's an assigned role (persisted from previous session)
+  if (state.assignedRole) {
+    // Client has a persisted role, show it
+    showClientRoleView(getLocalPlayerName(), state.assignedRole);
   } else {
-      // If we are in setup/lobby but the game hasn't started (empty deck), force landing
-      // This prevents getting stuck in setup if you reload
-      if ((!state.view || state.view === "setup" || state.view === "lobby") && state.deck.length === 0) {
-          showView("landing");
-      } else {
-          showView(state.view || "landing");
-      }
+    // Normal flow - check state or default to landing
+    if ((!state.view || state.view === "setup" || state.view === "lobby" || state.view === "client-role") && state.deck.length === 0) {
+      showView("landing");
+    } else if (state.view === "client-role") {
+      // If view was client-role but no assigned role, go to landing
+      showView("landing");
+    } else {
+      showView(state.view || "landing");
+    }
   }
 }
 
 function handleLanguageChange(lang, { skipPersist = false } = {}) {
   setLanguage(lang);
-  
+
   // Refresh UI elements dependent on language
   const selectedRoles = getSelectedSpecials().map((item) => item.roleId);
   renderRoleOptions();
@@ -98,7 +102,7 @@ function handleLanguageChange(lang, { skipPersist = false } = {}) {
   applyTranslations();
   renderPlayerList();
   updateHandoffTimer();
-  
+
   updateWolfHint();
   renderSummaryList();
   if (state.view === "summary") {
@@ -112,7 +116,7 @@ function handleLanguageChange(lang, { skipPersist = false } = {}) {
     }
   }
   if (state.view === "final" && state.victory) renderVictoryFromState();
-  
+
   updateRoleSummary();
   if (!skipPersist) persistState();
 }
@@ -381,6 +385,10 @@ let suppressLivingToggle = false;
 
 export function showLobbyView() {
   showView("lobby");
+  // Ensure the lobby view shows the main menu when first displayed
+  if (el.viewLobby && typeof el.viewLobby.resetToMainMenu === 'function') {
+    el.viewLobby.resetToMainMenu();
+  }
 }
 
 export function showClientRoleView(playerName, roleData = null) {
@@ -393,9 +401,9 @@ export function showClientRoleView(playerName, roleData = null) {
   state.view = "client-role"; // Update state
   // If roleData is provided, render the role
   if (roleData && el.clientRole) { // Assume el.clientRole is the custom element instance
-      el.clientRole.setRole(roleData);
+    el.clientRole.setRole(roleData);
   } else if (el.clientRole) {
-      el.clientRole.setRole(null); // Clear previous role if any
+    el.clientRole.setRole(null); // Clear previous role if any
   }
   updateFooterVisibility();
   persistState();
@@ -445,29 +453,29 @@ export function startGame() {
   const wolfTotal = Number(el.wolfCount.value) || 0;
   const specials = getSelectedSpecials();
 
-  // state.players should already contain all players (local + network) if host.
-  // state.customNames is the source for player names for the host.
-  // For network games, state.customNames is updated by the network module.
-  // For local games, state.customNames is updated via manual input.
-  const allPlayerNames = [...state.customNames]; // Get all explicitly added names
+  let allPlayerNames = [];
 
-  // If host, add the local player to the list if they are not already there (i.e. Narrator)
-  if (isHost() && !allPlayerNames.includes(t("lobby.narratorPlayerName"))) {
-      allPlayerNames.unshift(t("lobby.narratorPlayerName"));
-  }
-
-  state.players = buildPlayerList(allPlayerNames.length > 0 ? allPlayerNames : playerTotal);
-
-  // If hosting, map peer IDs to player names
+  // For online games (host mode), use ONLY the connected network players
+  // The narrator (host) does NOT receive a card
   if (isHost()) {
-    peerIdToPlayerName.clear();
     const connectedPeers = getConnectedPlayers(); // {id, name}
+    allPlayerNames = connectedPeers.map(peer => peer.name);
+
+    // Map peer IDs to player names for role distribution
+    peerIdToPlayerName.clear();
     connectedPeers.forEach(peer => {
       peerIdToPlayerName.set(peer.id, peer.name);
     });
-    // Ensure that all players have a name, even if they didn't join via network (for host's local players)
-    // The buildPlayerList function now needs to handle customNames correctly.
+  } else if (isClient()) {
+    // Client doesn't start the game, this shouldn't be called
+    console.warn("Client cannot start the game");
+    return;
+  } else {
+    // For local games, use custom names or player count from setup
+    allPlayerNames = [...state.customNames];
   }
+
+  state.players = buildPlayerList(allPlayerNames.length > 0 ? allPlayerNames : playerTotal);
 
 
   state.deck = buildDeck({ playerTotal: state.players.length, wolfTotal, specials }); // Use actual number of players now
@@ -490,54 +498,54 @@ export function startGame() {
   const networkRevealPlayers = [];
 
   state.players.forEach((playerName, index) => {
-      const card = state.deck[index];
-      const localizedCard = {
-          roleId: card.roleId,
-          name: getRoleContent(card.roleId)?.name || card.name,
-          team: card.team,
-          teamLabel: getRoleContent(card.roleId)?.teamLabel || card.teamLabel,
-          description: getRoleContent(card.roleId)?.description || card.description,
-          image: card.image,
-      };
+    const card = state.deck[index];
+    const localizedCard = {
+      roleId: card.roleId,
+      name: getRoleContent(card.roleId)?.name || card.name,
+      team: card.team,
+      teamLabel: getRoleContent(card.roleId)?.teamLabel || card.teamLabel,
+      description: getRoleContent(card.roleId)?.description || card.description,
+      image: card.image,
+    };
 
-      // Check if this player is a network player
-      let isNetworkPlayer = false;
-      if (isHost()) {
-          for (const [peerId, name] of peerIdToPlayerName.entries()) {
-              if (name === playerName) {
-                  networkRevealPlayers.push({ peerId, playerName, roleData: localizedCard });
-                  isNetworkPlayer = true;
-                  break;
-              }
-          }
+    // Check if this player is a network player
+    let isNetworkPlayer = false;
+    if (isHost()) {
+      for (const [peerId, name] of peerIdToPlayerName.entries()) {
+        if (name === playerName) {
+          networkRevealPlayers.push({ peerId, playerName, roleData: localizedCard });
+          isNetworkPlayer = true;
+          break;
+        }
       }
+    }
 
-      if (!isNetworkPlayer) {
-          localRevealPlayers.push({ playerName, index, roleData: localizedCard });
-      }
+    if (!isNetworkPlayer) {
+      localRevealPlayers.push({ playerName, index, roleData: localizedCard });
+    }
   });
 
   // If hosting, send roles to network players first
   if (isHost()) {
-      broadcast({ type: 'START_GAME', gameData: { playerNames: state.players } });
-      networkRevealPlayers.forEach(({ peerId, roleData }) => {
-          sendToPeer(peerId, { type: 'YOUR_ROLE', roleData });
-      });
+    broadcast({ type: 'START_GAME', gameData: { playerNames: state.players } });
+    networkRevealPlayers.forEach(({ peerId, roleData }) => {
+      sendToPeer(peerId, { type: 'YOUR_ROLE', roleData });
+    });
   }
 
   if (localRevealPlayers.length > 0) {
-      // If there are local players, proceed with the traditional reveal flow
-      // The `reveal.js` module will use `state.deck` and `state.players`
-      // For `prepareReveal`, ensure it knows to only show *unrevealed* (local) players.
-      // This part needs adjustment in reveal.js or an abstraction layer.
-      prepareReveal(); // This will need to be smart enough to only show local players
-      state.revealIndex = 0; // Reset reveal index for local players
-      state.localPlayersToReveal = localRevealPlayers; // New state property
-      showView("reveal");
+    // If there are local players, proceed with the traditional reveal flow
+    // The `reveal.js` module will use `state.deck` and `state.players`
+    // For `prepareReveal`, ensure it knows to only show *unrevealed* (local) players.
+    // This part needs adjustment in reveal.js or an abstraction layer.
+    prepareReveal(); // This will need to be smart enough to only show local players
+    state.revealIndex = 0; // Reset reveal index for local players
+    state.localPlayersToReveal = localRevealPlayers; // New state property
+    showView("reveal");
   } else {
-      // If all players are online or no players, skip reveal and go to summary
-      state.revealComplete = true; // Mark as complete
-      showSummary();
+    // If all players are online or no players, skip reveal and go to summary
+    state.revealComplete = true; // Mark as complete
+    showSummary();
   }
   persistState();
 }
@@ -545,8 +553,8 @@ export function startGame() {
 export function resetGame({ preserveNames = true } = {}) {
   // Disconnect from network if connected
   if (isHost() || isClient()) {
-      networkDisconnect();
-      el.toastInfo(t("network.disconnected"));
+    networkDisconnect();
+    el.toastInfo(t("network.disconnected"));
   }
 
   const preservedPlayerCount = el.playerCount.value;

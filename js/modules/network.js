@@ -15,19 +15,21 @@ let localPlayerName = "Player";
 // Current room code
 let currentRoomCode = null;
 
-// Callbacks for UI updates
-let onPeerConnected = (name, id) => console.log(`Peer connected: ${name} (${id})`);
-let onPeerDisconnected = (name, id) => console.log(`Peer disconnected: ${name} (${id})`);
-let onGameStart = (gameData) => console.log("Game started by host:", gameData);
-let onHostDisconnected = () => console.log("Host disconnected");
-let onReceiveRole = (roleData) => console.log("Received role:", roleData);
+// Callbacks for UI updates - now using arrays to support multiple handlers
+const onPeerConnectedCallbacks = [];
+const onPeerDisconnectedCallbacks = [];
+const onGameStartCallbacks = [];
+const onHostDisconnectedCallbacks = [];
+const onReceiveRoleCallbacks = [];
+const onPlayerListUpdateCallbacks = [];
 
-export function setNetworkCallbacks({ connected, disconnected, gameStart, hostDisconnected, receiveRole }) {
-    if (connected) onPeerConnected = connected;
-    if (disconnected) onPeerDisconnected = disconnected;
-    if (gameStart) onGameStart = gameStart;
-    if (hostDisconnected) onHostDisconnected = hostDisconnected;
-    if (receiveRole) onReceiveRole = receiveRole;
+export function setNetworkCallbacks({ connected, disconnected, gameStart, hostDisconnected, receiveRole, playerListUpdate }) {
+    if (connected) onPeerConnectedCallbacks.push(connected);
+    if (disconnected) onPeerDisconnectedCallbacks.push(disconnected);
+    if (gameStart) onGameStartCallbacks.push(gameStart);
+    if (hostDisconnected) onHostDisconnectedCallbacks.push(hostDisconnected);
+    if (receiveRole) onReceiveRoleCallbacks.push(receiveRole);
+    if (playerListUpdate) onPlayerListUpdateCallbacks.push(playerListUpdate);
 }
 
 // Utility to generate a random 4-char alphanumeric room code
@@ -95,9 +97,9 @@ export async function hostGame() {
 
             conn.on('close', () => {
                 console.log(`Connection with ${conn.peer} closed`);
-                const playerName = Array.from(connections.values()).find(c => c.peer === conn.peer)?.metadata?.playerName || conn.peer;
+                const playerName = conn.customPlayerName || conn.metadata?.playerName || conn.peer;
                 connections.delete(conn.peer);
-                onPeerDisconnected(playerName, conn.peer);
+                onPeerDisconnectedCallbacks.forEach(callback => callback(playerName, conn.peer));
             });
 
             conn.on('error', (err) => {
@@ -117,11 +119,12 @@ function handleHostData(conn, data) {
     switch (data.type) {
         case 'JOIN_REQUEST':
             conn.metadata = { playerName: data.playerName };
+            conn.customPlayerName = data.playerName; // Store directly to ensure availability
             console.log(`Player ${data.playerName} (${conn.peer}) joined.`);
             // Add player to local state and update UI
             state.customNames.push(data.playerName);
             persistState();
-            onPeerConnected(data.playerName, conn.peer);
+            onPeerConnectedCallbacks.forEach(callback => callback(data.playerName, conn.peer));
             // Inform all existing clients about the new player
             broadcast({ type: 'PLAYER_LIST_UPDATE', players: state.customNames });
             break;
@@ -153,12 +156,16 @@ export async function joinGame(roomId, playerName) {
         conn.on('close', () => {
             console.log('Connection to host closed');
             hostId = null;
-            onHostDisconnected();
+            onHostDisconnectedCallbacks.forEach(callback => callback());
         });
 
         conn.on('error', (err) => {
             console.error('Connection to host error:', err);
-            el.toastError(t("network.hostConnectionError", { error: err.message }));
+            let errorMessage = t("network.hostConnectionError", { error: err.message });
+            if (err.type === 'peer-unavailable') {
+                errorMessage = t("network.roomDoesNotExist");
+            }
+            el.toastError(errorMessage);
             // TODO: Display error in UI and return to main menu
         });
         return conn;
@@ -176,15 +183,15 @@ function handleClientData(data) {
         case 'PLAYER_LIST_UPDATE':
             state.customNames = data.players;
             persistState();
-            // TODO: Update lobby UI on client
+            onPlayerListUpdateCallbacks.forEach(callback => callback(data.players));
             break;
         case 'START_GAME':
             // Host has started the game, switch client to appropriate view
-            onGameStart(data.gameData);
+            onGameStartCallbacks.forEach(callback => callback(data.gameData));
             break;
         case 'YOUR_ROLE':
             // Client received their role
-            onReceiveRole(data.roleData);
+            onReceiveRoleCallbacks.forEach(callback => callback(data.roleData));
             break;
         default:
             console.warn("Unknown data type received by client:", data.type);
@@ -241,8 +248,9 @@ export function getRoomCode() {
 export function getConnectedPlayers() {
     const players = [];
     connections.forEach((conn) => {
-        if (conn.open && conn.metadata?.playerName) {
-            players.push({ id: conn.peer, name: conn.metadata.playerName });
+        const name = conn.customPlayerName || conn.metadata?.playerName;
+        if (name) {
+            players.push({ id: conn.peer, name: name });
         }
     });
     return players;

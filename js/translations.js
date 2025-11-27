@@ -42,6 +42,8 @@ window.TRANSLATIONS = {
         "buttons.newMatch": "🎮 New game",
         "buttons.finalNew": "🔁 New game",
         "buttons.showSummary": "📜 View summary",
+        "buttons.cancel": "Cancel",
+        "buttons.leave": "Leave",
 
         // Language Picker
         "language.label": "Language",
@@ -216,7 +218,7 @@ window.TRANSLATIONS = {
         "landing.localDesc": "Pass one device around",
         "landing.onlineGame": "Online Game",
         "landing.onlineDesc": "Join with multiple devices",
-        
+
         // Lobby View
         "lobby.title": "Online Game",
         "lobby.hostGame": "Host Game",
@@ -228,6 +230,7 @@ window.TRANSLATIONS = {
         "lobby.playersInRoom": "Players in room:",
         "lobby.startGame": "Start Game",
         "lobby.narratorPlayerName": "Narrator (You)",
+        "lobby.you": "You",
         "lobby.joinedAs": "Joined as:",
         "lobby.waitingForHost": "Waiting for host to start the game...",
 
@@ -236,12 +239,13 @@ window.TRANSLATIONS = {
         "clientRole.imageAlt": "Role image",
         "clientRole.noRoleAssigned": "No role assigned yet",
         "clientRole.unknownRole": "Unknown Role",
-        "clientRole.returnToLobby": "Return to Lobby",
+        "clientRole.returnToLobby": "Exit",
 
         // Network Messages (Toasts)
         "network.peerError": "Network error: {error}",
         "network.connectionError": "Connection with {name} failed: {error}",
         "network.hostConnectionError": "Could not connect to host: {error}",
+        "network.roomDoesNotExist": "The room does not exist.",
         "network.playerJoined": "{name} joined the game.",
         "network.playerLeft": "{name} left the game.",
         "network.welcomeClient": "Welcome to the game!",
@@ -290,6 +294,8 @@ window.TRANSLATIONS = {
         "buttons.newMatch": "🎮 Nueva partida",
         "buttons.finalNew": "🔁 Nueva partida",
         "buttons.showSummary": "📜 Ver resumen",
+        "buttons.cancel": "Cancelar",
+        "buttons.leave": "Salir",
 
         // Language Picker
         "language.label": "Idioma",
@@ -468,6 +474,7 @@ window.TRANSLATIONS = {
         "lobby.playersInRoom": "Jugadores en la sala:",
         "lobby.startGame": "Iniciar Partida",
         "lobby.narratorPlayerName": "Narrador (Tú)",
+        "lobby.you": "Tú",
         "lobby.joinedAs": "Unido como:",
         "lobby.waitingForHost": "Esperando a que el anfitrión inicie la partida...",
 
@@ -476,12 +483,13 @@ window.TRANSLATIONS = {
         "clientRole.imageAlt": "Imagen del rol",
         "clientRole.noRoleAssigned": "No hay rol asignado todavía",
         "clientRole.unknownRole": "Rol Desconocido",
-        "clientRole.returnToLobby": "Volver a la Sala",
+        "clientRole.returnToLobby": "Salir",
 
         // Network Messages (Toasts)
         "network.peerError": "Error de red: {error}",
         "network.connectionError": "Conexión con {name} fallida: {error}",
         "network.hostConnectionError": "No se pudo conectar al anfitrión: {error}",
+        "network.roomDoesNotExist": "La sala no existe.",
         "network.playerJoined": "{name} se unió a la partida.",
         "network.playerLeft": "{name} abandonó la partida.",
         "network.welcomeClient": "¡Bienvenido a la partida!",
@@ -530,6 +538,8 @@ window.TRANSLATIONS = {
         "buttons.newMatch": "🎮 Nuova partita",
         "buttons.finalNew": "🔁 Nuova partita",
         "buttons.showSummary": "📜 Mostra riepilogo",
+        "buttons.cancel": "Annulla",
+        "buttons.leave": "Esci",
 
         // Language Picker
         "language.label": "Lingua",
@@ -704,7 +714,7 @@ window.TRANSLATIONS = {
         "landing.localDesc": "Passa un solo dispositivo",
         "landing.onlineGame": "Partita Online",
         "landing.onlineDesc": "Unisciti con più dispositivi",
-        
+
         // Lobby View
         "lobby.title": "Partita Online",
         "lobby.hostGame": "Crea Partita",
@@ -716,6 +726,7 @@ window.TRANSLATIONS = {
         "lobby.playersInRoom": "Giocatori nella stanza:",
         "lobby.startGame": "Inizia Partita",
         "lobby.narratorPlayerName": "Narratore (Tu)",
+        "lobby.you": "Tu",
         "lobby.joinedAs": "Unito come:",
         "lobby.waitingForHost": "In attesa che l'host avvii la partita...",
 
@@ -724,12 +735,13 @@ window.TRANSLATIONS = {
         "clientRole.imageAlt": "Immagine del ruolo",
         "clientRole.noRoleAssigned": "Nessun ruolo assegnato ancora",
         "clientRole.unknownRole": "Ruolo Sconosciuto",
-        "clientRole.returnToLobby": "Torna alla Stanza",
+        "clientRole.returnToLobby": "Esci",
 
         // Network Messages (Toasts)
         "network.peerError": "Errore di rete: {error}",
         "network.connectionError": "Connessione con {name} fallita: {error}",
         "network.hostConnectionError": "Impossibile connettersi all'host: {error}",
+        "network.roomDoesNotExist": "La stanza non esiste.",
         "network.playerJoined": "{name} si è unito alla partita.",
         "network.playerLeft": "{name} ha lasciato la partita.",
         "network.welcomeClient": "Benvenuto alla partita!",
