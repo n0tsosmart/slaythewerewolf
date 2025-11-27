@@ -6,7 +6,7 @@ export class ViewSetup extends HTMLElement {
       <h2 data-i18n="setup.title">⚙️ Setup</h2>
       <form id="setupForm" class="setup-form">
         <div class="field-group">
-          <label>
+          <label class="player-count-label">
             <span data-i18n="setup.playersLabel">Number of players</span>
             <div class="number-stepper">
               <button type="button" class="step-btn" data-target="playerCount" data-delta="-1">-</button>

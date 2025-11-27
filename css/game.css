@@ -1074,3 +1074,8 @@ details:not([open])>summary {
     min-width: fit-content;
   }
 }
+
+/* Online Mode Adjustments */
+body.online-mode .player-count-label {
+  display: none !important;
+}

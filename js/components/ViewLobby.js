@@ -154,10 +154,19 @@ export class ViewLobby extends HTMLElement {
     onStartNetworkGame() {
         // This will trigger the game start in engine.js
         // and network.js will broadcast to all clients
-        if (state.customNames.length < 1) { // Narrator + at least 1 player
-            el.toastError(t("network.needAtLeastOnePlayer"));
+        const peerCount = this.connectedPlayerPeers.size;
+        
+        if (peerCount < 5) {
+            el.toastError(t("errors.minPlayers", { count: 5 }));
             return;
         }
+
+        // Update el.playerCount to match connected peers so setup logic works (hints, deck size preview)
+        if (el.playerCount) {
+            el.playerCount.value = String(peerCount);
+            el.playerCount.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+
         showView("setup"); // Transition to setup to finalize game config
     }
 
@@ -193,6 +202,12 @@ export class ViewLobby extends HTMLElement {
         this.connectedPlayerPeers.set(peerId, playerName); // Store peerId -> name mapping
         this.updateHostPlayerList();
         el.toastInfo(t("network.playerJoined", { name: playerName }));
+
+        // Update player count input if in setup view to reflect new count immediately
+        if (state.view === 'setup' && el.playerCount) {
+            el.playerCount.value = String(this.connectedPlayerPeers.size);
+            el.playerCount.dispatchEvent(new Event('input', { bubbles: true }));
+        }
     }
 
     handlePeerDisconnected(playerName, peerId) {
@@ -202,6 +217,12 @@ export class ViewLobby extends HTMLElement {
         // Also remove from state.customNames if this player was added via network
         state.customNames = state.customNames.filter(name => name !== playerName);
         renderPlayerList(); // Refresh the setup player list
+
+        // Update player count input if in setup view to reflect new count immediately
+        if (state.view === 'setup' && el.playerCount) {
+            el.playerCount.value = String(this.connectedPlayerPeers.size);
+            el.playerCount.dispatchEvent(new Event('input', { bubbles: true }));
+        }
     }
 
     handleHostDisconnected() {

@@ -480,6 +480,11 @@ export function startGame() {
       el.validationMessage.textContent = t("errors.playerCountMismatch", { count: playerTotal, current: allPlayerNames.length });
       return;
     }
+  } else if (isHost()) {
+    if (allPlayerNames.length < 5) {
+       el.validationMessage.textContent = t("errors.minPlayers", { count: 5 });
+       return;
+    }
   }
 
   state.players = buildPlayerList(allPlayerNames.length > 0 ? allPlayerNames : playerTotal);
