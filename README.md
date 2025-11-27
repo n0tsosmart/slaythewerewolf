@@ -121,15 +121,24 @@ That's it! No build process, no npm install, no configuration needed.
 slaythewerewolf/
 ├── index.html              # Main HTML structure
 ├── css/
-│   └── styles.css          # Application styling (versioned)
+│   └── ...                 # Application styling files
 ├── js/
-│   ├── app.js              # Core game logic and state management
-│   └── translations.js     # Localization strings (en, es, it)
+│   ├── app.js              # Main application entry point (ES Module)
+│   ├── translations.js     # Localization strings (en, es, it)
+│   └── modules/            # Core game logic and state management modules
+│       ├── config.js       # Global constants and configuration
+│       ├── dom.js          # DOM element references
+│       ├── engine.js       # Core game engine and event handling
+│       ├── i18n.js         # Internationalization functions
+│       ├── logic.js        # Pure game logic functions (e.g., Mythomaniac, victory conditions)
+│       ├── reveal.js       # Role revelation phase logic
+│       ├── roles.js        # Role creation and deck management
+│       ├── setup.js        # Game setup and player management
+│       ├── state.js        # Global game state
+│       ├── store.js        # LocalStorage persistence logic
+│       └── utils.js        # Utility functions and UI enhancements
 ├── assets/
-│   ├── logo.png            # Application logo
-│   ├── favicon.ico         # Browser favicon
-│   ├── cards/              # Role card artwork
-│   └── backgrounds/        # Background images
+│   └── ...                 # Images, favicons, card artwork
 ├── LICENSE                 # MIT License
 └── README.md              # This file
 ```
