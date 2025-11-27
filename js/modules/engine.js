@@ -3,17 +3,17 @@ import { persistState, restoreFromStorage } from './store.js';
 import { el } from './dom.js';
 import { t, getRoleContent, setLanguage, applyTranslations } from './i18n.js';
 import { ROLE_LIBRARY, MIN_PLAYERS } from './config.js';
-import { 
-  getSelectedSpecials, 
-  buildPlayerList, 
-  buildDeck, 
-  updateWolfHint, 
-  clampWolfCount, 
-  enforceRoleLimits, 
-  updateDeckPreview, 
-  createCard, 
-  renderPlayerList, 
-  renderRoleOptions, 
+import {
+  getSelectedSpecials,
+  buildPlayerList,
+  buildDeck,
+  updateWolfHint,
+  clampWolfCount,
+  enforceRoleLimits,
+  updateDeckPreview,
+  createCard,
+  renderPlayerList,
+  renderRoleOptions,
   updateRoleSummary,
   handleAddPlayer,
   autoAdjustWolvesFromPlayers,
@@ -22,12 +22,41 @@ import {
 import { prepareReveal, revealCard, nextPlayer, clearHandoffCountdown, updateHandoffTimer } from './reveal.js';
 import { initUI, scrollToBottom } from './utils.js';
 import { detectMythStatusFromDeck, determineMythOutcome } from './logic.js';
+import { setNetworkCallbacks, isClient, getLocalPlayerName, isHost, getConnectedPlayers, broadcast, sendToPeer, disconnect as networkDisconnect } from './network.js';
+
+// Map to store peerId to playerName for easy lookup when distributing roles
+const peerIdToPlayerName = new Map();
 
 // --- APP INITIALIZATION ---
 
 export function initApp() {
   console.log("[SlayTheWerewolf] Engine initializing...");
   initUI();
+  // Set up network callbacks BEFORE restoring state, in case state restoration triggers network events
+  setNetworkCallbacks({
+    connected: (playerName, peerId) => {
+      el.toastInfo(t("network.playerJoined", { name: playerName }));
+      // This is handled by ViewLobby now, but good to have a fallback/debug
+    },
+    disconnected: (playerName, peerId) => {
+      el.toastWarning(t("network.playerLeft", { name: playerName }));
+      // This is handled by ViewLobby now
+    },
+    gameStart: (gameData) => {
+      el.toastInfo(t("network.gameStartedByHost"));
+      // Transition the client to a waiting screen or directly to client role view
+      showClientRoleView(getLocalPlayerName());
+    },
+    hostDisconnected: () => {
+      el.toastError(t("network.hostDisconnected"));
+      showLobbyView(); // Return client to lobby if host disconnects
+    },
+    receiveRole: (roleData) => {
+      el.toastInfo(t("network.receivedRole"));
+      showClientRoleView(getLocalPlayerName(), roleData);
+    },
+  });
+
   renderRoleOptions();
   attachEvents();
   updateWolfHint();
@@ -39,12 +68,28 @@ export function initApp() {
   restoreFromStorage();
   // Use handleLanguageChange to ensure all UI is updated according to the restored language
   handleLanguageChange(state.language, { skipPersist: true });
-  showView(state.view || "setup");
+
+  // Determine initial view based on network state and assigned role
+  // Only show client role view if there's an assigned role (persisted from previous session)
+  if (state.assignedRole) {
+    // Client has a persisted role, show it
+    showClientRoleView(getLocalPlayerName(), state.assignedRole);
+  } else {
+    // Normal flow - check state or default to landing
+    if ((!state.view || state.view === "setup" || state.view === "lobby" || state.view === "client-role") && state.deck.length === 0) {
+      showView("landing");
+    } else if (state.view === "client-role") {
+      // If view was client-role but no assigned role, go to landing
+      showView("landing");
+    } else {
+      showView(state.view || "landing");
+    }
+  }
 }
 
 function handleLanguageChange(lang, { skipPersist = false } = {}) {
   setLanguage(lang);
-  
+
   // Refresh UI elements dependent on language
   const selectedRoles = getSelectedSpecials().map((item) => item.roleId);
   renderRoleOptions();
@@ -57,7 +102,7 @@ function handleLanguageChange(lang, { skipPersist = false } = {}) {
   applyTranslations();
   renderPlayerList();
   updateHandoffTimer();
-  
+
   updateWolfHint();
   renderSummaryList();
   if (state.view === "summary") {
@@ -71,7 +116,7 @@ function handleLanguageChange(lang, { skipPersist = false } = {}) {
     }
   }
   if (state.view === "final" && state.victory) renderVictoryFromState();
-  
+
   updateRoleSummary();
   if (!skipPersist) persistState();
 }
@@ -338,15 +383,44 @@ function attachEvents() {
 
 let suppressLivingToggle = false;
 
-export function showView(view) {
-  if (view !== "reveal") clearHandoffCountdown();
-  [el.setupView, el.revealView, el.summaryView, el.finalView].forEach((section) => {
-    section.classList.add("hidden");
+export function showLobbyView() {
+  showView("lobby");
+  // Ensure the lobby view shows the main menu when first displayed
+  if (el.viewLobby && typeof el.viewLobby.resetToMainMenu === 'function') {
+    el.viewLobby.resetToMainMenu();
+  }
+}
+
+export function showClientRoleView(playerName, roleData = null) {
+  // Hide all main views
+  [el.landingView, el.setupView, el.revealView, el.summaryView, el.finalView, el.lobbyView, el.clientRoleView].forEach((section) => {
+    if (section) section.classList.add("hidden");
   });
-  if (view === "setup") el.setupView.classList.remove("hidden");
-  if (view === "reveal") el.revealView.classList.remove("hidden");
-  if (view === "summary") el.summaryView.classList.remove("hidden");
-  if (view === "final") el.finalView.classList.remove("hidden");
+  // Show client role view
+  if (el.clientRoleView) el.clientRoleView.classList.remove("hidden");
+  state.view = "client-role"; // Update state
+  // If roleData is provided, render the role
+  if (roleData && el.clientRole) { // Assume el.clientRole is the custom element instance
+    el.clientRole.setRole(roleData);
+  } else if (el.clientRole) {
+    el.clientRole.setRole(null); // Clear previous role if any
+  }
+  updateFooterVisibility();
+  persistState();
+}
+
+export function showView(view) {
+  if (view !== "reveal" && view !== "client-role") clearHandoffCountdown();
+  [el.landingView, el.setupView, el.revealView, el.summaryView, el.finalView, el.lobbyView, el.clientRoleView].forEach((section) => {
+    if (section) section.classList.add("hidden");
+  });
+  if (view === "landing" && el.landingView) el.landingView.classList.remove("hidden");
+  if (view === "setup" && el.setupView) el.setupView.classList.remove("hidden");
+  if (view === "reveal" && el.revealView) el.revealView.classList.remove("hidden");
+  if (view === "summary" && el.summaryView) el.summaryView.classList.remove("hidden");
+  if (view === "final" && el.finalView) el.finalView.classList.remove("hidden");
+  if (view === "lobby" && el.lobbyView) el.lobbyView.classList.remove("hidden");
+  if (view === "client-role" && el.clientRoleView) el.clientRoleView.classList.remove("hidden");
 
   if (view === "setup" && el.rolesDetails) {
     el.rolesDetails.open = state.rolesDetailsOpen;
@@ -367,6 +441,7 @@ export function showSummary() {
 
 export function updateFooterVisibility() {
   if (!el.infoFooter) return;
+  // Hide footer on lobby and client role views
   el.infoFooter.classList.toggle("hidden", state.view !== "setup");
 }
 
@@ -378,12 +453,48 @@ export function startGame() {
   const wolfTotal = Number(el.wolfCount.value) || 0;
   const specials = getSelectedSpecials();
 
-  state.players = buildPlayerList(playerTotal);
-  state.deck = buildDeck({ playerTotal, wolfTotal, specials });
+  let allPlayerNames = [];
+
+  // For online games (host mode), use ONLY the connected network players
+  // The narrator (host) does NOT receive a card
+  if (isHost()) {
+    const connectedPeers = getConnectedPlayers(); // {id, name}
+    allPlayerNames = connectedPeers.map(peer => peer.name);
+
+    // Map peer IDs to player names for role distribution
+    peerIdToPlayerName.clear();
+    connectedPeers.forEach(peer => {
+      peerIdToPlayerName.set(peer.id, peer.name);
+    });
+  } else if (isClient()) {
+    // Client doesn't start the game, this shouldn't be called
+    console.warn("Client cannot start the game");
+    return;
+  } else {
+    // For local games, use custom names or player count from setup
+    allPlayerNames = [...state.customNames];
+  }
+
+  if (!isHost() && !isClient()) {
+    if (allPlayerNames.length > 0 && allPlayerNames.length !== playerTotal) {
+      el.validationMessage.textContent = t("errors.playerCountMismatch", { count: playerTotal, current: allPlayerNames.length });
+      return;
+    }
+  } else if (isHost()) {
+    if (allPlayerNames.length < 5) {
+       el.validationMessage.textContent = t("errors.minPlayers", { count: 5 });
+       return;
+    }
+  }
+
+  state.players = buildPlayerList(allPlayerNames.length > 0 ? allPlayerNames : playerTotal);
+
+
+  state.deck = buildDeck({ playerTotal: state.players.length, wolfTotal, specials }); // Use actual number of players now
   state.revealIndex = 0;
   state.activeSpecialIds = Array.from(new Set(specials.map((item) => item.roleId)));
   state.mythStatus = detectMythStatusFromDeck(state.players, state.deck);
-  
+
   state.eliminatedPlayers = [];
   state.narratorDay = 1;
   state.maxDays = state.activeSpecialIds.includes("bodyguard") ? null : Math.max(1, state.players.length);
@@ -394,12 +505,70 @@ export function startGame() {
   state.playerVotes = {};
   state.benvenutoPlayer = null;
 
-  prepareReveal();
-  showView("reveal");
+  // --- Hybrid Reveal Logic ---
+  const localRevealPlayers = [];
+  const networkRevealPlayers = [];
+
+  state.players.forEach((playerName, index) => {
+    const card = state.deck[index];
+    const localizedCard = {
+      roleId: card.roleId,
+      name: getRoleContent(card.roleId)?.name || card.name,
+      team: card.team,
+      teamLabel: getRoleContent(card.roleId)?.teamLabel || card.teamLabel,
+      description: getRoleContent(card.roleId)?.description || card.description,
+      image: card.image,
+    };
+
+    // Check if this player is a network player
+    let isNetworkPlayer = false;
+    if (isHost()) {
+      for (const [peerId, name] of peerIdToPlayerName.entries()) {
+        if (name === playerName) {
+          networkRevealPlayers.push({ peerId, playerName, roleData: localizedCard });
+          isNetworkPlayer = true;
+          break;
+        }
+      }
+    }
+
+    if (!isNetworkPlayer) {
+      localRevealPlayers.push({ playerName, index, roleData: localizedCard });
+    }
+  });
+
+  // If hosting, send roles to network players first
+  if (isHost()) {
+    broadcast({ type: 'START_GAME', gameData: { playerNames: state.players } });
+    networkRevealPlayers.forEach(({ peerId, roleData }) => {
+      sendToPeer(peerId, { type: 'YOUR_ROLE', roleData });
+    });
+  }
+
+  if (localRevealPlayers.length > 0) {
+    // If there are local players, proceed with the traditional reveal flow
+    // The `reveal.js` module will use `state.deck` and `state.players`
+    // For `prepareReveal`, ensure it knows to only show *unrevealed* (local) players.
+    // This part needs adjustment in reveal.js or an abstraction layer.
+    prepareReveal(); // This will need to be smart enough to only show local players
+    state.revealIndex = 0; // Reset reveal index for local players
+    state.localPlayersToReveal = localRevealPlayers; // New state property
+    showView("reveal");
+  } else {
+    // If all players are online or no players, skip reveal and go to summary
+    state.revealComplete = true; // Mark as complete
+    showSummary();
+  }
   persistState();
 }
 
 export function resetGame({ preserveNames = true } = {}) {
+  // Disconnect from network if connected
+  if (isHost() || isClient()) {
+    networkDisconnect();
+    el.toastInfo(t("network.disconnected"));
+  }
+
   const preservedPlayerCount = el.playerCount.value;
   const preservedWolfCount = el.wolfCount.value;
 
@@ -434,7 +603,7 @@ export function resetGame({ preserveNames = true } = {}) {
   enforceRoleLimits();
   updateDeckPreview();
   el.handoffNotice.classList.add("hidden");
-  showView("setup");
+  showView("landing"); // Go to landing page to choose mode
 }
 
 export function confirmAction(message, onConfirm) {

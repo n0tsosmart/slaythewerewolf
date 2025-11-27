@@ -4,10 +4,42 @@
 
 export const el = {
   // Main Views
+  get landingView() { return document.getElementById("landingView"); }, // New
   get setupView() { return document.getElementById("setupView"); },
   get revealView() { return document.getElementById("revealView"); },
   get summaryView() { return document.getElementById("summaryView"); },
   get finalView() { return document.getElementById("finalView"); },
+  get lobbyView() { return document.getElementById("lobbyView"); },
+  get viewLobby() { return document.querySelector("view-lobby"); }, // Custom element
+  get clientRoleView() { return document.getElementById("clientRoleView"); },
+  get clientRole() { return document.querySelector("view-client-role"); },
+
+  // Landing View Elements
+  get localGameBtn() { return document.getElementById("localGameBtn"); },
+  get onlineGameBtn() { return document.getElementById("onlineGameBtn"); },
+
+  // Lobby View Elements
+  get lobbyMainMenu() { return document.getElementById("lobbyMainMenu"); },
+  get lobbyHost() { return document.getElementById("lobbyHost"); },
+  get lobbyClient() { return document.getElementById("lobbyClient"); },
+  get hostGameBtn() { return document.getElementById("hostGameBtn"); },
+  get joinGameBtn() { return document.getElementById("joinGameBtn"); },
+  get startNetworkGameBtn() { return document.getElementById("startNetworkGameBtn"); },
+  get cancelHostBtn() { return document.getElementById("cancelHostBtn"); },
+  get leaveGameBtn() { return document.getElementById("leaveGameBtn"); },
+  get joinRoomCodeInput() { return document.getElementById("joinRoomCodeInput"); },
+  get joinPlayerNameInput() { return document.getElementById("joinPlayerNameInput"); },
+  get hostRoomCodeDisplay() { return document.getElementById("hostRoomCodeDisplay"); },
+  get hostPlayerList() { return document.getElementById("hostPlayerList"); },
+  get clientPlayerNameDisplay() { return document.getElementById("clientPlayerNameDisplay"); },
+
+  // Client Role View Elements
+  get clientRoleImage() { return document.getElementById("clientRoleImage"); },
+  get clientRoleTeam() { return document.getElementById("clientRoleTeam"); },
+  get clientRoleName() { return document.getElementById("clientRoleName"); },
+  get clientRoleDescription() { return document.getElementById("clientRoleDescription"); },
+  get returnToLobbyBtn() { return document.getElementById("returnToLobbyBtn"); },
+  get clientRoleCard() { return document.getElementById("clientRoleCard"); },
 
   // Setup View Elements
   get rolesDetails() { return document.getElementById("rolesDetails"); },
@@ -97,4 +129,44 @@ export const el = {
   get victorySubtitle() { return document.getElementById("victorySubtitle"); },
   get victoryList() { return document.getElementById("victoryList"); },
   get finalNewGameBtn() { return document.getElementById("finalNewGameBtn"); },
+
+  // --- Toast Notifications ---
+  get toastContainer() { return document.getElementById("toastContainer"); },
+
+  toast(message, type = 'info', duration = 3000) {
+    const container = el.toastContainer;
+    if (!container) {
+      console.warn("Toast container not found.");
+      return;
+    }
+
+    const toastElement = document.createElement('div');
+    toastElement.className = `toast toast-${type}`;
+    toastElement.textContent = message;
+
+    container.appendChild(toastElement);
+
+    // Force reflow to enable transition
+    void toastElement.offsetWidth;
+    toastElement.classList.add('show');
+
+    setTimeout(() => {
+      toastElement.classList.remove('show');
+      toastElement.addEventListener('transitionend', () => {
+        toastElement.remove();
+      }, { once: true });
+    }, duration);
+  },
+
+  toastInfo(message, duration) {
+    el.toast(message, 'info', duration);
+  },
+
+  toastError(message, duration = 5000) {
+    el.toast(message, 'error', duration);
+  },
+
+  toastWarning(message, duration = 4000) {
+    el.toast(message, 'warning', duration);
+  },
 };

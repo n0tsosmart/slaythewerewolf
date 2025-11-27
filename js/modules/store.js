@@ -36,6 +36,7 @@ export function persistState() {
       language: state.language,
       playerVotes: state.playerVotes,
       benvenutoPlayer: state.benvenutoPlayer,
+      assignedRole: state.assignedRole,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
   } catch (error) {

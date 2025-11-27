@@ -42,6 +42,8 @@ window.TRANSLATIONS = {
         "buttons.newMatch": "🎮 New game",
         "buttons.finalNew": "🔁 New game",
         "buttons.showSummary": "📜 View summary",
+        "buttons.cancel": "Cancel",
+        "buttons.leave": "Leave",
 
         // Language Picker
         "language.label": "Language",
@@ -148,6 +150,7 @@ window.TRANSLATIONS = {
 
         // Error Messages
         "errors.minPlayers": "⚠️ At least {count} players are required",
+        "errors.playerCountMismatch": "⚠️ Player count mismatch: defined {count}, listed {current}",
         "errors.needWolf": "⚠️ You need at least one werewolf",
         "errors.tooManyWolves": "⚠️ Werewolves must be fewer than the players",
         "errors.tooManySpecials": "⚠️ Too many special roles for this group",
@@ -208,6 +211,58 @@ window.TRANSLATIONS = {
         "voting.tieBody": "If there is a tie during the lynching vote, the suspect closest to the 'Welcome!' player (clockwise, starting from the left) is eliminated.",
         "voting.ghostTitle": "Ghosts",
         "voting.ghostBody": "Ghosts can vote to choose suspects but cannot vote for lynching.",
+
+        // Landing View
+        "landing.title": "Welcome",
+        "landing.subtitle": "Choose your game mode",
+        "landing.localGame": "Local Game",
+        "landing.localDesc": "Pass one device around",
+        "landing.onlineGame": "Online Game",
+        "landing.onlineDesc": "Join with multiple devices",
+
+        // Lobby View
+        "lobby.title": "Online Game",
+        "lobby.hostGame": "Host Game",
+        "lobby.or": "OR",
+        "lobby.joinGame": "Join Game",
+        "lobby.roomCodePlaceholder": "Room Code",
+        "lobby.yourNamePlaceholder": "Your Name",
+        "lobby.shareCode": "Share this code with your friends:",
+        "lobby.playersInRoom": "Players in room:",
+        "lobby.startGame": "Start Game",
+        "lobby.narratorPlayerName": "Narrator (You)",
+        "lobby.you": "You",
+        "lobby.joinedAs": "Joined as:",
+        "lobby.waitingForHost": "Waiting for host to start the game...",
+
+        // Client Role View
+        "clientRole.title": "Your Role",
+        "clientRole.imageAlt": "Role image",
+        "clientRole.noRoleAssigned": "No role assigned yet",
+        "clientRole.unknownRole": "Unknown Role",
+        "clientRole.returnToLobby": "Exit",
+
+        // Network Messages (Toasts)
+        "network.peerError": "Network error: {error}",
+        "network.connectionError": "Connection with {name} failed: {error}",
+        "network.hostConnectionError": "Could not connect to host: {error}",
+        "network.roomDoesNotExist": "The room does not exist.",
+        "network.joinError": "Error joining game: {error}",
+        "network.connectionTimeout": "Connection timed out.",
+        // General
+        "general.betaBadge": "BETA",
+        "network.playerJoined": "{name} joined the game.",
+        "network.playerLeft": "{name} left the game.",
+        "network.welcomeClient": "Welcome to the game!",
+        "network.gameStarted": "Host started the game!",
+        "network.gameStartedByHost": "Game started. Distributing roles...",
+        "network.receivedRole": "You received your role!",
+        "network.hostDisconnected": "Host disconnected. Returning to lobby.",
+        "network.disconnected": "Disconnected from the network.",
+        "network.roomCodeAndNameRequired": "Room code and your name are required.",
+        "network.needAtLeastOnePlayer": "Need at least one player to start the game.",
+        "network.rejoiningGame": "Rejoining game as {name}...",
+        "network.couldNotRejoin": "Could not rejoin game. Please try again.",
     },
 
     // --------------------------------------------------------------------------
@@ -244,6 +299,8 @@ window.TRANSLATIONS = {
         "buttons.newMatch": "🎮 Nueva partida",
         "buttons.finalNew": "🔁 Nueva partida",
         "buttons.showSummary": "📜 Ver resumen",
+        "buttons.cancel": "Cancelar",
+        "buttons.leave": "Salir",
 
         // Language Picker
         "language.label": "Idioma",
@@ -388,13 +445,13 @@ window.TRANSLATIONS = {
         "info.roleplayPlayers": "Jugadores: hablad como vuestros personajes, susurrad sospechas y describid gestos sin recurrir a comentarios meta como “fui el tercero en ser elegido”.",
         "info.roleplayNarrator": "Narrador: describe sonidos, olores y sombras antes de cada fase. Llama a los roles por su título y pausa la historia si el grupo rompe la tensión.",
         "info.rulesTitle": "Reglas y metajuego",
-        "info.rulesSummary": "Nada de grabaciones, fotos ni charlas fuera de la mesa. Los eliminados permanecen en silencio salvo que un poder los devuelva.",
-        "info.rulesMetagame": "Recordatorios de metajuego: nada de golpecitos codificados, búsquedas en el móvil ni referencias al orden del mazo. El narrador puede repetir una fase si la inmersión se rompe.",
-        "info.feedback": "💬 Envía feedback y sugerencias en GitHub",
+        "info.rulesSummary": "Niente foto, registrazioni o discussioni fuori tavolo. Chi viene eliminato resta in silenzio finché un potere non lo richiama.",
+        "info.rulesMetagame": "Promemoria metagame: niente colpetti in codice, ricerche al telefono o riferimenti all'ordine delle carte. Il narratore puede repetir una fase si la inmersión se rompe.",
+        "info.feedback": "💬 Invia feedback e suggerimenti su GitHub",
 
         // Footer
-        "footer.disclaimer": "No recopilamos cookies, el arte es generado por IA y este homenaje gratuito mantiene vivo el espíritu de Lupus In Tabula para que los amigos jueguen sin cartas físicas.",
-        "footer.license": "Publicado bajo la licencia MIT por n0tsosmart.",
+        "footer.disclaimer": "Non raccogliamo cookie, le illustrazioni sono generate da IA e questo tributo gratuito mantiene vivo lo spirito di Lupus In Tabula per giocare tra amici senza carte fisiche.",
+        "footer.license": "Distribuito con licenza MIT da n0tsosmart.",
 
         // Voting UI
         "votes.label": "Votos",
@@ -410,6 +467,58 @@ window.TRANSLATIONS = {
         "voting.tieBody": "Si hay un empate durante la votación de linchamiento, el sospechoso más cercano al jugador '¡Bienvenido!' (en sentido horario, comenzando por la izquierda) es eliminado.",
         "voting.ghostTitle": "Fantasmas",
         "voting.ghostBody": "Los fantasmas pueden votar para elegir sospechosos pero no pueden votar en el linchamiento.",
+
+        // Landing View
+        "landing.title": "Bienvenido",
+        "landing.subtitle": "Elige tu modo de juego",
+        "landing.localGame": "Partida Local",
+        "landing.localDesc": "Pasa un solo dispositivo",
+        "landing.onlineGame": "Partida en Línea",
+        "landing.onlineDesc": "Únete con múltiples dispositivos",
+
+        // Lobby View
+        "lobby.title": "Juego en Línea",
+        "lobby.hostGame": "Crear partida",
+        "lobby.or": "O",
+        "lobby.joinGame": "Unirse a partida",
+        "lobby.roomCodePlaceholder": "Código de Sala",
+        "lobby.yourNamePlaceholder": "Tu Nombre",
+        "lobby.shareCode": "Comparte este código con tus amigos:",
+        "lobby.playersInRoom": "Jugadores en la sala:",
+        "lobby.startGame": "Iniciar Partida",
+        "lobby.narratorPlayerName": "Narrador (Tú)",
+        "lobby.you": "Tú",
+        "lobby.joinedAs": "Unido como:",
+        "lobby.waitingForHost": "Esperando a que el anfitrión inicie la partida...",
+
+        // Client Role View
+        "clientRole.title": "Tu Rol",
+        "clientRole.imageAlt": "Imagen del rol",
+        "clientRole.noRoleAssigned": "No hay rol asignado todavía",
+        "clientRole.unknownRole": "Rol Desconocido",
+        "clientRole.returnToLobby": "Salir",
+
+        // Network Messages (Toasts)
+        "network.peerError": "Error de red: {error}",
+        "network.connectionError": "Conexión con {name} fallida: {error}",
+        "network.hostConnectionError": "No se pudo conectar al anfitrión: {error}",
+        "network.roomDoesNotExist": "La sala no existe.",
+        "network.joinError": "Error al unirse a la partida: {error}",
+        "network.connectionTimeout": "Tiempo de conexión agotado.",
+        // General
+        "general.betaBadge": "BETA",
+        "network.playerJoined": "{name} se unió a la partida.",
+        "network.playerLeft": "{name} abandonó la partida.",
+        "network.welcomeClient": "¡Bienvenido a la partida!",
+        "network.gameStarted": "El anfitrión inició la partida.",
+        "network.gameStartedByHost": "Partida iniciada. Repartiendo roles...",
+        "network.receivedRole": "¡Recibiste tu rol!",
+        "network.hostDisconnected": "Anfitrión desconectado. Volviendo a la sala.",
+        "network.disconnected": "Desconectado de la red.",
+        "network.roomCodeAndNameRequired": "Se requieren el código de sala y tu nombre.",
+        "network.needAtLeastOnePlayer": "Se necesita al menos un jugador para iniciar la partida.",
+        "network.rejoiningGame": "Reuniéndote a la partida como {name}...",
+        "network.couldNotRejoin": "No se pudo volver a unirse a la partida. Por favor, inténtalo de nuevo.",
     },
 
     // --------------------------------------------------------------------------
@@ -446,6 +555,8 @@ window.TRANSLATIONS = {
         "buttons.newMatch": "🎮 Nuova partita",
         "buttons.finalNew": "🔁 Nuova partita",
         "buttons.showSummary": "📜 Mostra riepilogo",
+        "buttons.cancel": "Annulla",
+        "buttons.leave": "Esci",
 
         // Language Picker
         "language.label": "Lingua",
@@ -612,5 +723,57 @@ window.TRANSLATIONS = {
         "voting.tieBody": "Se c'è parità durante il voto di linciaggio, l'indiziato più vicino al giocatore 'Benvenuto!' (in senso orario, partendo da sinistra) viene eliminato.",
         "voting.ghostTitle": "Fantasmi",
         "voting.ghostBody": "I fantasmi possono votare per scegliere gli indiziati ma non possono votare per il linciaggio.",
+
+        // Landing View
+        "landing.title": "Benvenuto",
+        "landing.subtitle": "Scegli la modalità di gioco",
+        "landing.localGame": "Partita Locale",
+        "landing.localDesc": "Passa un solo dispositivo",
+        "landing.onlineGame": "Partita Online",
+        "landing.onlineDesc": "Unisciti con più dispositivi",
+
+        // Lobby View
+        "lobby.title": "Partita Online",
+        "lobby.hostGame": "Crea Partita",
+        "lobby.or": "O",
+        "lobby.joinGame": "Unisciti a Partita",
+        "lobby.roomCodePlaceholder": "Codice Stanza",
+        "lobby.yourNamePlaceholder": "Il tuo Nome",
+        "lobby.shareCode": "Condividi questo codice con i tuoi amici:",
+        "lobby.playersInRoom": "Giocatori nella stanza:",
+        "lobby.startGame": "Inizia Partita",
+        "lobby.narratorPlayerName": "Narratore (Tu)",
+        "lobby.you": "Tu",
+        "lobby.joinedAs": "Unito come:",
+        "lobby.waitingForHost": "In attesa che l'host avvii la partita...",
+
+        // Client Role View
+        "clientRole.title": "Il tuo Ruolo",
+        "clientRole.imageAlt": "Immagine del ruolo",
+        "clientRole.noRoleAssigned": "Nessun ruolo assegnato ancora",
+        "clientRole.unknownRole": "Ruolo Sconosciuto",
+        "clientRole.returnToLobby": "Esci",
+
+        // Network Messages (Toasts)
+        "network.peerError": "Errore di rete: {error}",
+        "network.connectionError": "Connessione con {name} fallita: {error}",
+        "network.hostConnectionError": "Impossibile connettersi all'host: {error}",
+        "network.roomDoesNotExist": "La stanza non esiste.",
+        "network.joinError": "Errore nell'unirsi alla partita: {error}",
+        "network.connectionTimeout": "Timeout della connessione.",
+        // General
+        "general.betaBadge": "BETA",
+        "network.playerJoined": "{name} si è unito alla partita.",
+        "network.playerLeft": "{name} ha lasciato la partita.",
+        "network.welcomeClient": "Benvenuto alla partita!",
+        "network.gameStarted": "L'host ha avviato la partita!",
+        "network.gameStartedByHost": "Partita avviata. Distribuzione ruoli...",
+        "network.receivedRole": "Hai ricevuto il tuo ruolo!",
+        "network.hostDisconnected": "Host disconnesso. Ritorno alla lobby.",
+        "network.disconnected": "Disconnesso dalla rete.",
+        "network.roomCodeAndNameRequired": "Sono richiesti il codice della stanza e il tuo nome.",
+        "network.needAtLeastOnePlayer": "È necessario almeno un giocatore per avviare la partita.",
+        "network.rejoiningGame": "Rientro in partita come {name}...",
+        "network.couldNotRejoin": "Impossibile rientrare in partita. Riprova.",
     },
 };

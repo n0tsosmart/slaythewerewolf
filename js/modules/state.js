@@ -23,4 +23,5 @@ export const state = {
   handoffCountdown: 0,
   playerVotes: {},
   benvenutoPlayer: null,
+  assignedRole: null, // For clients: stores their assigned role data
 };
