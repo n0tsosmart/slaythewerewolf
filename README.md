@@ -84,6 +84,13 @@ This digital companion handles role distribution, game narration, player trackin
 * **Fully Translated Interface** – All UI elements, rules, guides, and privacy policy localized
 * **Persistent Preference** – Language selection saved to browser
 
+### 🕵️ Mafia Edition
+
+* **Theme Toggle** – Switch between the classic "Werewolf" theme and a "Mafia" setting.
+* **Role Adaptations** – Automatically renames roles (e.g., Werewolf → Mafioso, Seer → Detective) and updates descriptions.
+* **Immersive Text** – All game text, including narration guides and victory screens, adapts to the chosen theme.
+* **Visual Overhaul** – Activates a distinct purple color scheme and custom logo.
+
 ### 🔒 Privacy & Transparency
 
 * **Zero Tracking** – No cookies, no analytics, no external requests
