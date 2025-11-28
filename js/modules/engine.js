@@ -367,6 +367,14 @@ function attachEvents() {
       if (event.target === el.infoOverlay) closeInfoModal();
     });
   }
+
+  if (el.privacyBtn) el.privacyBtn.addEventListener("click", openPrivacyModal);
+  if (el.privacyClose) el.privacyClose.addEventListener("click", closePrivacyModal);
+  if (el.privacyOverlay) {
+    el.privacyOverlay.addEventListener("click", (event) => {
+      if (event.target === el.privacyOverlay) closePrivacyModal();
+    });
+  }
 }
 
 // --- ENGINE FUNCTIONS ---
@@ -431,9 +439,14 @@ export function showSummary() {
 
 export function updateFooterVisibility() {
   if (!el.infoFooter) return;
-  // Hide footer on lobby and client role views
-  const shouldHide = state.view === "lobby" || state.view === "client-role";
-  el.infoFooter.classList.toggle("hidden", state.view !== "setup" || shouldHide);
+  // Show footer on all views (always visible)
+  el.infoFooter.classList.remove("hidden");
+
+  // Also hide restart button on landing, lobby, and client-role views
+  if (el.restartBtn) {
+    const hideRestart = state.view === "landing" || state.view === "lobby" || state.view === "client-role";
+    el.restartBtn.classList.toggle("hidden", hideRestart);
+  }
 }
 
 export function startGame() {
@@ -627,6 +640,18 @@ export function openInfoModal() {
 export function closeInfoModal() {
   if (!el.infoOverlay) return;
   el.infoOverlay.classList.add("hidden");
+  document.body.style.overflow = "";
+}
+
+export function openPrivacyModal() {
+  if (!el.privacyOverlay) return;
+  el.privacyOverlay.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+
+export function closePrivacyModal() {
+  if (!el.privacyOverlay) return;
+  el.privacyOverlay.classList.add("hidden");
   document.body.style.overflow = "";
 }
 

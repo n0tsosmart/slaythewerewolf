@@ -3,10 +3,10 @@ export class ViewGlobal extends HTMLElement {
     this.style.display = 'contents';
     this.innerHTML = `
     <div id="infoFooter" class="info-footer">
-      <p class="app-footer" data-i18n="footer.disclaimer">We do not collect cookies, the artwork is AI-generated, and
-        this free fan-made tribute keeps the Lupus In Tabula spirit alive so friends can play without physical cards.
-      </p>
       <p class="app-footer" data-i18n="footer.license">Released under the MIT License by n0tsosmart.</p>
+      <p class="app-footer">
+        <button id="privacyBtn" class="link-button" type="button" data-i18n="footer.privacy">🔒 Privacy & Data Policy</button>
+      </p>
     </div>
 
     <div id="modalOverlay" class="modal-overlay hidden">
@@ -69,6 +69,44 @@ export class ViewGlobal extends HTMLElement {
         </div>
         <div class="modal-actions">
           <button id="votingClose" class="btn-secondary btn-small" type="button" data-i18n="modal.cancel">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="privacyOverlay" class="modal-overlay hidden">
+      <div class="modal-panel info-panel">
+        <h3 class="modal-title" data-i18n="privacy.title">Privacy & Data Policy</h3>
+        <p class="help" data-i18n="privacy.intro">This application is designed with privacy in mind. Here's how we handle your data:</p>
+        
+        <div class="info-section">
+          <h3 data-i18n="privacy.localTitle">Local Storage Only</h3>
+          <p data-i18n="privacy.localDesc">All game data (player names, game state, language preferences) is stored locally in your browser using LocalStorage. No data is sent to any external servers or third parties.</p>
+        </div>
+        
+        <div class="info-section">
+          <h3 data-i18n="privacy.noCookiesTitle">No Tracking or Cookies</h3>
+          <p data-i18n="privacy.noCookiesDesc">We do not use cookies, analytics, or any tracking mechanisms. Your gameplay is completely private.</p>
+        </div>
+        
+        <div class="info-section">
+          <h3 data-i18n="privacy.peerJsTitle">Online Mode: WebRTC (PeerJS)</h3>
+          <p data-i18n="privacy.peerJsDesc">When you use Online Mode, the app uses PeerJS for peer-to-peer connections via WebRTC. This requires a signaling server to establish connections between players.</p>
+          <p data-i18n="privacy.peerJsData">Data exchanged: Only game-related information (role assignments, player names, room codes) is transmitted directly between players' browsers. The signaling server only facilitates the initial connection and does not store or access your game data.</p>
+          <p data-i18n="privacy.peerJsThirdParty">PeerJS uses a public signaling server by default. If you're concerned about privacy, you can host your own PeerJS server.</p>
+        </div>
+        
+        <div class="info-section">
+          <h3 data-i18n="privacy.openSourceTitle">Open Source & Transparent</h3>
+          <p data-i18n="privacy.openSourceDesc">This application is open source. You can review the entire codebase on GitHub to verify how data is handled.</p>
+        </div>
+        
+        <div class="info-section">
+          <h3 data-i18n="privacy.dataDeletionTitle">Data Deletion</h3>
+          <p data-i18n="privacy.dataDeletionDesc">You can clear all stored data at any time by clearing your browser's local storage or cache for this website.</p>
+        </div>
+        
+        <div class="modal-actions">
+          <button id="privacyClose" class="btn-secondary btn-small" type="button" data-i18n="modal.cancel">Close</button>
         </div>
       </div>
     </div>

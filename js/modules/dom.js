@@ -123,6 +123,9 @@ export const el = {
   get menuImmersionBtn() { return document.getElementById("menuImmersionBtn"); },
   get votingOverlay() { return document.getElementById("votingOverlay"); },
   get votingClose() { return document.getElementById("votingClose"); },
+  get privacyBtn() { return document.getElementById("privacyBtn"); },
+  get privacyOverlay() { return document.getElementById("privacyOverlay"); },
+  get privacyClose() { return document.getElementById("privacyClose"); },
 
   // Final View Elements
   get victoryTitle() { return document.getElementById("victoryTitle"); },
