@@ -5,6 +5,8 @@ export class ViewGlobal extends HTMLElement {
     <div id="infoFooter" class="info-footer">
       <p class="app-footer" data-i18n="footer.license">Released under the MIT License by n0tsosmart.</p>
       <p class="app-footer">
+        <a href="https://www.paypal.com/donate/?hosted_button_id=QRPBSBNR88J8C" target="_blank" rel="noopener noreferrer" class="link-button" data-i18n="footer.donate">❤️ Support this project</a>
+        •
         <button id="privacyBtn" class="link-button" type="button" data-i18n="footer.privacy">🔒 Privacy & Data Policy</button>
       </p>
     </div>

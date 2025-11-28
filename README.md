@@ -9,6 +9,8 @@
 [![No Dependencies](https://img.shields.io/badge/Dependencies-None-brightgreen.svg)](https://github.com/n0tsosmart/slaythewerewolf)
 [![Privacy First](https://img.shields.io/badge/Privacy-First-blue.svg)](https://github.com/n0tsosmart/slaythewerewolf)
 
+[![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/donate/?hosted_button_id=QRPBSBNR88J8C)
+
 [Live Demo](https://n0tsosmart.github.io/slaythewerewolf) • [Report Bug](https://github.com/n0tsosmart/slaythewerewolf/issues) • [Request Feature](https://github.com/n0tsosmart/slaythewerewolf/issues)
 
 </div>
@@ -280,7 +282,24 @@ Contributions are welcome! Here's how you can help:
 * 🧪 Add automated tests
 * 🐛 Fix bugs and performance issues
 
+
+## 💝 Support This Project
+
+If you enjoy **Slay the Werewolf** and want to support its development, consider making a donation! Your support helps maintain and improve this free, open-source tool for the community.
+
+[![Donate with PayPal](https://img.shields.io/badge/Donate-PayPal-blue.svg?style=for-the-badge&logo=paypal)](https://www.paypal.com/donate/?hosted_button_id=QRPBSBNR88J8C)
+
+**Every contribution helps:**
+* 🔧 Keep the project maintained and updated
+* ✨ Add new features and improvements
+* 🌍 Expand language support
+* 🎨 Create new role artwork
+* 💻 Improve performance and accessibility
+
+Thank you for your support! 🙏
+
 ## 📄 License
+
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 

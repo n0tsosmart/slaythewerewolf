@@ -196,6 +196,7 @@ window.TRANSLATIONS = {
         // Footer
         "footer.license": "Released under the MIT License by n0tsosmart.",
         "footer.privacy": "🔒 Privacy & Data Policy",
+        "footer.donate": "❤️ Support this project",
 
         // Privacy Policy
         "privacy.title": "Privacy & Data Policy",
@@ -218,6 +219,7 @@ window.TRANSLATIONS = {
         "votes.increment": "Add vote",
         "votes.decrement": "Remove vote",
         "menu.voting": "🗳️ Voting Rules",
+        "menu.donate": "❤️ Support this project",
         "voting.title": "Voting Rules",
         "voting.indiziatoTitle": "Suspects",
         "voting.indiziatoBody": "The two players with the most votes become suspects. In case of a tie, the moderator asks each player starting from the one to the left of the 'Welcome!' holder (clockwise).",
@@ -469,6 +471,7 @@ window.TRANSLATIONS = {
         // Footer
         "footer.license": "Distribuito con licenza MIT da n0tsosmart.",
         "footer.privacy": "🔒 Privacidad y Política de Datos",
+        "footer.donate": "❤️ Apoya este proyecto",
 
         // Privacy Policy
         "privacy.title": "Privacidad y Política de Datos",
@@ -491,6 +494,7 @@ window.TRANSLATIONS = {
         "votes.increment": "Añadir voto",
         "votes.decrement": "Quitar voto",
         "menu.voting": "🗳️ Reglas de Votación",
+        "menu.donate": "❤️ Apoya este proyecto",
         "voting.title": "Reglas de Votación",
         "voting.indiziatoTitle": "Sospechosos",
         "voting.indiziatoBody": "Los dos jugadores con más votos se convierten en sospechosos. En caso de empate, el moderador pregunta a cada jugador comenzando por el que está a la izquierda del que tiene la carta '¡Bienvenido!' (en sentido horario).",
@@ -742,6 +746,7 @@ window.TRANSLATIONS = {
         // Footer
         "footer.license": "Distribuito con licenza MIT da n0tsosmart.",
         "footer.privacy": "🔒 Privacy e Politica dei Dati",
+        "footer.donate": "❤️ Sostieni questo progetto",
 
         // Privacy Policy
         "privacy.title": "Privacy e Politica dei Dati",
@@ -764,6 +769,7 @@ window.TRANSLATIONS = {
         "votes.increment": "Aggiungi voto",
         "votes.decrement": "Rimuovi voto",
         "menu.voting": "🗳️ Regole di Voto",
+        "menu.donate": "❤️ Sostieni questo progetto",
         "voting.title": "Regole di Voto",
         "voting.indiziatoTitle": "Indiziati",
         "voting.indiziatoBody": "I due giocatori con più voti diventano indiziati. In caso di parità, il moderatore chiede a ogni giocatore, partendo da chi è a sinistra di quello che ha il 'Benvenuto!' (in senso orario).",
