@@ -194,8 +194,24 @@ window.TRANSLATIONS = {
         "info.feedback": "💬 Send feedback & suggestions on GitHub",
 
         // Footer
-        "footer.disclaimer": "We do not collect cookies, the artwork is AI-generated, and this free fan-made tribute keeps the Lupus In Tabula spirit alive so friends can play without physical cards.",
         "footer.license": "Released under the MIT License by n0tsosmart.",
+        "footer.privacy": "🔒 Privacy & Data Policy",
+
+        // Privacy Policy
+        "privacy.title": "Privacy & Data Policy",
+        "privacy.intro": "This application is designed with privacy in mind. Here's how we handle your data:",
+        "privacy.localTitle": "Local Storage Only",
+        "privacy.localDesc": "All game data (player names, game state, language preferences) is stored locally in your browser using LocalStorage. No data is sent to any external servers or third parties.",
+        "privacy.noCookiesTitle": "No Tracking or Cookies",
+        "privacy.noCookiesDesc": "We do not use cookies, analytics, or any tracking mechanisms. Your gameplay is completely private.",
+        "privacy.peerJsTitle": "Online Mode: WebRTC (PeerJS)",
+        "privacy.peerJsDesc": "When you use Online Mode, the app uses PeerJS for peer-to-peer connections via WebRTC. This requires a signaling server to establish connections between players.",
+        "privacy.peerJsData": "Data exchanged: Only game-related information (role assignments, player names, room codes) is transmitted directly between players' browsers. The signaling server only facilitates the initial connection and does not store or access your game data.",
+        "privacy.peerJsThirdParty": "PeerJS uses a public signaling server by default. If you're concerned about privacy, you can host your own PeerJS server.",
+        "privacy.openSourceTitle": "Open Source & Transparent",
+        "privacy.openSourceDesc": "This application is open source. You can review the entire codebase on GitHub to verify how data is handled.",
+        "privacy.dataDeletionTitle": "Data Deletion",
+        "privacy.dataDeletionDesc": "You can clear all stored data at any time by clearing your browser's local storage or cache for this website.",
 
         // Voting UI
         "votes.label": "Votes",
@@ -243,11 +259,11 @@ window.TRANSLATIONS = {
         "clientRole.returnToLobby": "Exit",
 
         // Network Messages (Toasts)
-        "network.peerError": "Network error: {error}",
-        "network.connectionError": "Connection with {name} failed: {error}",
-        "network.hostConnectionError": "Could not connect to host: {error}",
-        "network.roomDoesNotExist": "The room does not exist.",
-        "network.joinError": "Error joining game: {error}",
+        "network.peerError": "Connection problem. Please try again.",
+        "network.connectionError": "Lost connection with player.",
+        "network.hostConnectionError": "Could not connect to host.",
+        "network.roomDoesNotExist": "Room not found. Check the code.",
+        "network.joinError": "Could not join game. Try again.",
         "network.connectionTimeout": "Connection timed out.",
         // General
         "general.betaBadge": "BETA",
@@ -257,7 +273,7 @@ window.TRANSLATIONS = {
         "network.gameStarted": "Host started the game!",
         "network.gameStartedByHost": "Game started. Distributing roles...",
         "network.receivedRole": "You received your role!",
-        "network.hostDisconnected": "Host disconnected. Returning to lobby.",
+        "network.hostDisconnected": "Host disconnected. Returning to match selection.",
         "network.disconnected": "Disconnected from the network.",
         "network.roomCodeAndNameRequired": "Room code and your name are required.",
         "network.needAtLeastOnePlayer": "Need at least one player to start the game.",
@@ -451,8 +467,24 @@ window.TRANSLATIONS = {
         "info.feedback": "💬 Invia feedback e suggerimenti su GitHub",
 
         // Footer
-        "footer.disclaimer": "Non raccogliamo cookie, le illustrazioni sono generate da IA e questo tributo gratuito mantiene vivo lo spirito di Lupus In Tabula per giocare tra amici senza carte fisiche.",
         "footer.license": "Distribuito con licenza MIT da n0tsosmart.",
+        "footer.privacy": "🔒 Privacidad y Política de Datos",
+
+        // Privacy Policy
+        "privacy.title": "Privacidad y Política de Datos",
+        "privacy.intro": "Esta aplicación está diseñada pensando en la privacidad. Así es como manejamos tus datos:",
+        "privacy.localTitle": "Solo Almacenamiento Local",
+        "privacy.localDesc": "Todos los datos del juego (nombres de jugadores, estado del juego, preferencias de idioma) se almacenan localmente en tu navegador usando LocalStorage. No se envían datos a servidores externos ni a terceros.",
+        "privacy.noCookiesTitle": "Sin Seguimiento ni Cookies",
+        "privacy.noCookiesDesc": "No utilizamos cookies, análisis ni ningún mecanismo de seguimiento. Tu juego es completamente privado.",
+        "privacy.peerJsTitle": "Modo En Línea: WebRTC (PeerJS)",
+        "privacy.peerJsDesc": "Cuando usas el Modo En Línea, la aplicación utiliza PeerJS para conexiones peer-to-peer vía WebRTC. Esto requiere un servidor de señalización para establecer conexiones entre jugadores.",
+        "privacy.peerJsData": "Datos intercambiados: Solo información relacionada con el juego (asignaciones de roles, nombres de jugadores, códigos de sala) se transmite directamente entre los navegadores de los jugadores. El servidor de señalización solo facilita la conexión inicial y no almacena ni accede a tus datos de juego.",
+        "privacy.peerJsThirdParty": "PeerJS usa un servidor de señalización público por defecto. Si te preocupa la privacidad, puedes alojar tu propio servidor PeerJS.",
+        "privacy.openSourceTitle": "Código Abierto y Transparente",
+        "privacy.openSourceDesc": "Esta aplicación es de código abierto. Puedes revisar todo el código en GitHub para verificar cómo se manejan los datos.",
+        "privacy.dataDeletionTitle": "Eliminación de Datos",
+        "privacy.dataDeletionDesc": "Puedes borrar todos los datos almacenados en cualquier momento limpiando el almacenamiento local o caché de tu navegador para este sitio web.",
 
         // Voting UI
         "votes.label": "Votos",
@@ -500,11 +532,11 @@ window.TRANSLATIONS = {
         "clientRole.returnToLobby": "Salir",
 
         // Network Messages (Toasts)
-        "network.peerError": "Error de red: {error}",
-        "network.connectionError": "Conexión con {name} fallida: {error}",
-        "network.hostConnectionError": "No se pudo conectar al anfitrión: {error}",
-        "network.roomDoesNotExist": "La sala no existe.",
-        "network.joinError": "Error al unirse a la partida: {error}",
+        "network.peerError": "Problema de conexión. Intenta de nuevo.",
+        "network.connectionError": "Conexión perdida con jugador.",
+        "network.hostConnectionError": "No se pudo conectar al anfitrión.",
+        "network.roomDoesNotExist": "Sala no encontrada. Verifica el código.",
+        "network.joinError": "No se pudo unirse. Intenta de nuevo.",
         "network.connectionTimeout": "Tiempo de conexión agotado.",
         // General
         "general.betaBadge": "BETA",
@@ -514,7 +546,7 @@ window.TRANSLATIONS = {
         "network.gameStarted": "El anfitrión inició la partida.",
         "network.gameStartedByHost": "Partida iniciada. Repartiendo roles...",
         "network.receivedRole": "¡Recibiste tu rol!",
-        "network.hostDisconnected": "Anfitrión desconectado. Volviendo a la sala.",
+        "network.hostDisconnected": "Anfitrión desconectado. Volviendo a la selección de partida.",
         "network.disconnected": "Desconectado de la red.",
         "network.roomCodeAndNameRequired": "Se requieren el código de sala y tu nombre.",
         "network.needAtLeastOnePlayer": "Se necesita al menos un jugador para iniciar la partida.",
@@ -708,8 +740,24 @@ window.TRANSLATIONS = {
         "info.feedback": "💬 Invia feedback e suggerimenti su GitHub",
 
         // Footer
-        "footer.disclaimer": "Non raccogliamo cookie, le illustrazioni sono generate da IA e questo tributo gratuito mantiene vivo lo spirito di Lupus In Tabula per giocare tra amici senza carte fisiche.",
         "footer.license": "Distribuito con licenza MIT da n0tsosmart.",
+        "footer.privacy": "🔒 Privacy e Politica dei Dati",
+
+        // Privacy Policy
+        "privacy.title": "Privacy e Politica dei Dati",
+        "privacy.intro": "Questa applicazione è progettata con la privacy in mente. Ecco come gestiamo i tuoi dati:",
+        "privacy.localTitle": "Solo Archiviazione Locale",
+        "privacy.localDesc": "Tutti i dati di gioco (nomi dei giocatori, stato del gioco, preferenze linguistiche) sono memorizzati localmente nel tuo browser usando LocalStorage. Nessun dato viene inviato a server esterni o terze parti.",
+        "privacy.noCookiesTitle": "Nessun Tracciamento o Cookie",
+        "privacy.noCookiesDesc": "Non utilizziamo cookie, analisi o alcun meccanismo di tracciamento. Il tuo gioco è completamente privato.",
+        "privacy.peerJsTitle": "Modalità Online: WebRTC (PeerJS)",
+        "privacy.peerJsDesc": "Quando usi la Modalità Online, l'app utilizza PeerJS per connessioni peer-to-peer tramite WebRTC. Ciò richiede un server di segnalazione per stabilire connessioni tra i giocatori.",
+        "privacy.peerJsData": "Dati scambiati: Solo informazioni relative al gioco (assegnazioni di ruoli, nomi dei giocatori, codici stanza) vengono trasmesse direttamente tra i browser dei giocatori. Il server di segnalazione facilita solo la connessione iniziale e non memorizza né accede ai tuoi dati di gioco.",
+        "privacy.peerJsThirdParty": "PeerJS utilizza un server di segnalazione pubblico per impostazione predefinita. Se sei preoccupato per la privacy, puoi ospitare il tuo server PeerJS.",
+        "privacy.openSourceTitle": "Open Source e Trasparente",
+        "privacy.openSourceDesc": "Questa applicazione è open source. Puoi rivedere l'intero codice su GitHub per verificare come vengono gestiti i dati.",
+        "privacy.dataDeletionTitle": "Cancellazione dei Dati",
+        "privacy.dataDeletionDesc": "Puoi cancellare tutti i dati memorizzati in qualsiasi momento cancellando l'archiviazione locale o la cache del tuo browser per questo sito web.",
 
         // Voting UI
         "votes.label": "Voti",
@@ -757,11 +805,11 @@ window.TRANSLATIONS = {
         "clientRole.returnToLobby": "Esci",
 
         // Network Messages (Toasts)
-        "network.peerError": "Errore di rete: {error}",
-        "network.connectionError": "Connessione con {name} fallita: {error}",
-        "network.hostConnectionError": "Impossibile connettersi all'host: {error}",
-        "network.roomDoesNotExist": "La stanza non esiste.",
-        "network.joinError": "Errore nell'unirsi alla partita: {error}",
+        "network.peerError": "Problema di connessione. Riprova.",
+        "network.connectionError": "Connessione persa con giocatore.",
+        "network.hostConnectionError": "Impossibile connettersi all'host.",
+        "network.roomDoesNotExist": "Stanza non trovata. Verifica il codice.",
+        "network.joinError": "Impossibile unirsi. Riprova.",
         "network.connectionTimeout": "Timeout della connessione.",
         // General
         "general.betaBadge": "BETA",
@@ -771,7 +819,7 @@ window.TRANSLATIONS = {
         "network.gameStarted": "L'host ha avviato la partita!",
         "network.gameStartedByHost": "Partita avviata. Distribuzione ruoli...",
         "network.receivedRole": "Hai ricevuto il tuo ruolo!",
-        "network.hostDisconnected": "Host disconnesso. Ritorno alla lobby.",
+        "network.hostDisconnected": "Host disconnesso. Ritorno alla selezione partita.",
         "network.disconnected": "Disconnesso dalla rete.",
         "network.roomCodeAndNameRequired": "Sono richiesti il codice della stanza e il tuo nome.",
         "network.needAtLeastOnePlayer": "È necessario almeno un giocatore per avviare la partita.",
