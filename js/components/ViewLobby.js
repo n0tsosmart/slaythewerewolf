@@ -48,7 +48,10 @@ export class ViewLobby extends HTMLElement {
     render() {
         this.innerHTML = `
             <section id="lobbyView" class="panel hidden">
-                <h2 data-i18n="lobby.title"></h2>
+                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 16px;">
+                    <h2 data-i18n="lobby.title" style="margin: 0;"></h2>
+                    <button id="backToLandingBtn" class="btn-ghost btn-small" type="button" data-i18n="buttons.back">Back</button>
+                </div>
                 
                 <div id="lobbyMainMenu" class="lobby-section">
                     <button id="hostGameBtn" class="btn-primary" type="button" data-i18n="lobby.hostGame"></button>
@@ -58,6 +61,7 @@ export class ViewLobby extends HTMLElement {
                         <input type="text" id="joinPlayerNameInput" placeholder="Your Name" data-i18n-placeholder="lobby.yourNamePlaceholder" />
                         <button id="joinGameBtn" class="btn-secondary" type="button" data-i18n="lobby.joinGame"></button>
                     </div>
+
                 </div>
 
                 <div id="lobbyHost" class="lobby-section hidden">
@@ -68,8 +72,8 @@ export class ViewLobby extends HTMLElement {
                         <ul id="hostPlayerList" class="player-list"></ul>
                     </div>
                     <div class="lobby-actions">
-                        <button id="startNetworkGameBtn" class="btn-primary" type="button" data-i18n="lobby.startGame"></button>
                         <button id="cancelHostBtn" class="btn-ghost" type="button" data-i18n="buttons.cancel"></button>
+                        <button id="startNetworkGameBtn" class="btn-primary" type="button" data-i18n="lobby.startGame"></button>
                     </div>
                 </div>
 
@@ -79,7 +83,7 @@ export class ViewLobby extends HTMLElement {
                     <p data-i18n="lobby.waitingForHost"></p>
                     <button id="leaveGameBtn" class="btn-ghost" type="button" data-i18n="buttons.leave"></button>
                 </div>
-            </section >
+            </section>
     `;
         // Apply initial translations
         applyTranslations(this);
@@ -90,6 +94,7 @@ export class ViewLobby extends HTMLElement {
         el.startNetworkGameBtn?.addEventListener('click', this.onStartNetworkGame.bind(this));
         el.cancelHostBtn?.addEventListener('click', this.onCancelHost.bind(this));
         el.leaveGameBtn?.addEventListener('click', this.onLeaveGame.bind(this));
+        el.backToLandingBtn?.addEventListener('click', this.onBackToLanding.bind(this));
     }
 
     removeEvents() {
@@ -98,6 +103,7 @@ export class ViewLobby extends HTMLElement {
         el.startNetworkGameBtn?.removeEventListener('click', this.onStartNetworkGame.bind(this));
         el.cancelHostBtn?.removeEventListener('click', this.onCancelHost.bind(this));
         el.leaveGameBtn?.removeEventListener('click', this.onLeaveGame.bind(this));
+        el.backToLandingBtn?.removeEventListener('click', this.onBackToLanding.bind(this));
     }
 
     resetToMainMenu() {
@@ -139,12 +145,14 @@ export class ViewLobby extends HTMLElement {
         }
 
         try {
-            await joinGame(roomCode, playerName);
-            el.lobbyMainMenu.classList.add('hidden');
-            el.lobbyClient.classList.remove('hidden');
-            el.clientPlayerNameDisplay.textContent = playerName;
-            this.updateClientPlayerList(); // Initial player list update
-            showView('lobby');
+            const success = await joinGame(roomCode, playerName);
+            if (success) {
+                el.lobbyMainMenu.classList.add('hidden');
+                el.lobbyClient.classList.remove('hidden');
+                el.clientPlayerNameDisplay.textContent = playerName;
+                this.updateClientPlayerList();
+                showView('lobby');
+            }
         } catch (error) {
             console.error("Error joining game:", error);
             el.toastError(t("network.joinError", { error: error.message }));
@@ -198,6 +206,9 @@ export class ViewLobby extends HTMLElement {
         showView("setup"); // Return to setup view as default
     }
 
+    onBackToLanding() {
+        showView("landing");
+    }
     handlePeerConnected(playerName, peerId) {
         this.connectedPlayerPeers.set(peerId, playerName); // Store peerId -> name mapping
         this.updateHostPlayerList();

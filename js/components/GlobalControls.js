@@ -1,3 +1,5 @@
+import { applyTranslations } from '../modules/i18n.js';
+
 export class GlobalControls extends HTMLElement {
   connectedCallback() {
     this.style.display = 'contents';
@@ -35,6 +37,7 @@ export class GlobalControls extends HTMLElement {
       <button id="restartBtn" class="btn-ghost btn-small" type="button" data-i18n="buttons.restart">🔄 New game</button>
     </div>
     `;
+    applyTranslations(this);
   }
 }
 

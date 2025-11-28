@@ -32,6 +32,7 @@ export const el = {
   get hostRoomCodeDisplay() { return document.getElementById("hostRoomCodeDisplay"); },
   get hostPlayerList() { return document.getElementById("hostPlayerList"); },
   get clientPlayerNameDisplay() { return document.getElementById("clientPlayerNameDisplay"); },
+  get backToLandingBtn() { return document.getElementById("backToLandingBtn"); },
 
   // Client Role View Elements
   get clientRoleImage() { return document.getElementById("clientRoleImage"); },
@@ -56,6 +57,7 @@ export const el = {
   get roleOptions() { return document.getElementById("roleOptions"); },
   get roleSummary() { return document.getElementById("roleSummary"); },
   get roleSummaryContent() { return document.getElementById("roleSummaryContent"); },
+  get backToLandingFromSetup() { return document.getElementById("backToLandingFromSetup"); },
 
   // Reveal View Elements
   get revealBtn() { return document.getElementById("revealBtn"); },

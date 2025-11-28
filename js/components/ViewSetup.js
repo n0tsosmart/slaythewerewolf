@@ -3,7 +3,10 @@ export class ViewSetup extends HTMLElement {
     this.style.display = 'contents';
     this.innerHTML = `
     <section id="setupView" class="panel">
-      <h2 data-i18n="setup.title">⚙️ Setup</h2>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+        <h2 data-i18n="setup.title" style="margin-bottom: 0;">⚙️ Setup</h2>
+        <button id="backToLandingFromSetup" class="btn-solid-glass btn-small" type="button" data-i18n="buttons.back">← Back</button>
+      </div>
       <form id="setupForm" class="setup-form">
         <div class="field-group">
           <label class="player-count-label">

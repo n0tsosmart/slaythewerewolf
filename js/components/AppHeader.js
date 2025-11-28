@@ -1,3 +1,5 @@
+import { applyTranslations } from '../modules/i18n.js';
+
 export class AppHeader extends HTMLElement {
   connectedCallback() {
     this.style.display = 'contents';
@@ -13,6 +15,7 @@ export class AppHeader extends HTMLElement {
       </div>
     </header>
     `;
+    applyTranslations(this);
   }
 }
 

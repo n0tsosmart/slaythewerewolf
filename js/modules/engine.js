@@ -198,6 +198,7 @@ function attachEvents() {
   }
 
   if (el.restartBtn) el.restartBtn.addEventListener("click", () => confirmAction(t("confirmation.restart"), resetGame));
+  if (el.backToLandingFromSetup) el.backToLandingFromSetup.addEventListener("click", () => showView("landing"));
   if (el.nextDayBtn) el.nextDayBtn.addEventListener("click", advanceDay);
 
   if (el.prevGuideStep) el.prevGuideStep.addEventListener("click", () => changeGuideStep(-1));
@@ -442,10 +443,10 @@ export function updateFooterVisibility() {
   // Show footer on all views (always visible)
   el.infoFooter.classList.remove("hidden");
 
-  // Also hide restart button on landing, lobby, and client-role views
+  // Show restart button only after cards have been dealt (reveal, summary, final views)
   if (el.restartBtn) {
-    const hideRestart = state.view === "landing" || state.view === "lobby" || state.view === "client-role";
-    el.restartBtn.classList.toggle("hidden", hideRestart);
+    const showRestart = state.view === "reveal" || state.view === "summary" || state.view === "final";
+    el.restartBtn.classList.toggle("hidden", !showRestart);
   }
 }
 
@@ -1150,7 +1151,7 @@ export function renderSummaryList() {
       lynchBtn.type = "button";
       lynchBtn.className = "mini-action lynch-btn";
       lynchBtn.dataset.player = player;
-      lynchBtn.textContent = "🔥 " + t("buttons.lynch");
+      lynchBtn.textContent = t("buttons.lynch");
       lynchBtn.title = t("buttons.lynch");
       actions.insertBefore(lynchBtn, actionBtn);
     }

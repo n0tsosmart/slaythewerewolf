@@ -1,3 +1,5 @@
+import { applyTranslations } from '../modules/i18n.js';
+
 export class ViewGlobal extends HTMLElement {
   connectedCallback() {
     this.style.display = 'contents';
@@ -113,6 +115,7 @@ export class ViewGlobal extends HTMLElement {
       </div>
     </div>
     `;
+    applyTranslations(this);
   }
 }
 
