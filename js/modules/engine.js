@@ -20,7 +20,7 @@ import {
   adjustNumberInput
 } from './setup.js';
 import { prepareReveal, revealCard, nextPlayer, clearHandoffCountdown, updateHandoffTimer } from './reveal.js';
-import { initUI, scrollToBottom } from './utils.js';
+import { initUI, scrollToBottom, getRoleImage } from './utils.js';
 import { detectMythStatusFromDeck, determineMythOutcome } from './logic.js';
 import { setNetworkCallbacks, isClient, getLocalPlayerName, isHost, getConnectedPlayers, broadcast, sendToPeer, disconnect as networkDisconnect } from './network.js';
 
@@ -49,6 +49,7 @@ export function initApp() {
 
   renderRoleOptions();
   attachEvents();
+  document.addEventListener('themeChanged', (e) => handleThemeChange(e.detail.theme));
   updateWolfHint();
   clampWolfCount();
   enforceRoleLimits();
@@ -109,6 +110,33 @@ function handleLanguageChange(lang, { skipPersist = false } = {}) {
 
   updateRoleSummary();
   if (!skipPersist) persistState();
+}
+
+function handleThemeChange(theme) {
+  // Re-render role options to update names/descriptions
+  const selectedRoles = getSelectedSpecials().map((item) => item.roleId);
+  renderRoleOptions();
+
+  // Restore selection
+  selectedRoles.forEach((roleId) => {
+    const input = el.roleOptions.querySelector(`.role-option[value="${roleId}"]`);
+    if (input) input.checked = true;
+  });
+
+  enforceRoleLimits();
+  renderPlayerList();
+  updateRoleSummary();
+
+  // Update client role view if active
+  if (state.view === "client-role" && state.assignedRole && el.clientRole) {
+    el.clientRole.setRole(state.assignedRole);
+  }
+
+  // Update summary view if active
+  if (state.view === "summary") {
+    renderSummaryList();
+    updateNarratorUI({ preserveGuideStep: true });
+  }
 }
 
 
@@ -1037,7 +1065,7 @@ export function renderSummaryList() {
       const localized = getRoleContent(card.roleId);
       const img = document.createElement("img");
       img.className = "summary-thumb";
-      img.src = card.image;
+      img.src = getRoleImage(card.roleId);
       img.alt = localized ? localized.name : "Role image";
       listItem.appendChild(img);
     }
@@ -1449,7 +1477,7 @@ export function showVictoryScreen({ team }) {
       const localized = getRoleContent(entry.card.roleId);
       const img = document.createElement("img");
       img.className = "summary-thumb";
-      img.src = entry.card.image;
+      img.src = getRoleImage(entry.card.roleId);
       img.alt = localized ? localized.name : "Role image";
       li.appendChild(img);
     }
@@ -1487,7 +1515,7 @@ export function renderVictoryFromState() {
       const localized = getRoleContent(entry.card.roleId);
       const img = document.createElement("img");
       img.className = "summary-thumb";
-      img.src = entry.card.image;
+      img.src = getRoleImage(entry.card.roleId);
       img.alt = localized ? localized.name : "Role image";
       li.appendChild(img);
     }

@@ -1,6 +1,7 @@
 // js/components/ViewClientRole.js
 import { el } from '../modules/dom.js';
 import { t, getRoleContent, applyTranslations } from '../modules/i18n.js';
+import { getRoleImage } from '../modules/utils.js';
 import { state } from '../modules/state.js';
 import { persistState } from '../modules/store.js';
 
@@ -13,6 +14,12 @@ export class ViewClientRole extends HTMLElement {
     connectedCallback() {
         this.style.display = 'contents';
         this.render();
+        // Listen for theme changes to update the image
+        document.addEventListener('themeChanged', () => {
+            if (state.assignedRole && el.clientRoleImage) {
+                el.clientRoleImage.src = getRoleImage(state.assignedRole.roleId);
+            }
+        });
     }
 
     render() {
@@ -51,10 +58,15 @@ export class ViewClientRole extends HTMLElement {
         const localized = getRoleContent(roleData.roleId);
 
         if (el.clientRoleImage) {
-            el.clientRoleImage.src = roleData.image;
+            el.clientRoleImage.src = getRoleImage(roleData.roleId);
             el.clientRoleImage.alt = localized ? localized.name : t("clientRole.imageAlt");
             el.clientRoleImage.classList.remove('hidden');
         }
+
+        // Listen for theme changes to update the image
+
+
+
         if (el.clientRoleTeam) {
             el.clientRoleTeam.textContent = localized ? localized.teamLabel : '';
             if (el.clientRoleCard) el.clientRoleCard.dataset.team = roleData.team;

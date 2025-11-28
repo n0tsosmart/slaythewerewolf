@@ -45,6 +45,17 @@ export class GlobalControls extends HTMLElement {
         </div>
       </div>
       <button id="restartBtn" class="btn-ghost btn-small" type="button" data-i18n="buttons.restart">🔄 New game</button>
+      
+      <div id="mafiaWarningModal" class="modal-overlay hidden">
+        <div class="modal-panel">
+          <h3 class="modal-title" data-i18n="mafiaWarning.title">⚠️ Warning</h3>
+          <p class="help" data-i18n="mafiaWarning.message">Activating Mafia Edition will refresh the page and return you to the home screen. Current game progress will be lost.</p>
+          <div class="modal-actions">
+            <button id="cancelMafiaBtn" class="btn-secondary btn-small" type="button" data-i18n="buttons.cancel">Cancel</button>
+            <button id="confirmMafiaBtn" class="btn-primary btn-small" type="button" data-i18n="buttons.confirm">Confirm</button>
+          </div>
+        </div>
+      </div>
     </div>
     `;
     applyTranslations(this);
@@ -54,14 +65,54 @@ export class GlobalControls extends HTMLElement {
   initTheme() {
     const savedTheme = localStorage.getItem('theme') || 'default';
     const toggle = this.querySelector('#themeToggle');
+    const modal = this.querySelector('#mafiaWarningModal');
+    const confirmBtn = this.querySelector('#confirmMafiaBtn');
+    const cancelBtn = this.querySelector('#cancelMafiaBtn');
 
     if (toggle) {
       toggle.checked = savedTheme === 'purple';
       this.setTheme(savedTheme);
 
-      toggle.addEventListener('change', (e) => {
-        const theme = e.target.checked ? 'purple' : 'default';
-        this.setTheme(theme);
+      toggle.addEventListener('click', (e) => {
+        e.preventDefault(); // Always intercept
+        modal.classList.remove('hidden');
+      });
+    }
+
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', () => {
+        // Toggle the theme based on current state (which was prevented from changing visually)
+        const newTheme = toggle.checked ? 'default' : 'purple';
+        this.setTheme(newTheme);
+        if (toggle) toggle.checked = newTheme === 'purple';
+
+        modal.classList.add('hidden');
+
+        // Force redirect to landing page logic
+        try {
+          const raw = localStorage.getItem('SLAY_STATE');
+          if (raw) {
+            const data = JSON.parse(raw);
+            data.view = 'setup';
+            data.players = [];
+            data.deck = [];
+            data.revealIndex = 0;
+            data.narratorDay = 1;
+            data.victory = null;
+            localStorage.setItem('SLAY_STATE', JSON.stringify(data));
+          }
+        } catch (err) {
+          console.error("Error resetting state for theme transition", err);
+        }
+
+        window.location.reload();
+      });
+    }
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        modal.classList.add('hidden');
+        // No need to revert toggle checked state because we prevented default
       });
     }
   }
@@ -70,6 +121,7 @@ export class GlobalControls extends HTMLElement {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
     applyTranslations(document.body);
+    document.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme } }));
   }
 }
 

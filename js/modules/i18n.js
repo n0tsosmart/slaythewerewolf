@@ -47,7 +47,7 @@ export function getRoleContent(roleId) {
     const mafiaRole = trans.mafia[state.language].roles[roleId];
     return {
       name: mafiaRole.name,
-      teamLabel: base.teamLabel, // Keep original team label for now or map it if needed
+      teamLabel: mafiaRole.teamLabel || base.teamLabel,
       description: mafiaRole.description
     };
   }

@@ -1,4 +1,4 @@
-import { PAGE_FADE_DURATION, RIPPLE_DURATION, HAPTIC_VIBRATION_DURATION, TOAST_DURATION, ANIMATION_SHAKE_DURATION } from './config.js';
+import { PAGE_FADE_DURATION, RIPPLE_DURATION, HAPTIC_VIBRATION_DURATION, TOAST_DURATION, ANIMATION_SHAKE_DURATION, ROLE_LIBRARY } from './config.js';
 
 // UI/UX Enhancements
 
@@ -127,4 +127,19 @@ export function getLanguageFlag(lang) {
   if (lang === "es") return "🇪🇸";
   if (lang === "it") return "🇮🇹";
   return "🇬🇧";
+}
+
+export function getRoleImage(roleId) {
+  const role = ROLE_LIBRARY[roleId] || ROLE_LIBRARY.villager;
+  const defaultImage = role.image;
+  const theme = localStorage.getItem('theme');
+
+  if (theme === 'purple' && defaultImage) {
+    const parts = defaultImage.split('/');
+    const filename = parts.pop();
+    const path = parts.join('/');
+    return `${path}/mafia_${filename}`;
+  }
+
+  return defaultImage;
 }

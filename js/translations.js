@@ -44,11 +44,14 @@ window.TRANSLATIONS = {
                 "buttons.showSummary": "📜 View summary",
                 "buttons.back": "← Back",
                 "buttons.cancel": "Cancel",
+                "buttons.confirm": "Confirm",
 
                 // Language Picker
                 "language.label": "Language",
                 "theme.label": "Theme",
                 "theme.mafia": "Mafia Edition",
+                "mafiaWarning.title": "Warning",
+                "mafiaWarning.message": "Changing the theme will refresh the page and reset the current game.",
 
                 // Setup Screen
                 "setup.title": "⚙️ Setup",
@@ -325,11 +328,14 @@ window.TRANSLATIONS = {
                 "buttons.showSummary": "📜 Ver resumen",
                 "buttons.back": "← Volver",
                 "buttons.cancel": "Cancelar",
+                "buttons.confirm": "Confirmar",
 
                 // Language Picker
                 "language.label": "Idioma",
                 "theme.label": "Tema",
                 "theme.mafia": "Edición Mafia",
+                "mafiaWarning.title": "Advertencia",
+                "mafiaWarning.message": "Cambiar el tema recargará la página y reiniciará la partida actual.",
 
                 // Setup Screen
                 "setup.title": "⚙️ Preparación",
@@ -605,11 +611,14 @@ window.TRANSLATIONS = {
                 "buttons.showSummary": "📜 Mostra riepilogo",
                 "buttons.back": "← Indietro",
                 "buttons.cancel": "Annulla",
+                "buttons.confirm": "Conferma",
 
                 // Language Picker
                 "language.label": "Lingua",
                 "theme.label": "Tema",
                 "theme.mafia": "Edizione Mafia",
+                "mafiaWarning.title": "Attenzione",
+                "mafiaWarning.message": "Cambiare il tema ricaricherà la pagina e resetterà la partita corrente.",
 
                 // Setup Screen
                 "setup.title": "⚙️ Preparazione",
@@ -869,16 +878,16 @@ window.TRANSLATIONS = {
                         "voting.lynchTitle": "Arrest",
                         "voting.lynchBody": "Only living players (excluding suspects and ghosts) vote to arrest one of the suspects. The suspect with the most votes is arrested.",
                         "roles": {
-                                "werewolf": { "name": "Mafioso", "description": "Each night the mafiosi meet and choose a victim. They win when the family is as numerous as the citizens." },
-                                "villager": { "name": "Citizen", "description": "No special power: discuss, observe, and vote to expose the mafiosi. You win when no mafiosi remain." },
-                                "seer": { "name": "Detective", "description": "Each night you investigate a player and learn whether they are mafia/rat or citizen. Share information carefully." },
-                                "medium": { "name": "Coroner", "description": "From the second night on, learn whether the player arrested the previous day was a mafioso." },
-                                "possessed": { "name": "Corrupt Politician", "description": "You are a citizen but secretly support the mafia without knowing who they are. Win only if the mafia dominates." },
-                                "bodyguard": { "name": "Doctor", "description": "Each night before the mafia attack you protect one player. If targeted, they survive." },
-                                "owl": { "name": "Journalist", "description": "Each night you mark a suspect. That player is automatically nominated and with 20+ players dies if they are not Mafia/Rat." },
-                                "mason": { "name": "Unionist", "description": "Always in pairs: on the first night you open your eyes and recognize each other as allies." },
-                                "werehamster": { "name": "Rat", "description": "You only want to survive. Immune to mafia attacks but the Detective kills you if they investigate you. Win alone if you live to the end." },
-                                "mythomaniac": { "name": "Impostor", "description": "At the end of the second night choose a player: if they are Mafia you become one, if they are the Detective you inherit the power, otherwise you remain citizen." }
+                                "werewolf": { "name": "Mafioso", "teamLabel": "Mafiosi", "description": "Each night the mafiosi meet and choose a victim. They win when the family is as numerous as the citizens." },
+                                "villager": { "name": "Citizen", "teamLabel": "Citizens", "description": "No special power: discuss, observe, and vote to expose the mafiosi. You win when no mafiosi remain." },
+                                "seer": { "name": "Detective", "teamLabel": "Citizens", "description": "Each night you investigate a player and learn whether they are mafia/rat or citizen. Share information carefully." },
+                                "medium": { "name": "Coroner", "teamLabel": "Citizens", "description": "From the second night on, learn whether the player arrested the previous day was a mafioso." },
+                                "possessed": { "name": "Corrupt Politician", "teamLabel": "Mafia Ally", "description": "You are a citizen but secretly support the mafia without knowing who they are. Win only if the mafia dominates." },
+                                "bodyguard": { "name": "Doctor", "teamLabel": "Citizens", "description": "Each night before the mafia attack you protect one player. If targeted, they survive." },
+                                "owl": { "name": "Journalist", "teamLabel": "Citizens", "description": "Each night you mark a suspect. That player is automatically nominated and with 20+ players dies if they are not Mafia/Rat." },
+                                "mason": { "name": "Unionist", "teamLabel": "Citizens", "description": "Always in pairs: on the first night you open your eyes and recognize each other as allies." },
+                                "werehamster": { "name": "Rat", "teamLabel": "Introvert", "description": "You only want to survive. Immune to mafia attacks but the Detective kills you if they investigate you. Win alone if you live to the end." },
+                                "mythomaniac": { "name": "Impostor", "teamLabel": "Citizens", "description": "At the end of the second night choose a player: if they are Mafia you become one, if they are the Detective you inherit the power, otherwise you remain citizen." }
                         }
                 },
                 es: {
@@ -897,16 +906,16 @@ window.TRANSLATIONS = {
                         "voting.lynchTitle": "Arresto",
                         "voting.lynchBody": "Solo los jugadores vivos (excluyendo sospechosos y fantasmas) votan para arrestar a uno de los sospechosos. El sospechoso con más votos es arrestado.",
                         "roles": {
-                                "werewolf": { "name": "Mafioso", "description": "Cada noche los mafiosos se reúnen y eligen una víctima. Ganan cuando la familia es tan numerosa como los ciudadanos." },
-                                "villager": { "name": "Ciudadano", "description": "Sin poder especial: discute, observa y vota para exponer a los mafiosos. Ganas cuando no quedan mafiosos." },
-                                "seer": { "name": "Detective", "description": "Cada noche investigas a un jugador y descubres si es mafia/rata o ciudadano. Comparte la información con cuidado." },
-                                "medium": { "name": "Forense", "description": "Desde la segunda noche, descubre si el jugador arrestado el día anterior era un mafioso." },
-                                "possessed": { "name": "Político Corrupto", "description": "Eres ciudadano pero apoyas en secreto a la mafia sin saber quiénes son. Ganas solo si la mafia domina." },
-                                "bodyguard": { "name": "Doctor", "description": "Cada noche antes del ataque de la mafia proteges a un jugador. Si es atacado, sobrevive." },
-                                "owl": { "name": "Periodista", "description": "Cada noche marcas a un sospechoso. Ese jugador queda nominado y con 20+ jugadores muere si no es Mafia/Rata." },
-                                "mason": { "name": "Sindicalista", "description": "Siempre en pareja: la primera noche abrís los ojos y os reconocéis como aliados." },
-                                "werehamster": { "name": "Rata", "description": "Solo quieres sobrevivir. Inmune a los ataques de la mafia pero el Detective te mata si te investiga. Ganas solo si vives hasta el final." },
-                                "mythomaniac": { "name": "Impostor", "description": "Al final de la segunda noche elige a un jugador: si es Mafia te conviertes en uno, si es Detective heredas su poder, de lo contrario sigues como ciudadano." }
+                                "werewolf": { "name": "Mafioso", "teamLabel": "Mafiosos", "description": "Cada noche los mafiosos se reúnen y eligen una víctima. Ganan cuando la familia es tan numerosa como los ciudadanos." },
+                                "villager": { "name": "Ciudadano", "teamLabel": "Ciudadanos", "description": "Sin poder especial: discute, observa y vota para exponer a los mafiosos. Ganas cuando no quedan mafiosos." },
+                                "seer": { "name": "Detective", "teamLabel": "Ciudadanos", "description": "Cada noche investigas a un jugador y descubres si es mafia/rata o ciudadano. Comparte la información con cuidado." },
+                                "medium": { "name": "Forense", "teamLabel": "Ciudadanos", "description": "Desde la segunda noche, descubre si el jugador arrestado el día anterior era un mafioso." },
+                                "possessed": { "name": "Político Corrupto", "teamLabel": "Aliado de la mafia", "description": "Eres ciudadano pero apoyas en secreto a la mafia sin saber quiénes son. Ganas solo si la mafia domina." },
+                                "bodyguard": { "name": "Doctor", "teamLabel": "Ciudadanos", "description": "Cada noche antes del ataque de la mafia proteges a un jugador. Si es atacado, sobrevive." },
+                                "owl": { "name": "Periodista", "teamLabel": "Ciudadanos", "description": "Cada noche marcas a un sospechoso. Ese jugador queda nominado y con 20+ jugadores muere si no es Mafia/Rata." },
+                                "mason": { "name": "Sindicalista", "teamLabel": "Ciudadanos", "description": "Siempre en pareja: la primera noche abrís los ojos y os reconocéis como aliados." },
+                                "werehamster": { "name": "Rata", "teamLabel": "Introvertido", "description": "Solo quieres sobrevivir. Inmune a los ataques de la mafia pero el Detective te mata si te investiga. Ganas solo si vives hasta el final." },
+                                "mythomaniac": { "name": "Impostor", "teamLabel": "Ciudadanos", "description": "Al final de la segunda noche elige a un jugador: si es Mafia te conviertes en uno, si es Detective heredas su poder, de lo contrario sigues como ciudadano." }
                         }
                 },
                 it: {
@@ -925,16 +934,16 @@ window.TRANSLATIONS = {
                         "voting.lynchTitle": "Arresto",
                         "voting.lynchBody": "Solo i giocatori vivi (esclusi indiziati e fantasmi) votano per arrestare uno degli indiziati. L'indiziato con più voti viene arrestato.",
                         "roles": {
-                                "werewolf": { "name": "Mafioso", "description": "Ogni notte i mafiosi si riuniscono e scelgono una vittima. Vincono quando la famiglia è numerosa quanto i cittadini." },
-                                "villager": { "name": "Cittadino", "description": "Nessun potere speciale: discuti, osserva e vota per esporre i mafiosi. Vinci quando non restano mafiosi." },
-                                "seer": { "name": "Detective", "description": "Ogni notte indaghi su un giocatore e scopri se è mafia/ratto o cittadino. Condividi le informazioni con cautela." },
-                                "medium": { "name": "Medico Legale", "description": "Dalla seconda notte, scopri se il giocatore arrestato il giorno precedente era un mafioso." },
-                                "possessed": { "name": "Politico Corrotto", "description": "Sei cittadino ma sostieni segretamente la mafia senza sapere chi siano. Vinci solo se la mafia domina." },
-                                "bodyguard": { "name": "Dottore", "description": "Ogni notte prima dell'attacco della mafia proteggi un giocatore. Se viene colpito, sopravvive." },
-                                "owl": { "name": "Giornalista", "description": "Ogni notte marchi un sospetto. Quel giocatore è automaticamente nominato e con 20+ giocatori muore se non è Mafia/Ratto." },
-                                "mason": { "name": "Sindacalista", "description": "Sempre in coppia: la prima notte aprite gli occhi e vi riconoscete come alleati." },
-                                "werehamster": { "name": "Ratto", "description": "Vuoi solo sopravvivere. Immune agli attacchi della mafia ma il Detective ti uccide se ti indaga. Vinci da solo se resti in vita fino alla fine." },
-                                "mythomaniac": { "name": "Impostore", "description": "Alla fine della seconda notte scegli un giocatore: se è Mafia lo diventi, se è il Detective erediti il potere, altrimenti rimani cittadino." }
+                                "werewolf": { "name": "Mafioso", "teamLabel": "Mafiosi", "description": "Ogni notte i mafiosi si riuniscono e scelgono una vittima. Vincono quando la famiglia è numerosa quanto i cittadini." },
+                                "villager": { "name": "Cittadino", "teamLabel": "Cittadini", "description": "Nessun potere speciale: discuti, osserva e vota per esporre i mafiosi. Vinci quando non restano mafiosi." },
+                                "seer": { "name": "Detective", "teamLabel": "Cittadini", "description": "Ogni notte indaghi su un giocatore e scopri se è mafia/ratto o cittadino. Condividi le informazioni con cautela." },
+                                "medium": { "name": "Medico Legale", "teamLabel": "Cittadini", "description": "Dalla seconda notte, scopri se il giocatore arrestato il giorno precedente era un mafioso." },
+                                "possessed": { "name": "Politico Corrotto", "teamLabel": "Alleato dei mafiosi", "description": "Sei cittadino ma sostieni segretamente la mafia senza sapere chi siano. Vinci solo se la mafia domina." },
+                                "bodyguard": { "name": "Dottore", "teamLabel": "Cittadini", "description": "Ogni notte prima dell'attacco della mafia proteges un giocatore. Se viene colpito, sopravvive." },
+                                "owl": { "name": "Giornalista", "teamLabel": "Cittadini", "description": "Ogni notte marchi un sospetto. Quel giocatore è automaticamente nominato e con 20+ giocatori muore se non è Mafia/Ratto." },
+                                "mason": { "name": "Sindacalista", "teamLabel": "Cittadini", "description": "Sempre in coppia: la prima notte aprite gli occhi e vi riconoscete come alleati." },
+                                "werehamster": { "name": "Ratto", "teamLabel": "Introverso", "description": "Vuoi solo sopravvivere. Immune agli attacchi della mafia ma il Detective ti uccide se ti indaga. Vinci da solo se resti in vita fino alla fine." },
+                                "mythomaniac": { "name": "Impostore", "teamLabel": "Cittadini", "description": "Alla fine della seconda notte scegli un giocatore: se è Mafia lo diventi, se è il Detective erediti il potere, altrimenti rimani cittadino." }
                         }
                 }
         }

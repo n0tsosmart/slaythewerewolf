@@ -2,7 +2,7 @@ import { state } from './state.js';
 import { persistState } from './store.js';
 import { el } from './dom.js';
 import { t, getRoleContent } from './i18n.js';
-import { scrollToBottom } from './utils.js';
+import { scrollToBottom, getRoleImage } from './utils.js';
 
 let handoffTimerId = null;
 
@@ -42,7 +42,7 @@ export function revealCard() {
   el.roleName.textContent = roleText.name;
   el.roleDescription.textContent = roleText.description;
   if (card.image) {
-    el.roleImage.src = card.image;
+    el.roleImage.src = getRoleImage(card.roleId);
     el.roleImage.alt = roleText ? roleText.name : "Role";
     el.roleImage.classList.remove("hidden");
     el.roleCard.classList.add("with-image");
