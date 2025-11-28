@@ -407,6 +407,7 @@ window.TRANSLATIONS = {
 
         // Error Messages
         "errors.minPlayers": "⚠️ Se requieren al menos {count} jugadores",
+        "errors.playerCountMismatch": "⚠️ Desajuste en el recuento de jugadores: definido {count}, listado {current}",
         "errors.needWolf": "⚠️ Necesitas al menos un hombre lobo",
         "errors.tooManyWolves": "⚠️ Los lobos deben ser menos que los jugadores",
         "errors.tooManySpecials": "⚠️ Demasiados roles especiales para este grupo",
@@ -663,6 +664,7 @@ window.TRANSLATIONS = {
 
         // Error Messages
         "errors.minPlayers": "⚠️ Servono almeno {count} giocatori",
+        "errors.playerCountMismatch": "⚠️ Errore conteggio giocatori: definiti {count}, elencati {current}",
         "errors.needWolf": "⚠️ Serve almeno un lupo mannaro",
         "errors.tooManyWolves": "⚠️ I lupi devono essere meno dei giocatori",
         "errors.tooManySpecials": "⚠️ Troppi ruoli speciali per questo gruppo",
