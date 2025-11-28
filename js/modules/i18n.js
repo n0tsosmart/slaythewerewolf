@@ -12,6 +12,14 @@ export function formatString(template, vars = {}) {
 export function t(key, vars) {
   // Access global TRANSLATIONS object from window
   const trans = window.TRANSLATIONS || {};
+
+  // Check for Mafia theme overrides
+  const isMafiaTheme = document.documentElement.getAttribute('data-theme') === 'purple';
+  if (isMafiaTheme && trans.mafia && trans.mafia[state.language] && trans.mafia[state.language][key]) {
+    const mafiaTemplate = trans.mafia[state.language][key];
+    return vars ? formatString(mafiaTemplate, vars) : mafiaTemplate;
+  }
+
   const langPack = trans[state.language] || trans[DEFAULT_LANGUAGE] || {};
   const fallback = trans[DEFAULT_LANGUAGE] ? trans[DEFAULT_LANGUAGE][key] : null;
   const template = langPack[key] ?? fallback ?? key;
@@ -31,6 +39,19 @@ export function applyTranslations(root = document) {
 
 export function getRoleContent(roleId) {
   const base = ROLE_LIBRARY[roleId] || ROLE_LIBRARY.villager;
+
+  // Check for Mafia theme overrides
+  const isMafiaTheme = document.documentElement.getAttribute('data-theme') === 'purple';
+  const trans = window.TRANSLATIONS || {};
+  if (isMafiaTheme && trans.mafia && trans.mafia[state.language] && trans.mafia[state.language].roles && trans.mafia[state.language].roles[roleId]) {
+    const mafiaRole = trans.mafia[state.language].roles[roleId];
+    return {
+      name: mafiaRole.name,
+      teamLabel: base.teamLabel, // Keep original team label for now or map it if needed
+      description: mafiaRole.description
+    };
+  }
+
   const locale = base.locales?.[state.language] || {};
   return {
     name: locale.name || base.name,

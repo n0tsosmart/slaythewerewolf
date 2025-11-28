@@ -22,6 +22,16 @@ export class GlobalControls extends HTMLElement {
                 aria-label="Italiano">🇮🇹</button>
             </div>
           </div>
+          <div class="menu-section">
+            <p class="menu-label" data-i18n="theme.label">Theme</p>
+            <div class="theme-toggle-container">
+              <span class="theme-label" data-i18n="theme.mafia">Mafia Edition</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="themeToggle">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
           <hr class="menu-divider">
           <button type="button" id="menuVotingBtn" class="menu-item" role="menuitem" data-i18n="menu.voting">🗳️ Voting
             Rules</button>
@@ -38,6 +48,28 @@ export class GlobalControls extends HTMLElement {
     </div>
     `;
     applyTranslations(this);
+    this.initTheme();
+  }
+
+  initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'default';
+    const toggle = this.querySelector('#themeToggle');
+
+    if (toggle) {
+      toggle.checked = savedTheme === 'purple';
+      this.setTheme(savedTheme);
+
+      toggle.addEventListener('change', (e) => {
+        const theme = e.target.checked ? 'purple' : 'default';
+        this.setTheme(theme);
+      });
+    }
+  }
+
+  setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    applyTranslations(document.body);
   }
 }
 
