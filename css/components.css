@@ -67,24 +67,7 @@
   display: none;
 }
 
-.language-btn {
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  background: rgba(31, 31, 35, 0.9);
-  border-radius: 999px;
-  width: 38px;
-  height: 38px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.15s ease, border-color 0.15s ease;
-}
 
-.language-btn.active {
-  border-color: var(--color-gold);
-  box-shadow: 0 0 12px rgba(250, 204, 21, 0.3);
-}
 
 /* --------------------------------------------------------------------------
    Buttons
@@ -420,7 +403,8 @@ fieldset.options {
   font-weight: 600;
 }
 
-.language-options {
+.language-options,
+.theme-options {
   display: flex;
   gap: 8px;
 }
@@ -451,6 +435,27 @@ fieldset.options {
 
 .menu-item:hover {
   background: rgba(255, 255, 255, 0.1);
+}
+
+.language-btn,
+.theme-btn {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(31, 31, 35, 0.9);
+  border-radius: 999px;
+  width: 38px;
+  height: 38px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.language-btn.active,
+.theme-btn.active {
+  border-color: var(--color-gold);
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.3);
 }
 
 /* --------------------------------------------------------------------------
@@ -571,4 +576,115 @@ select:focus-visible {
       0 0 30px rgba(250, 204, 21, 0.5),
       inset 0 1px 0 rgba(255, 255, 255, 0.4);
   }
+}
+
+/* ==========================================================================
+   Purple Theme Overrides
+   ========================================================================== */
+:root[data-theme="purple"] .step-btn {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.95), rgba(88, 28, 135, 0.95));
+  border-color: rgba(216, 180, 254, 0.35);
+}
+
+:root[data-theme="purple"] .btn-primary {
+  box-shadow: 0 12px 30px rgba(126, 34, 206, 0.35);
+}
+
+@media (hover: hover) and (pointer: fine) {
+
+  :root[data-theme="purple"] .btn:hover,
+  :root[data-theme="purple"] button:not(.step-btn):hover {
+    box-shadow: 0 3px 10px rgba(147, 51, 234, 0.15);
+  }
+}
+
+:root[data-theme="purple"] button:focus-visible,
+:root[data-theme="purple"] input:focus-visible,
+:root[data-theme="purple"] select:focus-visible {
+  outline-color: var(--color-primary-from);
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   Toggle Switch
+   -------------------------------------------------------------------------- */
+.theme-toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 0;
+}
+
+.theme-label {
+  font-size: 0.95rem;
+  color: #e2e8f0;
+  font-weight: 500;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(148, 163, 184, 0.3);
+  transition: .4s;
+  border-radius: 24px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #e2e8f0;
+  transition: .4s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input:checked+.slider {
+  background-color: rgba(147, 51, 234, 0.6);
+  border-color: rgba(147, 51, 234, 0.8);
+}
+
+input:focus+.slider {
+  box-shadow: 0 0 1px rgba(147, 51, 234, 0.8);
+}
+
+input:checked+.slider:before {
+  transform: translateX(20px);
+  background-color: #fff;
+}
+
+/* Hover effect */
+.toggle-switch:hover .slider {
+  background-color: rgba(148, 163, 184, 0.4);
+}
+
+input:checked:hover+.slider {
+  background-color: rgba(147, 51, 234, 0.7);
+}
+
+:root[data-theme="purple"] .number-stepper {
+  background: rgba(20, 5, 25, 0.85);
+  border-color: rgba(88, 28, 135, 0.55);
 }

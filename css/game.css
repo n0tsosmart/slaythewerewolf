@@ -981,6 +981,7 @@ details:not([open])>summary {
 
 /* Responsive adjustments for Game components */
 @media (max-width: 640px) {
+
   .role-card,
   .role-card.with-image {
     flex-direction: column;
@@ -1078,4 +1079,39 @@ details:not([open])>summary {
 /* Online Mode Adjustments */
 body.online-mode .player-count-label {
   display: none !important;
+}
+
+/* ==========================================================================
+   Purple Theme Overrides
+   ========================================================================== */
+:root[data-theme="purple"] .player-chip.drag-over {
+  background: rgba(35, 10, 45, 1);
+  border-color: rgba(192, 132, 252, 0.6);
+}
+
+:root[data-theme="purple"] .chip-remove:hover {
+  background: rgba(216, 180, 254, 0.35);
+}
+
+:root[data-theme="purple"] .roles-details {
+  background: rgba(35, 10, 45, 0.15);
+}
+
+:root[data-theme="purple"] .roles-details[open] {
+  background: rgba(35, 10, 45, 0.2);
+}
+
+:root[data-theme="purple"] .role-summary {
+  background: rgba(15, 5, 18, 0.6);
+  border-color: rgba(107, 33, 168, 0.4);
+}
+
+:root[data-theme="purple"] .role-summary-item {
+  background: rgba(35, 10, 45, 0.8);
+  border-color: rgba(88, 28, 135, 0.5);
+}
+
+:root[data-theme="purple"] .guide-panel {
+  border-color: rgba(59, 7, 100, 0.45);
+  background: rgba(10, 5, 12, 0.85);
 }
