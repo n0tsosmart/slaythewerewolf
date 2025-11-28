@@ -243,11 +243,11 @@ window.TRANSLATIONS = {
         "clientRole.returnToLobby": "Exit",
 
         // Network Messages (Toasts)
-        "network.peerError": "Network error: {error}",
-        "network.connectionError": "Connection with {name} failed: {error}",
-        "network.hostConnectionError": "Could not connect to host: {error}",
-        "network.roomDoesNotExist": "The room does not exist.",
-        "network.joinError": "Error joining game: {error}",
+        "network.peerError": "Connection problem. Please try again.",
+        "network.connectionError": "Lost connection with player.",
+        "network.hostConnectionError": "Could not connect to host.",
+        "network.roomDoesNotExist": "Room not found. Check the code.",
+        "network.joinError": "Could not join game. Try again.",
         "network.connectionTimeout": "Connection timed out.",
         // General
         "general.betaBadge": "BETA",
@@ -257,7 +257,7 @@ window.TRANSLATIONS = {
         "network.gameStarted": "Host started the game!",
         "network.gameStartedByHost": "Game started. Distributing roles...",
         "network.receivedRole": "You received your role!",
-        "network.hostDisconnected": "Host disconnected. Returning to lobby.",
+        "network.hostDisconnected": "Host disconnected. Returning to match selection.",
         "network.disconnected": "Disconnected from the network.",
         "network.roomCodeAndNameRequired": "Room code and your name are required.",
         "network.needAtLeastOnePlayer": "Need at least one player to start the game.",
@@ -500,11 +500,11 @@ window.TRANSLATIONS = {
         "clientRole.returnToLobby": "Salir",
 
         // Network Messages (Toasts)
-        "network.peerError": "Error de red: {error}",
-        "network.connectionError": "Conexión con {name} fallida: {error}",
-        "network.hostConnectionError": "No se pudo conectar al anfitrión: {error}",
-        "network.roomDoesNotExist": "La sala no existe.",
-        "network.joinError": "Error al unirse a la partida: {error}",
+        "network.peerError": "Problema de conexión. Intenta de nuevo.",
+        "network.connectionError": "Conexión perdida con jugador.",
+        "network.hostConnectionError": "No se pudo conectar al anfitrión.",
+        "network.roomDoesNotExist": "Sala no encontrada. Verifica el código.",
+        "network.joinError": "No se pudo unirse. Intenta de nuevo.",
         "network.connectionTimeout": "Tiempo de conexión agotado.",
         // General
         "general.betaBadge": "BETA",
@@ -514,7 +514,7 @@ window.TRANSLATIONS = {
         "network.gameStarted": "El anfitrión inició la partida.",
         "network.gameStartedByHost": "Partida iniciada. Repartiendo roles...",
         "network.receivedRole": "¡Recibiste tu rol!",
-        "network.hostDisconnected": "Anfitrión desconectado. Volviendo a la sala.",
+        "network.hostDisconnected": "Anfitrión desconectado. Volviendo a la selección de partida.",
         "network.disconnected": "Desconectado de la red.",
         "network.roomCodeAndNameRequired": "Se requieren el código de sala y tu nombre.",
         "network.needAtLeastOnePlayer": "Se necesita al menos un jugador para iniciar la partida.",
@@ -757,11 +757,11 @@ window.TRANSLATIONS = {
         "clientRole.returnToLobby": "Esci",
 
         // Network Messages (Toasts)
-        "network.peerError": "Errore di rete: {error}",
-        "network.connectionError": "Connessione con {name} fallita: {error}",
-        "network.hostConnectionError": "Impossibile connettersi all'host: {error}",
-        "network.roomDoesNotExist": "La stanza non esiste.",
-        "network.joinError": "Errore nell'unirsi alla partita: {error}",
+        "network.peerError": "Problema di connessione. Riprova.",
+        "network.connectionError": "Connessione persa con giocatore.",
+        "network.hostConnectionError": "Impossibile connettersi all'host.",
+        "network.roomDoesNotExist": "Stanza non trovata. Verifica il codice.",
+        "network.joinError": "Impossibile unirsi. Riprova.",
         "network.connectionTimeout": "Timeout della connessione.",
         // General
         "general.betaBadge": "BETA",
@@ -771,7 +771,7 @@ window.TRANSLATIONS = {
         "network.gameStarted": "L'host ha avviato la partita!",
         "network.gameStartedByHost": "Partita avviata. Distribuzione ruoli...",
         "network.receivedRole": "Hai ricevuto il tuo ruolo!",
-        "network.hostDisconnected": "Host disconnesso. Ritorno alla lobby.",
+        "network.hostDisconnected": "Host disconnesso. Ritorno alla selezione partita.",
         "network.disconnected": "Disconnesso dalla rete.",
         "network.roomCodeAndNameRequired": "Sono richiesti il codice della stanza e il tuo nome.",
         "network.needAtLeastOnePlayer": "È necessario almeno un giocatore per avviare la partita.",

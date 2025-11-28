@@ -155,7 +155,7 @@ export class ViewLobby extends HTMLElement {
         // This will trigger the game start in engine.js
         // and network.js will broadcast to all clients
         const peerCount = this.connectedPlayerPeers.size;
-        
+
         if (peerCount < 5) {
             el.toastError(t("errors.minPlayers", { count: 5 }));
             return;
@@ -230,19 +230,17 @@ export class ViewLobby extends HTMLElement {
         el.lobbyClient.classList.add('hidden');
         el.lobbyMainMenu.classList.remove('hidden');
         el.toastError(t("network.hostDisconnected"));
-        showView("setup"); // Return to setup view
+        showView("landing"); // Return to match selection
     }
 
     handleGameStart(gameData) {
         // Client receives this when host starts the game
-        // Transition client to a waiting screen or directly to role if immediately sent
-        el.toastInfo(t("network.gameStarted"));
-        // Potentially show a "waiting for role" screen, or directly go to client role view if role is bundled
+        // No toast here - user will see role view or waiting screen
         showClientRoleView(getLocalPlayerName()); // This will show the client role view
     }
 
     handleReceiveRole(roleData) {
-        el.toastInfo(t("network.receivedRole"));
+        // No toast - the role card view itself is the notification
         showClientRoleView(getLocalPlayerName(), roleData); // showClientRoleView will populate with roleData
     }
 
@@ -295,7 +293,7 @@ export class ViewLobby extends HTMLElement {
         const hostPeerId = getHostPeerId();
         const playerName = getLocalPlayerName();
         if (hostPeerId && playerName) {
-            el.toastInfo(t("network.rejoiningGame", { name: playerName }));
+            // Rejoining silently - user is already aware they're in a game
             el.lobbyMainMenu.classList.add('hidden');
             el.lobbyClient.classList.remove('hidden');
             el.clientPlayerNameDisplay.textContent = playerName;
@@ -303,7 +301,7 @@ export class ViewLobby extends HTMLElement {
             // Re-joining game should be handled by the network module itself if the connection is dropped.
             // For now, we assume if hostPeerId exists, the connection is still active or will attempt to re-establish.
         } else {
-            // No active host ID, cannot rejoin
+            // No active host ID, cannot rejoin - show message
             el.toastWarning(t("network.couldNotRejoin"));
             showView("setup");
         }

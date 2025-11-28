@@ -32,27 +32,17 @@ const peerIdToPlayerName = new Map();
 export function initApp() {
   console.log("[SlayTheWerewolf] Engine initializing...");
   initUI();
-  // Set up network callbacks BEFORE restoring state, in case state restoration triggers network events
+  // Network callbacks are now handled by ViewLobby component to avoid duplicate toasts
+  // Only essential callbacks that affect engine state are registered here
   setNetworkCallbacks({
-    connected: (playerName, peerId) => {
-      el.toastInfo(t("network.playerJoined", { name: playerName }));
-      // This is handled by ViewLobby now, but good to have a fallback/debug
-    },
-    disconnected: (playerName, peerId) => {
-      el.toastWarning(t("network.playerLeft", { name: playerName }));
-      // This is handled by ViewLobby now
-    },
     gameStart: (gameData) => {
-      el.toastInfo(t("network.gameStartedByHost"));
       // Transition the client to a waiting screen or directly to client role view
       showClientRoleView(getLocalPlayerName());
     },
     hostDisconnected: () => {
-      el.toastError(t("network.hostDisconnected"));
-      showLobbyView(); // Return client to lobby if host disconnects
+      showView("landing"); // Return client to match selection if host disconnects
     },
     receiveRole: (roleData) => {
-      el.toastInfo(t("network.receivedRole"));
       showClientRoleView(getLocalPlayerName(), roleData);
     },
   });
@@ -442,7 +432,8 @@ export function showSummary() {
 export function updateFooterVisibility() {
   if (!el.infoFooter) return;
   // Hide footer on lobby and client role views
-  el.infoFooter.classList.toggle("hidden", state.view !== "setup");
+  const shouldHide = state.view === "lobby" || state.view === "client-role";
+  el.infoFooter.classList.toggle("hidden", state.view !== "setup" || shouldHide);
 }
 
 export function startGame() {
@@ -482,8 +473,8 @@ export function startGame() {
     }
   } else if (isHost()) {
     if (allPlayerNames.length < 5) {
-       el.validationMessage.textContent = t("errors.minPlayers", { count: 5 });
-       return;
+      el.validationMessage.textContent = t("errors.minPlayers", { count: 5 });
+      return;
     }
   }
 

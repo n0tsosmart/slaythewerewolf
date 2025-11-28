@@ -58,7 +58,7 @@ function initializePeer(id) {
 
         peer.on('error', (err) => {
             console.error('PeerJS error:', err);
-            el.toastError(t("network.peerError", { error: err.message }));
+            // Don't show technical peer errors to users - they'll see user-friendly messages from specific operations
             reject(err);
         });
 
@@ -104,7 +104,7 @@ export async function hostGame() {
 
             conn.on('error', (err) => {
                 console.error(`Connection error with ${conn.peer}:`, err);
-                el.toastError(t("network.connectionError", { name: conn.peer, error: err.message }));
+                // Connection errors are logged but not shown to users to avoid technical messages
             });
         });
 
@@ -198,7 +198,7 @@ export async function joinGame(roomId, playerName) {
                     cleanup();
                     const errorMessage = t("network.roomDoesNotExist");
                     // Close connection attempt
-                    conn.close(); 
+                    conn.close();
                     reject(new Error(errorMessage));
                 }
             };
@@ -213,7 +213,7 @@ export async function joinGame(roomId, playerName) {
 function handleClientData(data) {
     switch (data.type) {
         case 'WELCOME':
-            el.toastInfo(data.message);
+            // Welcome message received, no toast needed (join success is shown elsewhere)
             break;
         case 'PLAYER_LIST_UPDATE':
             state.customNames = data.players;
