@@ -405,20 +405,7 @@ function attachEvents() {
   });
 
   if (el.infoButton) el.infoButton.addEventListener("click", openInfoModal);
-  if (el.infoClose) el.infoClose.addEventListener("click", closeInfoModal);
-  if (el.infoOverlay) {
-    el.infoOverlay.addEventListener("click", (event) => {
-      if (event.target === el.infoOverlay) closeInfoModal();
-    });
-  }
 
-  if (el.privacyBtn) el.privacyBtn.addEventListener("click", openPrivacyModal);
-  if (el.privacyClose) el.privacyClose.addEventListener("click", closePrivacyModal);
-  if (el.privacyOverlay) {
-    el.privacyOverlay.addEventListener("click", (event) => {
-      if (event.target === el.privacyOverlay) closePrivacyModal();
-    });
-  }
 }
 
 // --- ENGINE FUNCTIONS ---

@@ -1,4 +1,6 @@
 import { applyTranslations } from '../modules/i18n.js';
+import { openPrivacyModal, closePrivacyModal, openInfoModal, closeInfoModal, openVotingModal, closeVotingModal } from '../modules/engine.js';
+
 
 export class ViewGlobal extends HTMLElement {
   connectedCallback() {
@@ -116,6 +118,49 @@ export class ViewGlobal extends HTMLElement {
     </div>
     `;
     applyTranslations(this);
+
+    // Attach modal event listeners after DOM is ready
+    const infoClose = this.querySelector('#infoClose');
+    const infoOverlay = this.querySelector('#infoOverlay');
+    const votingClose = this.querySelector('#votingClose');
+    const votingOverlay = this.querySelector('#votingOverlay');
+    const privacyBtn = this.querySelector('#privacyBtn');
+    const privacyClose = this.querySelector('#privacyClose');
+    const privacyOverlay = this.querySelector('#privacyOverlay');
+
+    if (infoClose) {
+      infoClose.addEventListener('click', closeInfoModal);
+    }
+
+    if (infoOverlay) {
+      infoOverlay.addEventListener('click', (event) => {
+        if (event.target === infoOverlay) closeInfoModal();
+      });
+    }
+
+    if (votingClose) {
+      votingClose.addEventListener('click', closeVotingModal);
+    }
+
+    if (votingOverlay) {
+      votingOverlay.addEventListener('click', (event) => {
+        if (event.target === votingOverlay) closeVotingModal();
+      });
+    }
+
+    if (privacyBtn) {
+      privacyBtn.addEventListener('click', openPrivacyModal);
+    }
+
+    if (privacyClose) {
+      privacyClose.addEventListener('click', closePrivacyModal);
+    }
+
+    if (privacyOverlay) {
+      privacyOverlay.addEventListener('click', (event) => {
+        if (event.target === privacyOverlay) closePrivacyModal();
+      });
+    }
   }
 }
 
