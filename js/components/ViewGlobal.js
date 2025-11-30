@@ -95,10 +95,8 @@ export class ViewGlobal extends HTMLElement {
         </div>
         
         <div class="info-section">
-          <h3 data-i18n="privacy.peerJsTitle">Online Mode: WebRTC (PeerJS)</h3>
-          <p data-i18n="privacy.peerJsDesc">When you use Online Mode, the app uses PeerJS for peer-to-peer connections via WebRTC. This requires a signaling server to establish connections between players.</p>
-          <p data-i18n="privacy.peerJsData">Data exchanged: Only game-related information (role assignments, player names, room codes) is transmitted directly between players' browsers. The signaling server only facilitates the initial connection and does not store or access your game data.</p>
-          <p data-i18n="privacy.peerJsThirdParty">PeerJS uses a public signaling server by default. If you're concerned about privacy, you can host your own PeerJS server.</p>
+          <h3 data-i18n="privacy.peerJsTitle">Online Mode: WebRTC</h3>
+          <p data-i18n="privacy.peerJsDesc">Online mode uses WebRTC for direct peer-to-peer connections. Only game data (roles, names, room codes) is shared between players' browsers. A signaling server facilitates initial connections but doesn't access your data.</p>
         </div>
         
         <div class="info-section">
