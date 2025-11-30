@@ -75,6 +75,14 @@ export class GlobalControls extends HTMLElement {
 
       toggle.addEventListener('click', (e) => {
         e.preventDefault(); // Always intercept
+        // Close hamburger menu if open
+        const mainMenu = document.getElementById('mainMenu');
+        if (mainMenu && !mainMenu.classList.contains('hidden')) {
+          mainMenu.classList.add('hidden');
+          mainMenu.setAttribute('aria-hidden', 'true');
+          const menuBtn = document.getElementById('menuBtn');
+          if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+        }
         modal.classList.remove('hidden');
       });
     }

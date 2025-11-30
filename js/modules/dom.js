@@ -123,6 +123,8 @@ export const el = {
   get mainMenu() { return document.getElementById("mainMenu"); },
   get menuVotingBtn() { return document.getElementById("menuVotingBtn"); },
   get menuImmersionBtn() { return document.getElementById("menuImmersionBtn"); },
+  get menuFeedbackLink() { return document.getElementById("menuFeedbackLink"); },
+  get menuDonateLink() { return document.getElementById("menuDonateLink"); },
   get votingOverlay() { return document.getElementById("votingOverlay"); },
   get votingClose() { return document.getElementById("votingClose"); },
   get privacyBtn() { return document.getElementById("privacyBtn"); },

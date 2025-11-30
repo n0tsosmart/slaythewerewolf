@@ -339,7 +339,10 @@ function attachEvents() {
     el.languageButtons.forEach((button) => {
       button.addEventListener("click", () => {
         const lang = button.dataset.langButton;
-        if (lang) handleLanguageChange(lang);
+        if (lang) {
+          handleLanguageChange(lang);
+          toggleMainMenu(false);
+        }
       });
     });
   }
@@ -378,6 +381,18 @@ function attachEvents() {
     el.menuImmersionBtn.addEventListener("click", () => {
       toggleMainMenu(false);
       openInfoModal();
+    });
+  }
+
+  if (el.menuFeedbackLink) {
+    el.menuFeedbackLink.addEventListener("click", () => {
+      toggleMainMenu(false);
+    });
+  }
+
+  if (el.menuDonateLink) {
+    el.menuDonateLink.addEventListener("click", () => {
+      toggleMainMenu(false);
     });
   }
 

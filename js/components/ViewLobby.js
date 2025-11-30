@@ -3,7 +3,7 @@ import { el } from '../modules/dom.js';
 import { state } from '../modules/state.js';
 import { t, applyTranslations } from '../modules/i18n.js';
 import { hostGame, joinGame, setNetworkCallbacks, disconnect, getRoomCode, getConnectedPlayers, isHost, getLocalPlayerName, getHostPeerId } from '../modules/network.js';
-import { showView, showClientRoleView, showLobbyView } from '../modules/engine.js';
+import { showView, showClientRoleView, showLobbyView, confirmAction } from '../modules/engine.js';
 import { renderPlayerList } from '../modules/setup.js';
 import { persistState } from '../modules/store.js';
 
@@ -111,6 +111,8 @@ export class ViewLobby extends HTMLElement {
         if (el.lobbyMainMenu) el.lobbyMainMenu.classList.remove('hidden');
         if (el.lobbyHost) el.lobbyHost.classList.add('hidden');
         if (el.lobbyClient) el.lobbyClient.classList.add('hidden');
+        // Show back button when returning to main menu
+        if (el.backToLandingBtn) el.backToLandingBtn.classList.remove('hidden');
     }
 
     async onHostGame() {
@@ -129,6 +131,9 @@ export class ViewLobby extends HTMLElement {
 
             // Add online-mode class to hide player configurator
             document.body.classList.add('online-mode');
+
+            // Hide back button once room is created
+            if (el.backToLandingBtn) el.backToLandingBtn.classList.add('hidden');
 
             showView('lobby');
         }
@@ -151,6 +156,8 @@ export class ViewLobby extends HTMLElement {
                 el.lobbyClient.classList.remove('hidden');
                 el.clientPlayerNameDisplay.textContent = playerName;
                 this.updateClientPlayerList();
+                // Hide back button once joined
+                if (el.backToLandingBtn) el.backToLandingBtn.classList.add('hidden');
                 showView('lobby');
             }
         } catch (error) {
@@ -179,35 +186,47 @@ export class ViewLobby extends HTMLElement {
     }
 
     onCancelHost() {
-        disconnect();
-        this.connectedPlayerPeers.clear();
-        this.roomCode = null;
-        this.isHostMode = false;
-        el.lobbyHost.classList.add('hidden');
-        el.lobbyMainMenu.classList.remove('hidden');
-        el.toastInfo(t("network.hostCancelled"));
-        // Clear player list added by network joins
-        state.customNames = state.customNames.filter(name => !this.connectedPlayerPeers.has(name));
+        confirmAction(t("lobby.confirmCancel"), () => {
+            disconnect();
+            this.connectedPlayerPeers.clear();
+            this.roomCode = null;
+            this.isHostMode = false;
+            el.lobbyHost.classList.add('hidden');
+            el.lobbyMainMenu.classList.remove('hidden');
+            el.toastInfo(t("network.hostCancelled"));
+            // Clear player list added by network joins
+            state.customNames = state.customNames.filter(name => !this.connectedPlayerPeers.has(name));
 
-        // Remove online-mode class
-        document.body.classList.remove('online-mode');
+            // Remove online-mode class
+            document.body.classList.remove('online-mode');
+
+            // Show back button again when returning to lobby menu
+            if (el.backToLandingBtn) el.backToLandingBtn.classList.remove('hidden');
+        });
     }
 
     onLeaveGame() {
-        disconnect();
-        el.lobbyClient.classList.add('hidden');
-        el.lobbyMainMenu.classList.remove('hidden');
-        el.toastInfo(t("network.leftGame"));
+        confirmAction(t("lobby.confirmLeave"), () => {
+            disconnect();
+            el.lobbyClient.classList.add('hidden');
+            el.lobbyMainMenu.classList.remove('hidden');
+            el.toastInfo(t("network.leftGame"));
 
-        // Clear assigned role when explicitly leaving
-        state.assignedRole = null;
-        persistState();
+            // Clear assigned role when explicitly leaving
+            state.assignedRole = null;
+            persistState();
 
-        showView("setup"); // Return to setup view as default
+            // Show back button again (though we're navigating away)
+            if (el.backToLandingBtn) el.backToLandingBtn.classList.remove('hidden');
+
+            showView("landing"); // Return to landing page
+        });
     }
 
     onBackToLanding() {
-        showView("landing");
+        confirmAction(t("lobby.confirmBack"), () => {
+            showView("landing");
+        });
     }
     handlePeerConnected(playerName, peerId) {
         this.connectedPlayerPeers.set(peerId, playerName); // Store peerId -> name mapping

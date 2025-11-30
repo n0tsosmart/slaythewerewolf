@@ -49,7 +49,7 @@ This digital companion handles role distribution, game narration, player trackin
 * **Progress Tracking** – Clear indication of which player is viewing their card
 * **AI-Generated Artwork** – Beautiful, unique card designs for each role
 
-#### Online Mode (WebRTC)
+#### 🌐 Online Mode (WebRTC)
 * **Peer-to-Peer Dealing** – Direct card distribution via WebRTC data channels
 * **No Central Server** – Role data never touches external servers
 * **Room-Based Sessions** – Create one-time room codes for ephemeral games

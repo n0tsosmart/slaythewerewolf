@@ -240,6 +240,9 @@ window.TRANSLATIONS = {
                 "lobby.you": "You",
                 "lobby.joinedAs": "Joined as:",
                 "lobby.waitingForHost": "Waiting for host to start the game...",
+                "lobby.confirmLeave": "Are you sure you want to leave this game?",
+                "lobby.confirmBack": "Are you sure you want to go back? You will leave the current lobby.",
+                "lobby.confirmCancel": "Are you sure you want to cancel the room? All connected players will be disconnected.",
 
                 // Client Role View
                 "clientRole.title": "Your Role",
@@ -270,6 +273,7 @@ window.TRANSLATIONS = {
                 "network.needAtLeastOnePlayer": "Need at least one player to start the game.",
                 "network.rejoiningGame": "Rejoining game as {name}...",
                 "network.couldNotRejoin": "Could not rejoin game. Please try again.",
+                "network.leftGame": "You left the game.",
 
                 // Menu
                 "menu.donate": "❤️ Support this project",
@@ -329,6 +333,7 @@ window.TRANSLATIONS = {
                 "buttons.back": "← Volver",
                 "buttons.cancel": "Cancelar",
                 "buttons.confirm": "Confirmar",
+                "buttons.leave": "Salir",
 
                 // Language Picker
                 "language.label": "Idioma",
@@ -524,6 +529,9 @@ window.TRANSLATIONS = {
                 "lobby.you": "Tú",
                 "lobby.joinedAs": "Unido como:",
                 "lobby.waitingForHost": "Esperando a que el anfitrión inicie...",
+                "lobby.confirmLeave": "¿Estás seguro de que quieres salir de esta partida?",
+                "lobby.confirmBack": "¿Estás seguro de que quieres volver? Saldrás del lobby actual.",
+                "lobby.confirmCancel": "¿Estás seguro de que quieres cancelar la sala? Todos los jugadores conectados serán desconectados.",
 
                 // Client Role View
                 "clientRole.title": "Tu Rol",
@@ -553,6 +561,7 @@ window.TRANSLATIONS = {
                 "network.needAtLeastOnePlayer": "Se necesita al menos un jugador para comenzar.",
                 "network.rejoiningGame": "Reuniéndose a la partida como {name}...",
                 "network.couldNotRejoin": "No se pudo reunir a la partida. Inténtalo de nuevo.",
+                "network.leftGame": "Has salido de la partida.",
 
                 // Menu
                 "menu.donate": "❤️ Apoya este proyecto",
@@ -612,6 +621,7 @@ window.TRANSLATIONS = {
                 "buttons.back": "← Indietro",
                 "buttons.cancel": "Annulla",
                 "buttons.confirm": "Conferma",
+                "buttons.leave": "Esci",
 
                 // Language Picker
                 "language.label": "Lingua",
@@ -807,6 +817,9 @@ window.TRANSLATIONS = {
                 "lobby.you": "Tu",
                 "lobby.joinedAs": "Unito come:",
                 "lobby.waitingForHost": "In attesa che l'host inizi...",
+                "lobby.confirmLeave": "Sei sicuro di voler lasciare questa partita?",
+                "lobby.confirmBack": "Sei sicuro di voler tornare indietro? Uscirai dalla lobby corrente.",
+                "lobby.confirmCancel": "Sei sicuro di voler cancellare la stanza? Tutti i giocatori connessi verranno disconnessi.",
 
                 // Client Role View
                 "clientRole.title": "Il Tuo Ruolo",
@@ -836,6 +849,7 @@ window.TRANSLATIONS = {
                 "network.needAtLeastOnePlayer": "Serve almeno un giocatore per iniziare.",
                 "network.rejoiningGame": "Rientro in partita come {name}...",
                 "network.couldNotRejoin": "Impossibile rientrare in partita. Riprova.",
+                "network.leftGame": "Hai lasciato la partita.",
 
                 // Menu
                 "menu.donate": "❤️ Sostieni questo progetto",
