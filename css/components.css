@@ -516,6 +516,28 @@ select:focus-visible {
     padding: 10px 16px;
     margin-left: 16px;
   }
+
+  /* Modal adjustments for mobile */
+  .modal-overlay {
+    padding: 16px;
+    align-items: flex-start;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-panel {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .info-panel {
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 /* --------------------------------------------------------------------------
