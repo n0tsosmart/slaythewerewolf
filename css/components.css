@@ -519,22 +519,20 @@ select:focus-visible {
 
   /* Modal adjustments for mobile */
   .modal-overlay {
-    padding: 16px;
-    align-items: flex-start;
+    padding: 12px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
 
   .modal-panel {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    max-height: calc(100vh - 40px);
+    margin: auto;
+    max-height: calc(100vh - 24px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
 
   .info-panel {
-    max-height: calc(100vh - 40px);
+    max-height: calc(100vh - 24px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
