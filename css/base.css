@@ -11,40 +11,40 @@ html {
 /* CSS Variables (Custom Properties) */
 :root {
   scroll-behavior: smooth;
-  accent-color: rgba(190, 24, 93, 0.9);
+  accent-color: rgba(239, 68, 68, 0.9);
 
   /* --- Color Palette --- */
 
   /* Backgrounds */
-  --color-bg-base: #050303;
-  --color-bg-accent: #120505;
-  --color-panel-bg: rgba(6, 3, 4, 0.78);
+  --color-bg-base: #0a0404;
+  --color-bg-accent: #1a0808;
+  --color-panel-bg: rgba(20, 8, 8, 0.78);
   /* Semi-transparent for glassmorphism */
 
   /* Text */
   --color-text-primary: #e7dfd7;
 
   /* Borders & Highlights */
-  --color-header-border: rgba(127, 29, 29, 0.35);
-  --color-header-highlight: rgba(220, 38, 38, 0.08);
-  --color-panel-border: rgba(68, 32, 32, 0.35);
-  --color-card-border: rgba(127, 29, 29, 0.4);
+  --color-header-border: rgba(220, 38, 38, 0.4);
+  --color-header-highlight: rgba(239, 68, 68, 0.12);
+  --color-panel-border: rgba(185, 28, 28, 0.4);
+  --color-card-border: rgba(220, 38, 38, 0.5);
 
   /* Interactive Elements */
-  --color-chip-bg: rgba(45, 15, 15, 0.9);
-  --color-chip-remove: rgba(251, 113, 133, 0.2);
-  --color-secondary-bg: rgba(41, 28, 28, 0.55);
-  --color-secondary-border: rgba(107, 33, 33, 0.5);
+  --color-chip-bg: rgba(127, 29, 29, 0.85);
+  --color-chip-remove: rgba(252, 165, 165, 0.25);
+  --color-secondary-bg: rgba(127, 29, 29, 0.5);
+  --color-secondary-border: rgba(185, 28, 28, 0.6);
 
   /* Brand / Theme Colors */
-  --color-primary-from: #b91c1c;
-  --color-primary-to: #7f1d1d;
+  --color-primary-from: #dc2626;
+  --color-primary-to: #b91c1c;
   --color-gold: #facc15;
 
   /* Status & Utility Colors */
-  --color-ghost-border: rgba(248, 113, 113, 0.35);
-  --color-danger-border: rgba(185, 28, 28, 0.6);
-  --color-danger-bg: rgba(120, 20, 20, 0.35);
+  --color-ghost-border: rgba(252, 165, 165, 0.4);
+  --color-danger-border: rgba(220, 38, 38, 0.65);
+  --color-danger-bg: rgba(185, 28, 28, 0.4);
 
   /* Grays */
   --color-gray-light: #cbd5f5;
@@ -52,8 +52,8 @@ html {
   --color-gray-dark: #9ca3af;
 
   /* Body Gradient */
-  --color-body-gradient-start: rgba(5, 3, 5, 0.92);
-  --color-body-gradient-end: rgba(12, 4, 5, 0.85);
+  --color-body-gradient-start: rgba(10, 4, 6, 0.90);
+  --color-body-gradient-end: rgba(20, 8, 10, 0.82);
 
   /* Assets */
   --bg-image: url("../assets/backgrounds/background.jpg");
