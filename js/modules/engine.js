@@ -1028,7 +1028,8 @@ export function computeIndiziatoPlayers() {
 }
 
 export function renderSummaryList() {
-  if (!el.summaryList) {
+  const list = el.summaryList;
+  if (!list) {
     renderFallenList();
     renderMythPanel();
     updateEliminationSelect();
@@ -1041,12 +1042,13 @@ export function renderSummaryList() {
     suppressLivingToggle = false;
   }
 
-  el.summaryList.innerHTML = "";
+  list.innerHTML = "";
   const winnerEntries = state.victory ? getVictorySurvivors() : null;
   const winnersSet = winnerEntries ? new Set(winnerEntries.map((entry) => entry.name)) : null;
   let renderedCount = 0;
 
   const indiziatoPlayers = computeIndiziatoPlayers();
+  const frag = document.createDocumentFragment();
 
   state.players.forEach((player, index) => {
     if (winnersSet && !winnersSet.has(player)) return;
@@ -1187,15 +1189,17 @@ export function renderSummaryList() {
     }
 
     listItem.appendChild(actions);
-    el.summaryList.appendChild(listItem);
+    frag.appendChild(listItem);
     if (isAlive) renderedCount += 1;
   });
+
+  list.appendChild(frag);
 
   if (renderedCount === 0) {
     const empty = document.createElement("li");
     empty.className = "help";
     empty.textContent = t("living.empty");
-    el.summaryList.appendChild(empty);
+    list.appendChild(empty);
   }
   if (el.livingCount) el.livingCount.textContent = String(renderedCount);
   renderFallenList();

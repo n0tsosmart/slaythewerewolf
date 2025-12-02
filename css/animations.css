@@ -34,7 +34,7 @@
   }
 
   100% {
-    box-shadow: 0 0 0 rgba(251, 191, 36, 0.1);
+    box-shadow: 0 0 0 rgba(65, 59, 44, 0.1);
   }
 }
 
@@ -161,4 +161,29 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Staggered Delays for Child Elements */
+.animate-entry {
+  animation: fadeInUp 0.5s ease backwards;
+}
+
+.stagger-1 {
+  animation-delay: 100ms !important;
+}
+
+.stagger-2 {
+  animation-delay: 200ms !important;
+}
+
+.stagger-3 {
+  animation-delay: 300ms !important;
+}
+
+.stagger-4 {
+  animation-delay: 400ms !important;
+}
+
+.stagger-5 {
+  animation-delay: 500ms !important;
 }

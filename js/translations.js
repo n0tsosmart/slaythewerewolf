@@ -159,6 +159,7 @@ window.TRANSLATIONS = {
                 "errors.tooManyWolves": "⚠️ Werewolves must be fewer than the players",
                 "errors.tooManySpecials": "⚠️ Too many special roles for this group",
                 "errors.playerCountMismatch": "⚠️ Player count mismatch: expected {count}, but have {current}",
+                "errors.nameTaken": "Name '{name}' is already taken.",
 
                 // Status Messages
                 "status.player": "Player {current} / {total}",
@@ -446,6 +447,7 @@ window.TRANSLATIONS = {
                 "errors.tooManyWolves": "⚠️ Los lobos deben ser menos que los jugadores",
                 "errors.tooManySpecials": "⚠️ Demasiados roles especiales para este grupo",
                 "errors.playerCountMismatch": "⚠️ Discrepancia en el número de jugadores: se esperaban {count}, pero hay {current}",
+                "errors.nameTaken": "El nombre '{name}' ya está en uso.",
 
                 // Status Messages
                 "status.player": "Jugador {current} / {total}",
@@ -732,6 +734,7 @@ window.TRANSLATIONS = {
                 "errors.tooManyWolves": "⚠️ I lupi devono essere meno dei giocatori",
                 "errors.tooManySpecials": "⚠️ Troppi ruoli speciali per questo gruppo",
                 "errors.playerCountMismatch": "⚠️ Discrepanza nel numero di giocatori: attesi {count}, ma presenti {current}",
+                "errors.nameTaken": "Il nome '{name}' è già in uso.",
 
                 // Status Messages
                 "status.player": "Giocatore {current} / {total}",

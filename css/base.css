@@ -4,8 +4,8 @@
 
 /* Base Settings */
 html {
-  font-size: 80%;
-  /* Scales down the base font size */
+  font-size: 100%;
+  /* Standardizes base font size (16px) for better readability */
 }
 
 /* CSS Variables (Custom Properties) */
@@ -20,6 +20,12 @@ html {
   --color-bg-accent: #1a0808;
   --color-panel-bg: rgba(20, 8, 8, 0.78);
   /* Semi-transparent for glassmorphism */
+
+  /* Glassmorphism System */
+  --glass-bg: rgba(20, 8, 8, 0.7);
+  --glass-border: rgba(220, 38, 38, 0.25);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --glass-blur: 12px;
 
   /* Text */
   --color-text-primary: #e7dfd7;
@@ -107,6 +113,10 @@ html {
   --color-danger-border: rgba(147, 51, 234, 0.6);
   /* Re-purposed for primary border in some contexts */
   --color-danger-bg: rgba(88, 28, 135, 0.35);
+
+  /* Glassmorphism System (Purple) */
+  --glass-bg: rgba(15, 5, 18, 0.7);
+  --glass-border: rgba(147, 51, 234, 0.25);
 }
 
 /* Reset Box Sizing */
@@ -135,5 +145,11 @@ body {
 @media (max-width: 640px) {
   body {
     padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
   }
 }

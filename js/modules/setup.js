@@ -315,8 +315,12 @@ function handleTouchEnd(event) {
 }
 
 export function renderPlayerList() {
-  if (!el.playerList) return;
-  el.playerList.innerHTML = "";
+  const list = el.playerList;
+  if (!list) return;
+  list.innerHTML = "";
+  
+  const frag = document.createDocumentFragment();
+  
   state.customNames.forEach((name, index) => {
     const item = document.createElement("li");
     item.className = "player-chip";
@@ -336,7 +340,7 @@ export function renderPlayerList() {
     removeButton.textContent = "×";
     actions.appendChild(removeButton);
     item.appendChild(actions);
-    el.playerList.appendChild(item);
+    frag.appendChild(item);
 
     item.addEventListener("dragstart", handleDragStart);
     item.addEventListener("dragover", handleDragOver);
@@ -348,6 +352,8 @@ export function renderPlayerList() {
     item.addEventListener("touchmove", handleTouchMove, { passive: false });
     item.addEventListener("touchend", handleTouchEnd);
   });
+
+  list.appendChild(frag);
 
   const isEmpty = state.customNames.length === 0;
   if (el.clearPlayersBtn) el.clearPlayersBtn.classList.toggle("hidden", isEmpty);

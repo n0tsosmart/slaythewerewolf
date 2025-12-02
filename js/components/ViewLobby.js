@@ -149,6 +149,11 @@ export class ViewLobby extends HTMLElement {
             return;
         }
 
+        const btn = el.joinGameBtn;
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = "⏳ ...";
+
         try {
             const success = await joinGame(roomCode, playerName);
             if (success) {
@@ -162,7 +167,13 @@ export class ViewLobby extends HTMLElement {
             }
         } catch (error) {
             console.error("Error joining game:", error);
-            el.toastError(t("network.joinError", { error: error.message }));
+            // The error message from network.js is already translated and user-friendly
+            el.toastError(error.message || t("network.joinError"));
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
         }
     }
 

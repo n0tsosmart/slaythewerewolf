@@ -80,18 +80,22 @@ export async function hostGame() {
         await initializePeer(currentRoomCode);
         console.log(`Hosting game with ID: ${currentRoomCode}`);
 
+        // Start Heartbeat
+        const heartbeatInterval = setInterval(() => {
+            broadcast({ type: 'PING' });
+        }, 20000);
+
         peer.on('connection', (conn) => {
             console.log(`Connection received from: ${conn.peer}`);
             connections.set(conn.peer, conn);
 
             conn.on('open', () => {
                 console.log(`Data channel opened with ${conn.peer}`);
-                // Send initial data to new client
-                conn.send({ type: 'WELCOME', message: t("network.welcomeClient") });
+                // Wait for JOIN_REQUEST
             });
 
             conn.on('data', (data) => {
-                console.log(`Data from ${conn.peer}:`, data);
+                // console.log(`Data from ${conn.peer}:`, data); // Too verbose for Pings
                 handleHostData(conn, data);
             });
 
@@ -100,13 +104,18 @@ export async function hostGame() {
                 const playerName = conn.customPlayerName || conn.metadata?.playerName || conn.peer;
                 connections.delete(conn.peer);
                 onPeerDisconnectedCallbacks.forEach(callback => callback(playerName, conn.peer));
+                // Sync removal to other clients
+                broadcast({ type: 'PLAYER_LIST_UPDATE', players: state.customNames });
             });
 
             conn.on('error', (err) => {
                 console.error(`Connection error with ${conn.peer}:`, err);
-                // Connection errors are logged but not shown to users to avoid technical messages
             });
         });
+        
+        // Clear interval on peer destroy (not fully handled here but good practice)
+        peer.on('close', () => clearInterval(heartbeatInterval));
+        peer.on('disconnected', () => clearInterval(heartbeatInterval));
 
         return currentRoomCode;
     } catch (err) {
@@ -118,15 +127,29 @@ export async function hostGame() {
 function handleHostData(conn, data) {
     switch (data.type) {
         case 'JOIN_REQUEST':
+            if (state.customNames.includes(data.playerName)) {
+                 conn.send({ type: 'JOIN_REJECTED', reason: t("errors.nameTaken", { name: data.playerName }) || "Name taken" });
+                 setTimeout(() => conn.close(), 500);
+                 return;
+            }
+            
             conn.metadata = { playerName: data.playerName };
             conn.customPlayerName = data.playerName; // Store directly to ensure availability
             console.log(`Player ${data.playerName} (${conn.peer}) joined.`);
+            
+            // Accept join
+            conn.send({ type: 'JOIN_ACCEPTED' });
+            conn.send({ type: 'WELCOME', message: t("network.welcomeClient") });
+
             // Add player to local state and update UI
             state.customNames.push(data.playerName);
             persistState();
             onPeerConnectedCallbacks.forEach(callback => callback(data.playerName, conn.peer));
             // Inform all existing clients about the new player
             broadcast({ type: 'PLAYER_LIST_UPDATE', players: state.customNames });
+            break;
+        case 'PONG':
+            // Alive
             break;
         default:
             console.warn("Unknown data type received by host:", data.type);
@@ -162,15 +185,21 @@ export async function joinGame(roomId, playerName) {
 
             // Handle successful connection
             conn.on('open', () => {
-                cleanup();
-                console.log(`Connected to host ${roomId}`);
+                console.log(`Connected to host ${roomId}, sending join request...`);
                 conn.send({ type: 'JOIN_REQUEST', playerName: playerName });
-                resolve(conn);
             });
 
             // Handle connection data
             conn.on('data', (data) => {
-                console.log('Data from host:', data);
+                if (data.type === 'JOIN_ACCEPTED') {
+                    cleanup();
+                    resolve(conn);
+                } else if (data.type === 'JOIN_REJECTED') {
+                    cleanup();
+                    conn.close();
+                    reject(new Error(data.reason));
+                }
+                
                 handleClientData(data);
             });
 
@@ -212,6 +241,17 @@ export async function joinGame(roomId, playerName) {
 
 function handleClientData(data) {
     switch (data.type) {
+        case 'JOIN_ACCEPTED':
+        case 'JOIN_REJECTED':
+            // Handled by joinGame promise
+            break;
+        case 'PING':
+            // Respond to keep alive
+            if (hostId) {
+                const conn = peer.connections[hostId]?.[0];
+                if (conn) conn.send({ type: 'PONG' });
+            }
+            break;
         case 'WELCOME':
             // Welcome message received, no toast needed (join success is shown elsewhere)
             break;

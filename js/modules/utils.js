@@ -132,7 +132,7 @@ export function getLanguageFlag(lang) {
 export function getRoleImage(roleId) {
   const role = ROLE_LIBRARY[roleId] || ROLE_LIBRARY.villager;
   const defaultImage = role.image;
-  const theme = localStorage.getItem('theme');
+  const theme = document.documentElement.getAttribute('data-theme');
 
   if (theme === 'purple' && defaultImage) {
     const parts = defaultImage.split('/');

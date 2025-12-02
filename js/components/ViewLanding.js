@@ -21,10 +21,10 @@ export class ViewLanding extends HTMLElement {
     render() {
         this.innerHTML = `
             <section id="landingView" class="panel">
-                <h2 data-i18n="landing.title">Welcome</h2>
-                <p class="landing-subtitle" data-i18n="landing.subtitle">Choose your game mode</p>
+                <h2 data-i18n="landing.title" class="animate-entry stagger-1">Welcome</h2>
+                <p class="landing-subtitle animate-entry stagger-2" data-i18n="landing.subtitle">Choose your game mode</p>
                 
-                <div class="landing-actions">
+                <div class="landing-actions animate-entry stagger-3">
                     <button id="localGameBtn" class="btn-primary large-btn" type="button">
                         <span class="btn-icon">🏠</span>
                         <span data-i18n="landing.localGame">Local Game</span>

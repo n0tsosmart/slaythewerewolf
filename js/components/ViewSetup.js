@@ -3,12 +3,12 @@ export class ViewSetup extends HTMLElement {
     this.style.display = 'contents';
     this.innerHTML = `
     <section id="setupView" class="panel">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;" class="animate-entry stagger-1">
         <h2 data-i18n="setup.title" style="margin-bottom: 0;">⚙️ Setup</h2>
         <button id="backToLandingFromSetup" class="btn-solid-glass btn-small" type="button" data-i18n="buttons.back">← Back</button>
       </div>
       <form id="setupForm" class="setup-form">
-        <div class="field-group">
+        <div class="field-group animate-entry stagger-2">
           <label class="player-count-label">
             <span data-i18n="setup.playersLabel">Number of players</span>
             <div class="number-stepper">
@@ -30,7 +30,7 @@ export class ViewSetup extends HTMLElement {
           </label>
         </div>
 
-        <div class="player-list-section">
+        <div class="player-list-section animate-entry stagger-3">
           <label>
             <span data-i18n="setup.namesLabel">👥 Player names (optional)</span>
             <span class="help" data-i18n="setup.namesHelp">We keep this list even after starting a new game.</span>
@@ -50,7 +50,7 @@ export class ViewSetup extends HTMLElement {
 
         <p id="validationMessage" class="validation" aria-live="polite"></p>
 
-        <details id="rolesDetails" class="roles-details">
+        <details id="rolesDetails" class="roles-details animate-entry stagger-4">
           <summary class="roles-summary">
             <span data-i18n="setup.specialsTitle">✨ Special roles</span>
             <span class="roles-caret">⌄</span>
@@ -67,7 +67,7 @@ export class ViewSetup extends HTMLElement {
           <div id="roleSummaryContent" class="role-summary-content"></div>
         </div>
 
-        <div class="actions-right">
+        <div class="actions-right animate-entry stagger-5">
           <button type="submit" class="btn-primary" data-i18n="buttons.deal">🎴 Deal the cards</button>
         </div>
       </form>
