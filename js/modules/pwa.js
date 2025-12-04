@@ -9,7 +9,22 @@ if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.
     console.log('[PWA] App is running in standalone mode');
 }
 
-// Capture the beforeinstallprompt event
+// Check if iOS and not installed
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const isInStandaloneMode = window.navigator.standalone === true;
+
+// Show install button on iOS if not installed
+if (isIOS && !isInStandaloneMode) {
+    window.addEventListener('DOMContentLoaded', () => {
+        const installBtn = document.getElementById('installAppBtn');
+        if (installBtn) {
+            installBtn.style.display = 'block';
+            console.log('[PWA] Install button shown for iOS');
+        }
+    });
+}
+
+// Capture the beforeinstallprompt event (Android/Desktop)
 window.addEventListener('beforeinstallprompt', (e) => {
     console.log('[PWA] beforeinstallprompt event fired');
 

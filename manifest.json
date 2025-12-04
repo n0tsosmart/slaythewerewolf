@@ -1,6 +1,6 @@
 {
-    "name": "Slay the Werewolf",
-    "short_name": "Werewolf",
+    "name": "Slay The Werewolf",
+    "short_name": "Slay The Werewolf",
     "description": "A modern digital companion for the classic social deduction game Lupus in Tabula (Werewolf/Mafia)",
     "start_url": "/slaythewerewolf/",
     "scope": "/slaythewerewolf/",

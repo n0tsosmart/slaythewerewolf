@@ -132,7 +132,7 @@ html {
 /* Body Styling */
 body {
   /* Use safe-area-insets for notched devices (iPhone X+, etc.) */
-  padding: env(safe-area-inset-top, 20px) env(safe-area-inset-right, 20px) env(safe-area-inset-bottom, 20px) env(safe-area-inset-left, 20px);
+  padding: max(env(safe-area-inset-top), 20px) max(env(safe-area-inset-right), 20px) max(env(safe-area-inset-bottom), 20px) max(env(safe-area-inset-left), 20px);
 
   /* Dark gradient overlay on top of the background image */
   background-image:
@@ -141,12 +141,17 @@ body {
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
+  background-repeat: no-repeat;
   color: var(--color-text-primary);
 
-  /* Ensure background extends to screen edges */
+  /* Ensure background extends to screen edges and prevents black bars */
   min-height: 100vh;
   min-height: -webkit-fill-available;
   /* iOS fix */
+
+  /* Prevent overscroll bounce from showing white/black */
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
 
   font-family: var(--font-display);
 }
@@ -154,12 +159,12 @@ body {
 /* Responsive adjustments */
 @media (max-width: 640px) {
   body {
-    padding: env(safe-area-inset-top, 16px) env(safe-area-inset-right, 16px) env(safe-area-inset-bottom, 16px) env(safe-area-inset-left, 16px);
+    padding: max(env(safe-area-inset-top), 16px) max(env(safe-area-inset-right), 16px) max(env(safe-area-inset-bottom), 16px) max(env(safe-area-inset-left), 16px);
   }
 }
 
 @media (max-width: 480px) {
   body {
-    padding: env(safe-area-inset-top, 10px) env(safe-area-inset-right, 10px) env(safe-area-inset-bottom, 10px) env(safe-area-inset-left, 10px);
+    padding: max(env(safe-area-inset-top), 10px) max(env(safe-area-inset-right), 10px) max(env(safe-area-inset-bottom), 10px) max(env(safe-area-inset-left), 10px);
   }
 }

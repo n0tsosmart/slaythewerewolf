@@ -38,9 +38,9 @@ export class GlobalControls extends HTMLElement {
             Rules</button>
           <button type="button" id="menuImmersionBtn" class="menu-item" role="menuitem" data-i18n="info.button">📖
             Immersion tips & rules</button>
+          <hr class="menu-divider">
           <a id="menuFeedbackLink" href="https://github.com/n0tsosmart/slaythewerewolf" target="_blank"
             rel="noopener noreferrer" class="menu-item" role="menuitem" data-i18n="info.feedback">💬 Send feedback</a>
-          <hr class="menu-divider">
           <a id="menuDonateLink" href="https://www.paypal.com/donate/?hosted_button_id=QRPBSBNR88J8C" target="_blank"
             rel="noopener noreferrer" class="menu-item" role="menuitem" data-i18n="menu.donate">❤️ Support this project</a>
         </div>
