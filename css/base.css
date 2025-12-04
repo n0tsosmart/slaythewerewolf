@@ -9,6 +9,36 @@ html {
 
   /* iOS viewport height fix - prevents black bars */
   height: -webkit-fill-available;
+
+  /* Background color for overscroll areas (mobile bounce, notch zones) */
+  background-color: var(--color-bg-base);
+}
+
+/* Fixed background layer covering entire viewport including notch/safe areas */
+html::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+
+  /* Full viewport coverage including safe areas */
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  /* Dynamic viewport height for mobile */
+
+  /* Background image with gradient overlay */
+  background-image:
+    linear-gradient(180deg, var(--color-body-gradient-start), var(--color-body-gradient-end)),
+    var(--bg-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Ensure it extends beyond safe areas */
+  margin: calc(-1 * env(safe-area-inset-top, 0px)) calc(-1 * env(safe-area-inset-right, 0px)) calc(-1 * env(safe-area-inset-bottom, 0px)) calc(-1 * env(safe-area-inset-left, 0px));
+  width: calc(100vw + env(safe-area-inset-left, 0px) + env(safe-area-inset-right, 0px));
+  height: calc(100dvh + env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px));
 }
 
 /* CSS Variables (Custom Properties) */
@@ -129,27 +159,21 @@ html {
   padding: 0;
 }
 
-/* Body Styling */
+/* Body Styling - Content only, background handled by html::before */
 body {
   /* Use safe-area-insets for notched devices (iPhone X+, etc.) */
   padding: max(env(safe-area-inset-top), 20px) max(env(safe-area-inset-right), 20px) max(env(safe-area-inset-bottom), 20px) max(env(safe-area-inset-left), 20px);
 
-  /* Dark gradient overlay on top of the background image */
-  background-image:
-    linear-gradient(180deg, var(--color-body-gradient-start), var(--color-body-gradient-end)),
-    var(--bg-image);
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
+  /* Transparent background - the html::before pseudo-element handles the background */
+  background: transparent;
   color: var(--color-text-primary);
 
-  /* Ensure background extends to screen edges and prevents black bars */
+  /* Ensure content extends to screen edges */
   min-height: 100vh;
-  min-height: -webkit-fill-available;
-  /* iOS fix */
+  min-height: 100dvh;
+  /* Dynamic viewport height for mobile */
 
-  /* Prevent overscroll bounce from showing white/black */
+  /* Prevent overscroll bounce from showing different colors */
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
 
