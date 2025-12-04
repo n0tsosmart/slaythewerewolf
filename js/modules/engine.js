@@ -22,7 +22,7 @@ import {
 import { prepareReveal, revealCard, nextPlayer, clearHandoffCountdown, updateHandoffTimer } from './reveal.js';
 import { initUI, scrollToBottom, getRoleImage } from './utils.js';
 import { detectMythStatusFromDeck, determineMythOutcome } from './logic.js';
-import { setNetworkCallbacks, isClient, getLocalPlayerName, isHost, getConnectedPlayers, broadcast, sendToPeer, disconnect as networkDisconnect } from './network.js';
+import { setNetworkCallbacks, isClient, getLocalPlayerName, isHost, getConnectedPlayers, broadcast, sendToPeer, disconnect as networkDisconnect, notifyPlayerEliminated } from './network.js';
 
 // Map to store peerId to playerName for easy lookup when distributing roles
 const peerIdToPlayerName = new Map();
@@ -53,6 +53,14 @@ export function initApp() {
         el.clientRole.updateConnectionStatus('connected');
       }
       showClientRoleView(getLocalPlayerName(), roleData);
+    },
+    playerEliminated: (playerName) => {
+      // Show ghost reminder to eliminated player
+      if (el.clientRole && typeof el.clientRole.showEliminated === 'function') {
+        if (getLocalPlayerName() === playerName) {
+          el.clientRole.showEliminated();
+        }
+      }
     },
   });
 
@@ -1111,6 +1119,13 @@ export function renderSummaryList() {
       indBadge.title = t("status.indiziato");
       badgeContainer.appendChild(indBadge);
     }
+    if (eliminated) {
+      const ghostBadge = document.createElement("span");
+      ghostBadge.className = "status-badge ghost-badge";
+      ghostBadge.textContent = "👻 " + t("status.ghost");
+      ghostBadge.title = t("status.ghostTooltip");
+      badgeContainer.appendChild(ghostBadge);
+    }
     listItem.appendChild(badgeContainer);
 
     const role = document.createElement("span");
@@ -1274,6 +1289,10 @@ export function lynchPlayer(player) {
       renderSummaryList();
       persistState();
       evaluateVictoryConditions();
+      // Notify eliminated player in online mode
+      if (isHost()) {
+        notifyPlayerEliminated(player);
+      }
     };
 
     if (outcome) {
@@ -1300,6 +1319,10 @@ export function toggleElimination(player) {
     }
   } else {
     state.eliminatedPlayers.push({ name: player, locked: false, type: 'sbranato', day: state.narratorDay });
+    // Notify eliminated player in online mode
+    if (isHost()) {
+      notifyPlayerEliminated(player);
+    }
   }
   renderSummaryList();
   updateNarratorUI({ preserveGuideStep: true });
@@ -1312,6 +1335,11 @@ export function addEliminationEntry(name, type = "lynch") {
 
   if (type === "lynch") {
     state.benvenutoPlayer = name;
+  }
+
+  // Notify eliminated player in online mode
+  if (isHost()) {
+    notifyPlayerEliminated(name);
   }
 
   renderSummaryList();

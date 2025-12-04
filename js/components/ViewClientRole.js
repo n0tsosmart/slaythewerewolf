@@ -31,6 +31,13 @@ export class ViewClientRole extends HTMLElement {
                     <span class="status-indicator"></span>
                     <span class="status-text" data-i18n="clientRole.statusDisconnected">Disconnected</span>
                 </div>
+                <div id="ghostPanel" class="ghost-panel hidden">
+                    <div class="ghost-panel-icon">👻</div>
+                    <h3 id="ghostYouWere" class="ghost-you-were"></h3>
+                    <div class="ghost-divider"></div>
+                    <h4 data-i18n="ghost.reminderTitle">Ghost Rules</h4>
+                    <p data-i18n="ghost.reminderMessage">You have been eliminated. You can still vote to choose suspects, but you cannot vote in the lynching. You must not speak during discussions and must close your eyes during the night.</p>
+                </div>
                 <div id="clientRoleCard" class="role-card" data-team="unknown">
                     <img id="clientRoleImage" class="role-image" alt="${t("clientRole.imageAlt")}" />
                     <div class="role-text">
@@ -44,6 +51,32 @@ export class ViewClientRole extends HTMLElement {
         `;
         applyTranslations(this);
     }
+
+    showEliminated() {
+        const ghostPanel = this.querySelector('#ghostPanel');
+        const roleCard = this.querySelector('#clientRoleCard');
+        const ghostYouWere = this.querySelector('#ghostYouWere');
+
+        // Get the role name from the current state
+        if (ghostYouWere && state.assignedRole) {
+            const localized = getRoleContent(state.assignedRole.roleId);
+            const roleName = localized ? localized.name : t("clientRole.unknownRole");
+            ghostYouWere.textContent = t("ghost.youWere", { role: roleName });
+        }
+
+        // Show ghost panel
+        if (ghostPanel) {
+            ghostPanel.classList.remove('hidden');
+        }
+
+        // Hide role card
+        if (roleCard) {
+            roleCard.classList.add('hidden');
+        }
+
+        applyTranslations(this.querySelector('#ghostPanel'));
+    }
+
 
     updateConnectionStatus(status) {
         const container = this.querySelector('.connection-status');

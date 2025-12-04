@@ -172,12 +172,26 @@ Improve the WebRTC multiplayer experience.
   - If host disconnects, elect a new host (oldest peer)
   - Transfer game state to new host
   - *(Note: Not needed for in-person play where host device is stable)*
-- **Spectator mode**:
-  - Allow eliminated players to watch
 - **Voice chat integration**:
   - Optional WebRTC audio channels
   - *(Note: Not needed for in-person play)*
 - **Latency/quality metrics** for troubleshooting
+
+**✅ Spectator Mode (2025-12-04):**
+- **Ghost indicators** for eliminated players in narrator summary:
+  - 👻 Ghost badge displayed on eliminated players
+  - Visual styling (grayed out, line-through name)
+- **Online mode ghost notification**:
+  - When a player is eliminated, host sends `PLAYER_ELIMINATED` message
+  - Eliminated client receives ghost reminder panel with rules:
+    - Can vote for suspects (not for lynching)
+    - Must stay silent during discussions
+    - Must close eyes during night
+  - Client's role card shows grayscale effect with floating ghost overlay
+- **Network protocol**:
+  - `notifyPlayerEliminated()` function sends notification to specific player
+  - All elimination functions (`lynchPlayer`, `toggleElimination`, `addEliminationEntry`) trigger notification in online mode
+- **Translations** in EN/ES/IT for all ghost-related messages
 
 ---
 

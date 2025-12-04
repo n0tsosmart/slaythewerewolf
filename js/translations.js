@@ -166,6 +166,13 @@ window.TRANSLATIONS = {
                 "status.defaultPlayer": "Player {number}",
                 "status.indiziato": "Suspect",
                 "status.benvenuto": "Welcome!",
+                "status.ghost": "Ghost",
+                "status.ghostTooltip": "Eliminated player - can vote for suspects but must stay silent",
+
+                // Ghost/Spectator Mode
+                "ghost.reminderTitle": "👻 Ghost Rules",
+                "ghost.reminderMessage": "You have been eliminated. You can still vote to choose suspects, but you cannot vote in the lynching. You must not speak during discussions and must close your eyes during the night.",
+                "ghost.youWere": "You were a {role}",
 
                 // Game Messages
                 "messages.ready": "Ready to reveal",
@@ -468,6 +475,13 @@ window.TRANSLATIONS = {
                 "status.defaultPlayer": "Jugador {number}",
                 "status.indiziato": "Sospechoso",
                 "status.benvenuto": "¡Bienvenido!",
+                "status.ghost": "Fantasma",
+                "status.ghostTooltip": "Jugador eliminado - puede votar por sospechosos pero debe permanecer en silencio",
+
+                // Ghost/Spectator Mode
+                "ghost.reminderTitle": "👻 Reglas del Fantasma",
+                "ghost.reminderMessage": "Has sido eliminado. Aún puedes votar para elegir sospechosos, pero no puedes votar en el linchamiento. No debes hablar durante las discusiones y debes cerrar los ojos durante la noche.",
+                "ghost.youWere": "Eras un {role}",
 
                 // Game Messages
                 "messages.ready": "Listo para revelar",
@@ -769,6 +783,13 @@ window.TRANSLATIONS = {
                 "status.defaultPlayer": "Giocatore {number}",
                 "status.indiziato": "Indiziato",
                 "status.benvenuto": "Benvenuto!",
+                "status.ghost": "Fantasma",
+                "status.ghostTooltip": "Giocatore eliminato - può votare per gli indiziati ma deve rimanere in silenzio",
+
+                // Ghost/Spectator Mode
+                "ghost.reminderTitle": "👻 Regole del Fantasma",
+                "ghost.reminderMessage": "Sei stato eliminato. Puoi ancora votare per scegliere gli indiziati, ma non puoi votare per il linciaggio. Non devi parlare durante le discussioni e devi chiudere gli occhi durante la notte.",
+                "ghost.youWere": "Eri un {role}",
 
                 // Game Messages
                 "messages.ready": "Pronti a rivelare",

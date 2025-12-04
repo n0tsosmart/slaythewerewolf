@@ -29,14 +29,16 @@ const onGameStartCallbacks = [];
 const onHostDisconnectedCallbacks = [];
 const onReceiveRoleCallbacks = [];
 const onPlayerListUpdateCallbacks = [];
+const onPlayerEliminatedCallbacks = [];
 
-export function setNetworkCallbacks({ connected, disconnected, gameStart, hostDisconnected, receiveRole, playerListUpdate }) {
+export function setNetworkCallbacks({ connected, disconnected, gameStart, hostDisconnected, receiveRole, playerListUpdate, playerEliminated }) {
     if (connected) onPeerConnectedCallbacks.push(connected);
     if (disconnected) onPeerDisconnectedCallbacks.push(disconnected);
     if (gameStart) onGameStartCallbacks.push(gameStart);
     if (hostDisconnected) onHostDisconnectedCallbacks.push(hostDisconnected);
     if (receiveRole) onReceiveRoleCallbacks.push(receiveRole);
     if (playerListUpdate) onPlayerListUpdateCallbacks.push(playerListUpdate);
+    if (playerEliminated) onPlayerEliminatedCallbacks.push(playerEliminated);
 }
 
 // Utility to generate a random 4-char alphanumeric room code
@@ -324,6 +326,10 @@ function handleClientData(data) {
             // Client received their role
             onReceiveRoleCallbacks.forEach(callback => callback(data.roleData));
             break;
+        case 'PLAYER_ELIMINATED':
+            // Player has been eliminated - show ghost reminder
+            onPlayerEliminatedCallbacks.forEach(callback => callback(data.playerName));
+            break;
         default:
             console.warn("Unknown data type received by client:", data.type);
     }
@@ -353,6 +359,17 @@ export function broadcast(data) {
             conn.send(data);
         }
     });
+}
+
+// Notify a specific player that they have been eliminated (Host only)
+export function notifyPlayerEliminated(playerName) {
+    // Find the connection for this player
+    for (const [peerId, conn] of connections.entries()) {
+        if (conn.customPlayerName === playerName && conn.open) {
+            conn.send({ type: 'PLAYER_ELIMINATED', playerName });
+            break;
+        }
+    }
 }
 
 // Disconnect from current peer (client) or close all connections (host)

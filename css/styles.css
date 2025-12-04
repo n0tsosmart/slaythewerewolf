@@ -7,6 +7,7 @@
 @import "./animations.css";
 @import "./game.css";
 @import "./connection-status.css";
+@import "./ghost-mode.css";
 
 /* ==========================================================================
    Lobby and Online Game Views - Enhanced Modern Design
