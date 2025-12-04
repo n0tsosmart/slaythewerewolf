@@ -19,8 +19,11 @@ window.addEventListener('beforeinstallprompt', (e) => {
     // Store the event for later use
     deferredPrompt = e;
 
-    // Optionally show a custom install button/banner
-    // You can add UI here to prompt installation
+    // Show the install button in the menu
+    const installBtn = document.getElementById('installAppBtn');
+    if (installBtn) {
+        installBtn.style.display = 'block';
+    }
 });
 
 // Handle successful installation
@@ -28,6 +31,12 @@ window.addEventListener('appinstalled', () => {
     console.log('[PWA] App installed successfully');
     isInstalled = true;
     deferredPrompt = null;
+
+    // Hide the install button
+    const installBtn = document.getElementById('installAppBtn');
+    if (installBtn) {
+        installBtn.style.display = 'none';
+    }
 
     // Track installation (localStorage only, privacy-first)
     try {
@@ -40,6 +49,17 @@ window.addEventListener('appinstalled', () => {
 
 // Function to trigger install prompt (can be called from UI)
 export function promptInstall() {
+    // Check if iOS
+    if (showiOSInstallInstructions()) {
+        // Show iOS-specific toast
+        if (typeof window.toastInfo === 'function') {
+            window.toastInfo('Tap the Share button, then tap "Add to Home Screen"');
+        } else {
+            alert('To install: Tap the Share button, then tap "Add to Home Screen"');
+        }
+        return false;
+    }
+
     if (!deferredPrompt) {
         console.log('[PWA] Install prompt not available');
         return false;
@@ -56,6 +76,12 @@ export function promptInstall() {
             console.log('[PWA] User dismissed the install prompt');
         }
         deferredPrompt = null;
+
+        // Hide the install button
+        const installBtn = document.getElementById('installAppBtn');
+        if (installBtn) {
+            installBtn.style.display = 'none';
+        }
     });
 
     return true;
@@ -89,7 +115,7 @@ export function showiOSInstallInstructions() {
 // Register service worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
+        navigator.serviceWorker.register('/slaythewerewolf/sw.js')
             .then((registration) => {
                 console.log('[PWA] Service Worker registered:', registration.scope);
 

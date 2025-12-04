@@ -63,6 +63,7 @@ npm run test:coverage # Coverage report
 - Works offline for local mode
 - Custom splash screen with theme colors
 - Professional branded icons
+- **Install button** in hamburger menu (shows when installable)
 
 **Files created:**
 - `manifest.json` - PWA configuration

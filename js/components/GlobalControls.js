@@ -33,6 +33,7 @@ export class GlobalControls extends HTMLElement {
             </div>
           </div>
           <hr class="menu-divider">
+          <button type="button" id="installAppBtn" class="menu-item" role="menuitem" data-i18n="menu.install" style="display: none;">📱 Install App</button>
           <button type="button" id="menuVotingBtn" class="menu-item" role="menuitem" data-i18n="menu.voting">🗳️ Voting
             Rules</button>
           <button type="button" id="menuImmersionBtn" class="menu-item" role="menuitem" data-i18n="info.button">📖

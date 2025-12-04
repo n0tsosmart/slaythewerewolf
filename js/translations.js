@@ -277,6 +277,8 @@ window.TRANSLATIONS = {
                 "network.leftGame": "You left the game.",
 
                 // Menu
+                // Menu
+                "menu.install": "📱 Install App",
                 "menu.donate": "❤️ Support this project",
 
                 // Privacy Policy
@@ -564,6 +566,8 @@ window.TRANSLATIONS = {
                 "network.leftGame": "Has salido de la partida.",
 
                 // Menu
+                // Menu
+                "menu.install": "📱 Instalar App",
                 "menu.donate": "❤️ Apoya este proyecto",
 
                 // Privacy Policy
@@ -680,7 +684,7 @@ window.TRANSLATIONS = {
                 "myth.pendingDescription": "Alla fine della seconda notte scegli un giocatore vivo da far copiare al Mitomane.",
                 "myth.result.wolf": "{name} ora lotta con i lupi dopo aver copiato {target}.",
                 "myth.result.seer": "{name} eredita il potere del Veggente dopo aver copiato {target}.",
-                "myth.result.human": "{name} resta umano dopo aver copiato {target}.",
+                "myth.result.human": "{name} resta cittadino dopo aver copiato {target}.",
                 "myth.status.waiting": "In attesa",
                 "myth.status.ready": "Pronto",
                 "myth.status.done": "Risolto",
@@ -851,6 +855,8 @@ window.TRANSLATIONS = {
                 "network.leftGame": "Hai lasciato la partita.",
 
                 // Menu
+                // Menu
+                "menu.install": "📱 Installa App",
                 "menu.donate": "❤️ Sostieni questo progetto",
 
                 // Privacy Policy
