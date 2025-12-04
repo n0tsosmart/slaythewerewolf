@@ -91,6 +91,15 @@ This digital companion handles role distribution, game narration, player trackin
 * **Immersive Text** – All game text, including narration guides and victory screens, adapts to the chosen theme.
 * **Visual Overhaul** – Activates a distinct purple color scheme and custom logo.
 
+### 📱 Progressive Web App (PWA)
+
+* **Installable** – Add to home screen on iOS and Android for a native app experience
+* **Offline Support** – Local mode works completely offline after first visit
+* **No Black Bars** – Optimized mobile viewport with safe-area-insets for notched devices
+* **Themed Icons** – Custom app icons with dark red background matching the app aesthetic
+* **Fast Loading** – Service worker caching for instant load times
+* **Standalone Mode** – Runs without browser UI when installed
+
 ### 🔒 Privacy & Transparency
 
 * **Zero Tracking** – No cookies, no analytics, no external requests
@@ -113,11 +122,25 @@ This digital companion handles role distribution, game narration, player trackin
 
 ## 🚀 Quick Start
 
-### Option 1: Use the Live Version
+### Option 1: Install as PWA (Recommended for Mobile)
+
+**iOS:**
+1. Open [https://n0tsosmart.github.io/slaythewerewolf](https://n0tsosmart.github.io/slaythewerewolf) in Safari
+2. Tap the Share button
+3. Tap "Add to Home Screen"
+4. Enjoy the native app experience!
+
+**Android:**
+1. Open [https://n0tsosmart.github.io/slaythewerewolf](https://n0tsosmart.github.io/slaythewerewolf) in Chrome
+2. Tap "Install app" when prompted (or menu → Install)
+3. Confirm installation
+4. Launch from your home screen!
+
+### Option 2: Use in Browser
 
 Simply visit [https://n0tsosmart.github.io/slaythewerewolf](https://n0tsosmart.github.io/slaythewerewolf) in your browser.
 
-### Option 2: Run Locally
+### Option 3: Run Locally
 
 1. **Clone the repository**
 

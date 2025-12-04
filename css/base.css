@@ -6,6 +6,9 @@
 html {
   font-size: 100%;
   /* Standardizes base font size (16px) for better readability */
+
+  /* iOS viewport height fix - prevents black bars */
+  height: -webkit-fill-available;
 }
 
 /* CSS Variables (Custom Properties) */
@@ -128,7 +131,9 @@ html {
 
 /* Body Styling */
 body {
-  padding: 20px;
+  /* Use safe-area-insets for notched devices (iPhone X+, etc.) */
+  padding: env(safe-area-inset-top, 20px) env(safe-area-inset-right, 20px) env(safe-area-inset-bottom, 20px) env(safe-area-inset-left, 20px);
+
   /* Dark gradient overlay on top of the background image */
   background-image:
     linear-gradient(180deg, var(--color-body-gradient-start), var(--color-body-gradient-end)),
@@ -137,19 +142,24 @@ body {
   background-position: center;
   background-attachment: fixed;
   color: var(--color-text-primary);
+
+  /* Ensure background extends to screen edges */
   min-height: 100vh;
+  min-height: -webkit-fill-available;
+  /* iOS fix */
+
   font-family: var(--font-display);
 }
 
 /* Responsive adjustments */
 @media (max-width: 640px) {
   body {
-    padding: 16px;
+    padding: env(safe-area-inset-top, 16px) env(safe-area-inset-right, 16px) env(safe-area-inset-bottom, 16px) env(safe-area-inset-left, 16px);
   }
 }
 
 @media (max-width: 480px) {
   body {
-    padding: 10px;
+    padding: env(safe-area-inset-top, 10px) env(safe-area-inset-right, 10px) env(safe-area-inset-bottom, 10px) env(safe-area-inset-left, 10px);
   }
 }
