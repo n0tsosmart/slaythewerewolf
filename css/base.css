@@ -86,9 +86,9 @@ html {
   --color-bg-accent: #0f0512;
   --color-panel-bg: rgba(5, 3, 6, 0.78);
 
-  /* Body Gradient */
-  --color-body-gradient-start: rgba(5, 3, 6, 0.92);
-  --color-body-gradient-end: rgba(15, 5, 18, 0.85);
+  /* Body Gradient - Brightened to prevent black appearance */
+  --color-body-gradient-start: rgba(30, 15, 40, 0.92);
+  --color-body-gradient-end: rgba(50, 20, 65, 0.85);
 
   /* Assets */
   --bg-image: url("../assets/backgrounds/mafia_background.jpg");
