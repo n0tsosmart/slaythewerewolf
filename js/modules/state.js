@@ -24,4 +24,5 @@ export const state = {
   playerVotes: {},
   benvenutoPlayer: null,
   assignedRole: null, // For clients: stores their assigned role data
+  connectionStatus: 'disconnected', // For clients: 'connected' | 'reconnecting' | 'disconnected'
 };

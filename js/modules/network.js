@@ -14,6 +14,13 @@ let hostId = null;
 let localPlayerName = "Player";
 // Current room code
 let currentRoomCode = null;
+// Role assignments for reconnection (host only)
+const roleAssignments = new Map(); // peerId -> {playerName, roleData}
+// Reconnection state
+let reconnectAttempts = 0;
+let reconnectTimer = null;
+const MAX_RECONNECT_ATTEMPTS = 3;
+const CONNECTION_INFO_KEY = 'stw_connection_info';
 
 // Callbacks for UI updates - now using arrays to support multiple handlers
 const onPeerConnectedCallbacks = [];
@@ -112,7 +119,7 @@ export async function hostGame() {
                 console.error(`Connection error with ${conn.peer}:`, err);
             });
         });
-        
+
         // Clear interval on peer destroy (not fully handled here but good practice)
         peer.on('close', () => clearInterval(heartbeatInterval));
         peer.on('disconnected', () => clearInterval(heartbeatInterval));
@@ -128,15 +135,15 @@ function handleHostData(conn, data) {
     switch (data.type) {
         case 'JOIN_REQUEST':
             if (state.customNames.includes(data.playerName)) {
-                 conn.send({ type: 'JOIN_REJECTED', reason: t("errors.nameTaken", { name: data.playerName }) || "Name taken" });
-                 setTimeout(() => conn.close(), 500);
-                 return;
+                conn.send({ type: 'JOIN_REJECTED', reason: t("errors.nameTaken", { name: data.playerName }) || "Name taken" });
+                setTimeout(() => conn.close(), 500);
+                return;
             }
-            
+
             conn.metadata = { playerName: data.playerName };
             conn.customPlayerName = data.playerName; // Store directly to ensure availability
             console.log(`Player ${data.playerName} (${conn.peer}) joined.`);
-            
+
             // Accept join
             conn.send({ type: 'JOIN_ACCEPTED' });
             conn.send({ type: 'WELCOME', message: t("network.welcomeClient") });
@@ -148,6 +155,41 @@ function handleHostData(conn, data) {
             // Inform all existing clients about the new player
             broadcast({ type: 'PLAYER_LIST_UPDATE', players: state.customNames });
             break;
+        case 'REJOIN_REQUEST':
+            // Handle reconnection attempt
+            const { playerName } = data;
+            console.log(`Rejoin request from ${playerName} (${conn.peer})`);
+
+            // Check if this player was previously in the game
+            if (!state.customNames.includes(playerName)) {
+                conn.send({ type: 'REJOIN_REJECTED', reason: t("network.playerNotInGame") || "Player not in this game" });
+                setTimeout(() => conn.close(), 500);
+                return;
+            }
+
+            // Update connection metadata
+            conn.metadata = { playerName };
+            conn.customPlayerName = playerName;
+
+            // Accept rejoin
+            conn.send({ type: 'REJOIN_ACCEPTED', message: t("network.rejoinAccepted", { name: playerName }) });
+
+            // Restore role if available
+            const savedRole = roleAssignments.get(playerName);
+            if (savedRole) {
+                conn.send({ type: 'YOUR_ROLE', roleData: savedRole.roleData });
+            }
+
+            // Update connections map with new peerId
+            const oldPeerId = Array.from(connections.entries())
+                .find(([_, c]) => c.customPlayerName === playerName)?.[0];
+            if (oldPeerId && oldPeerId !== conn.peer) {
+                connections.delete(oldPeerId);
+            }
+            connections.set(conn.peer, conn);
+
+            onPeerConnectedCallbacks.forEach(callback => callback(playerName, conn.peer));
+            break;
         case 'PONG':
             // Alive
             break;
@@ -157,12 +199,12 @@ function handleHostData(conn, data) {
 }
 
 // Client functions
-export async function joinGame(roomId, playerName) {
+export async function joinGame(roomId, playerName, isReconnect = false) {
     try {
         localPlayerName = playerName;
         hostId = roomId;
         await initializePeer(); // Initialize with a random ID for the client
-        console.log(`Attempting to join room ${roomId} as ${playerName}`);
+        console.log(`Attempting to ${isReconnect ? 'rejoin' : 'join'} room ${roomId} as ${playerName}`);
 
         return new Promise((resolve, reject) => {
             let timeout;
@@ -185,29 +227,41 @@ export async function joinGame(roomId, playerName) {
 
             // Handle successful connection
             conn.on('open', () => {
-                console.log(`Connected to host ${roomId}, sending join request...`);
-                conn.send({ type: 'JOIN_REQUEST', playerName: playerName });
+                console.log(`Connected to host ${roomId}, sending ${isReconnect ? 'rejoin' : 'join'} request...`);
+                const requestType = isReconnect ? 'REJOIN_REQUEST' : 'JOIN_REQUEST';
+                conn.send({ type: requestType, playerName: playerName });
             });
 
             // Handle connection data
             conn.on('data', (data) => {
-                if (data.type === 'JOIN_ACCEPTED') {
+                if (data.type === 'JOIN_ACCEPTED' || data.type === 'REJOIN_ACCEPTED') {
                     cleanup();
+                    if (data.type === 'REJOIN_ACCEPTED') {
+                        reconnectAttempts = 0; // Reset reconnect counter on success
+                        if (el.toastInfo) el.toastInfo(t("network.reconnectSuccess"));
+                    }
+                    persistConnectionInfo();
                     resolve(conn);
-                } else if (data.type === 'JOIN_REJECTED') {
+                } else if (data.type === 'JOIN_REJECTED' || data.type === 'REJOIN_REJECTED') {
                     cleanup();
                     conn.close();
                     reject(new Error(data.reason));
                 }
-                
+
                 handleClientData(data);
             });
 
             // Handle connection close
             conn.on('close', () => {
                 console.log('Connection to host closed');
-                hostId = null;
-                onHostDisconnectedCallbacks.forEach(callback => callback());
+                // Only trigger reconnection if we have an active game and haven't exceeded attempts
+                if (state.assignedRole && reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+                    attemptReconnect();
+                } else {
+                    hostId = null;
+                    clearConnectionInfo();
+                    onHostDisconnectedCallbacks.forEach(callback => callback());
+                }
             });
 
             // Handle connection error
@@ -243,6 +297,8 @@ function handleClientData(data) {
     switch (data.type) {
         case 'JOIN_ACCEPTED':
         case 'JOIN_REJECTED':
+        case 'REJOIN_ACCEPTED':
+        case 'REJOIN_REJECTED':
             // Handled by joinGame promise
             break;
         case 'PING':
@@ -278,6 +334,13 @@ export function sendToPeer(peerId, data) {
     const conn = connections.get(peerId);
     if (conn && conn.open) {
         conn.send(data);
+        // Track role assignments for reconnection
+        if (data.type === 'YOUR_ROLE' && conn.customPlayerName) {
+            roleAssignments.set(conn.customPlayerName, {
+                playerName: conn.customPlayerName,
+                roleData: data.roleData
+            });
+        }
     } else {
         console.warn(`Connection to ${peerId} not open, cannot send data:`, data);
     }
@@ -294,14 +357,21 @@ export function broadcast(data) {
 
 // Disconnect from current peer (client) or close all connections (host)
 export function disconnect() {
+    if (reconnectTimer) {
+        clearTimeout(reconnectTimer);
+        reconnectTimer = null;
+    }
+    reconnectAttempts = 0;
     if (peer) {
         peer.destroy();
         peer = null;
     }
     connections.clear();
+    roleAssignments.clear();
     hostId = null;
     currentRoomCode = null;
     localPlayerName = "Player";
+    clearConnectionInfo();
 }
 
 export function isHost() {
@@ -333,6 +403,101 @@ export function getConnectedPlayers() {
 
 export function getHostPeerId() {
     return hostId;
+}
+
+// Connection persistence helpers
+function persistConnectionInfo() {
+    if (typeof localStorage === 'undefined') return;
+    try {
+        const info = {
+            hostId,
+            localPlayerName,
+            currentRoomCode,
+            isClient: isClient(),
+            timestamp: Date.now()
+        };
+        localStorage.setItem(CONNECTION_INFO_KEY, JSON.stringify(info));
+    } catch (err) {
+        console.warn('Failed to persist connection info:', err);
+    }
+}
+
+function getConnectionInfo() {
+    if (typeof localStorage === 'undefined') return null;
+    try {
+        const raw = localStorage.getItem(CONNECTION_INFO_KEY);
+        if (!raw) return null;
+        const info = JSON.parse(raw);
+        // Connection info expires after 1 hour
+        if (Date.now() - (info.timestamp || 0) > 3600000) {
+            clearConnectionInfo();
+            return null;
+        }
+        return info;
+    } catch (err) {
+        console.warn('Failed to retrieve connection info:', err);
+        return null;
+    }
+}
+
+function clearConnectionInfo() {
+    if (typeof localStorage === 'undefined') return;
+    try {
+        localStorage.removeItem(CONNECTION_INFO_KEY);
+    } catch (err) {
+        console.warn('Failed to clear connection info:', err);
+    }
+}
+
+// Reconnection logic
+async function attemptReconnect() {
+    if (reconnectTimer) return; // Already attempting
+
+    reconnectAttempts++;
+    const delay = Math.min(1000 * Math.pow(2, reconnectAttempts - 1), 10000);
+
+    console.log(`Reconnection attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS} in ${delay}ms...`);
+
+    if (el.toastWarning) {
+        el.toastWarning(t("network.connectionLost"));
+    }
+
+    reconnectTimer = setTimeout(async () => {
+        reconnectTimer = null;
+
+        try {
+            const info = getConnectionInfo();
+            if (!info || !info.hostId || !info.localPlayerName) {
+                throw new Error('No connection info available');
+            }
+
+            if (el.toastInfo) {
+                el.toastInfo(t("network.reconnectAttempt", {
+                    attempt: reconnectAttempts,
+                    max: MAX_RECONNECT_ATTEMPTS
+                }));
+            }
+
+            await joinGame(info.hostId, info.localPlayerName, true);
+        } catch (err) {
+            console.error('Reconnection failed:', err);
+
+            if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+                if (el.toastError) {
+                    el.toastError(t("network.reconnectFailed"));
+                }
+                clearConnectionInfo();
+                onHostDisconnectedCallbacks.forEach(callback => callback());
+            } else {
+                // Try again with backoff
+                attemptReconnect();
+            }
+        }
+    }, delay);
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // Make PeerJS instance accessible for debugging

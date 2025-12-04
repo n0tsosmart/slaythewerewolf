@@ -26,6 +26,11 @@ export class ViewClientRole extends HTMLElement {
         this.innerHTML = `
             <section id="clientRoleView" class="panel hidden">
                 <h2 data-i18n="clientRole.title">Your Role</h2>
+                <div class="connection-status" data-status="disconnected">
+                    <span class="connection-label" data-i18n="clientRole.connectionStatus">Connection:</span>
+                    <span class="status-indicator"></span>
+                    <span class="status-text" data-i18n="clientRole.statusDisconnected">Disconnected</span>
+                </div>
                 <div id="clientRoleCard" class="role-card" data-team="unknown">
                     <img id="clientRoleImage" class="role-image" alt="${t("clientRole.imageAlt")}" />
                     <div class="role-text">
@@ -38,6 +43,23 @@ export class ViewClientRole extends HTMLElement {
             </section>
         `;
         applyTranslations(this);
+    }
+
+    updateConnectionStatus(status) {
+        const container = this.querySelector('.connection-status');
+        const text = this.querySelector('.status-text');
+        if (!container || !text) return;
+
+        container.dataset.status = status;
+        state.connectionStatus = status;
+
+        const statusKey = status === 'connected' ? 'clientRole.statusConnected' :
+            status === 'reconnecting' ? 'clientRole.statusReconnecting' :
+                'clientRole.statusDisconnected';
+
+        text.textContent = t(statusKey);
+        text.setAttribute('data-i18n', statusKey);
+        persistState();
     }
 
     setRole(roleData) {

@@ -37,6 +37,7 @@ export function persistState() {
       playerVotes: state.playerVotes,
       benvenutoPlayer: state.benvenutoPlayer,
       assignedRole: state.assignedRole,
+      connectionStatus: state.connectionStatus,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
   } catch (error) {
@@ -60,7 +61,7 @@ export function restoreFromStorage() {
     }
 
     state.customNames = Array.isArray(data.customNames) ? [...data.customNames] : [];
-    
+
     const assignments = Array.isArray(data.assignments) ? data.assignments : null;
     if (assignments && assignments.length) {
       const fallbackPlayers = Array.isArray(data.players) ? data.players : [];
@@ -81,14 +82,14 @@ export function restoreFromStorage() {
     state.narratorDay = data.narratorDay || 1;
     state.eliminatedPlayers = Array.isArray(data.eliminatedPlayers) ? data.eliminatedPlayers : [];
     state.activeSpecialIds = Array.isArray(data.activeSpecialIds) ? data.activeSpecialIds : [];
-    
+
     if (state.activeSpecialIds.includes("bodyguard")) state.maxDays = null;
     else if (data.maxDays === null) state.maxDays = null;
     else if (typeof data.maxDays === "number" && Number.isFinite(data.maxDays)) state.maxDays = data.maxDays;
     else state.maxDays = Math.max(1, state.players.length || 1);
 
     state.mythStatus = normalizeMythStatus(data.mythStatus, state.players, state.deck);
-    
+
     state.victory = data.victory || null;
     state.guideStepIndex = data.guideStepIndex || 0;
     state.playersCollapsed = Boolean(data.playersCollapsed);
@@ -102,6 +103,7 @@ export function restoreFromStorage() {
     state.language = data.language || DEFAULT_LANGUAGE;
     state.playerVotes = data.playerVotes || {};
     state.benvenutoPlayer = data.benvenutoPlayer || null;
+    state.connectionStatus = data.connectionStatus || 'disconnected';
 
   } catch (error) {
     console.warn("Unable to restore the game state", error);

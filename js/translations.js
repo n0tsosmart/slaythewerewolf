@@ -275,6 +275,18 @@ window.TRANSLATIONS = {
                 "network.rejoiningGame": "Rejoining game as {name}...",
                 "network.couldNotRejoin": "Could not rejoin game. Please try again.",
                 "network.leftGame": "You left the game.",
+                "network.reconnecting": "Reconnecting to host...",
+                "network.reconnectAttempt": "Reconnection attempt {attempt} of {max}...",
+                "network.reconnectSuccess": "Reconnected successfully!",
+                "network.reconnectFailed": "Could not reconnect. Please rejoin manually.",
+                "network.connectionLost": "Connection lost. Attempting to reconnect...",
+                "network.rejoinAccepted": "Welcome back, {name}!",
+                "network.rejoinRejected": "Could not rejoin: {reason}",
+                "network.playerNotInGame": "You are not part of this game.",
+                "clientRole.connectionStatus": "Connection:",
+                "clientRole.statusConnected": "Connected",
+                "clientRole.statusReconnecting": "Reconnecting...",
+                "clientRole.statusDisconnected": "Disconnected",
 
                 // Menu
                 // Menu
@@ -564,6 +576,18 @@ window.TRANSLATIONS = {
                 "network.rejoiningGame": "Reuniéndose a la partida como {name}...",
                 "network.couldNotRejoin": "No se pudo reunir a la partida. Inténtalo de nuevo.",
                 "network.leftGame": "Has salido de la partida.",
+                "network.reconnecting": "Reconectando con el anfitrión...",
+                "network.reconnectAttempt": "Intento de reconexión {attempt} de {max}...",
+                "network.reconnectSuccess": "¡Reconectado exitosamente!",
+                "network.reconnectFailed": "No se pudo reconectar. Únete manualmente.",
+                "network.connectionLost": "Conexión perdida. Intentando reconectar...",
+                "network.rejoinAccepted": "¡Bienvenido de vuelta, {name}!",
+                "network.rejoinRejected": "No se pudo reunirse: {reason}",
+                "network.playerNotInGame": "No eres parte de esta partida.",
+                "clientRole.connectionStatus": "Conexión:",
+                "clientRole.statusConnected": "Conectado",
+                "clientRole.statusReconnecting": "Reconectando...",
+                "clientRole.statusDisconnected": "Desconectado",
 
                 // Menu
                 // Menu
@@ -853,6 +877,18 @@ window.TRANSLATIONS = {
                 "network.rejoiningGame": "Rientro in partita come {name}...",
                 "network.couldNotRejoin": "Impossibile rientrare in partita. Riprova.",
                 "network.leftGame": "Hai lasciato la partita.",
+                "network.reconnecting": "Riconnessione all'host...",
+                "network.reconnectAttempt": "Tentativo di riconnessione {attempt} di {max}...",
+                "network.reconnectSuccess": "Riconnesso con successo!",
+                "network.reconnectFailed": "Impossibile riconnettersi. Rientra manualmente.",
+                "network.connectionLost": "Connessione persa. Tentativo di riconnessione...",
+                "network.rejoinAccepted": "Bentornato, {name}!",
+                "network.rejoinRejected": "Impossibile rientrare: {reason}",
+                "network.playerNotInGame": "Non fai parte di questa partita.",
+                "clientRole.connectionStatus": "Connessione:",
+                "clientRole.statusConnected": "Connesso",
+                "clientRole.statusReconnecting": "Riconnessione...",
+                "clientRole.statusDisconnected": "Disconnesso",
 
                 // Menu
                 // Menu

@@ -6,6 +6,7 @@
 @import "./utilities.css";
 @import "./animations.css";
 @import "./game.css";
+@import "./connection-status.css";
 
 /* ==========================================================================
    Lobby and Online Game Views - Enhanced Modern Design

@@ -37,12 +37,21 @@ export function initApp() {
   setNetworkCallbacks({
     gameStart: (gameData) => {
       // Transition the client to a waiting screen or directly to client role view
+      if (el.clientRole && typeof el.clientRole.updateConnectionStatus === 'function') {
+        el.clientRole.updateConnectionStatus('connected');
+      }
       showClientRoleView(getLocalPlayerName());
     },
     hostDisconnected: () => {
+      if (el.clientRole && typeof el.clientRole.updateConnectionStatus === 'function') {
+        el.clientRole.updateConnectionStatus('disconnected');
+      }
       showView("landing"); // Return client to match selection if host disconnects
     },
     receiveRole: (roleData) => {
+      if (el.clientRole && typeof el.clientRole.updateConnectionStatus === 'function') {
+        el.clientRole.updateConnectionStatus('connected');
+      }
       showClientRoleView(getLocalPlayerName(), roleData);
     },
   });

@@ -157,24 +157,26 @@ Improve resilience and user experience when things go wrong.
 
 Improve the WebRTC multiplayer experience.
 
-**Current Limitations:**
-- Disconnect = game over (no reconnection)
-- Host disconnect ends the game for everyone
-- No spectator support
-
-**Recommendations:**
+**✅ Implemented (2025-12-04):**
 - **Reconnection logic** for dropped peers:
-  - Store role assignments in host state
-  - Allow clients to rejoin with same peerId
-  - Restore their role card on reconnect
+  - ✅ Store role assignments in host state
+  - ✅ Allow clients to rejoin with same player name
+  - ✅ Restore their role card on reconnect
+  - ✅ Automatic reconnection with exponential backoff (3 attempts)
+  - ✅ Connection status indicators (connected/reconnecting/disconnected)
+  - ✅ Role persistence across page refreshes
+  - ✅ Connection info stored in localStorage with 1-hour expiry
+
+**Future Enhancements:**
 - **Host migration**:
   - If host disconnects, elect a new host (oldest peer)
   - Transfer game state to new host
+  - *(Note: Not needed for in-person play where host device is stable)*
 - **Spectator mode**:
   - Allow eliminated players to watch
-  - Join as observer without receiving a role
-- **Optional voice chat** via WebRTC audio channels
-- **Better connection status indicators**
+- **Voice chat integration**:
+  - Optional WebRTC audio channels
+  - *(Note: Not needed for in-person play)*
 - **Latency/quality metrics** for troubleshooting
 
 ---
