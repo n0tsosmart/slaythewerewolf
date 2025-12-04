@@ -266,6 +266,30 @@ slaythewerewolf/
 * **DOM Access**: Use getter methods from `dom.js`
 * **Event Handling**: Attach in `engine.js` `attachEvents()`
 
+### Testing
+
+This project uses **Vitest** for automated testing.
+
+**Run tests:**
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+For detailed testing documentation, see [TESTING.md](TESTING.md).
+
+**Test coverage:**
+- Unit tests for core modules (logic, roles, i18n, utils)
+- Integration tests for state persistence
+- 57 tests covering critical functionality
+
+
 ## 🤝 Contributing
 
 Contributions are welcome! Here's how you can help:

@@ -53,9 +53,9 @@
 
 .app-header h1 {
   margin: 10px 0 6px;
-  font-size: clamp(2.75rem, 5.5vw, 3.75rem);
+  font-size: clamp(1.65rem, 4vw, 2.5rem);
   color: var(--color-gold);
-  letter-spacing: 0.15em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   font-weight: 900;
   text-shadow:
