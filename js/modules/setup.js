@@ -158,9 +158,16 @@ export function updateRoleSummary() {
   const seerRole = getRoleContent("seer");
   roleCounts[seerRole.name] = 1;
 
+  // Count special roles and track village-helping specials
+  let villageSpecialCount = 0;
   specialsSelected.forEach((special) => {
     const roleContent = getRoleContent(special.roleId);
     roleCounts[roleContent.name] = (roleCounts[roleContent.name] || 0) + special.copies;
+    // Count specials that help the village (not possessed/werehamster)
+    const role = ROLE_LIBRARY[special.roleId];
+    if (role && role.team === 'humans') {
+      villageSpecialCount += special.copies;
+    }
   });
 
   const specialTotal = wolfTotal + 1 + specialsSelected.reduce((sum, item) => sum + item.copies, 0);
@@ -178,7 +185,34 @@ export function updateRoleSummary() {
     el.roleSummaryContent.appendChild(item);
   });
 
+  // Update balance badge
+  if (el.balanceBadge) {
+    const balance = calculateBalance(wolfTotal, villageSpecialCount + 1, playerTotal); // +1 for seer
+    el.balanceBadge.textContent = t(`balance.${balance}`);
+    el.balanceBadge.className = `balance-badge balance-${balance}`;
+  }
+
   el.roleSummary.classList.remove("hidden");
+}
+
+/**
+ * Calculates the balance of the current role composition.
+ * @param {number} wolfCount - Number of wolves
+ * @param {number} villageSpecialCount - Number of village-helping specials (including seer)
+ * @param {number} playerTotal - Total number of players
+ * @returns {'wolves' | 'village' | 'balanced'} Balance indicator
+ */
+export function calculateBalance(wolfCount, villageSpecialCount, playerTotal) {
+  if (playerTotal <= 0) return 'balanced';
+
+  const wolfRatio = wolfCount / playerTotal;
+
+  // Wolves win when they equal or outnumber village
+  // More specials help village detect/protect
+  if (wolfRatio > 0.30) return 'wolves';      // > 30% wolves favors wolves
+  if (wolfRatio < 0.15) return 'village';     // < 15% wolves favors village
+  if (villageSpecialCount >= wolfCount * 2.5) return 'village';  // Many village specials
+  return 'balanced';
 }
 
 export function handleAddPlayer() {
@@ -318,9 +352,9 @@ export function renderPlayerList() {
   const list = el.playerList;
   if (!list) return;
   list.innerHTML = "";
-  
+
   const frag = document.createDocumentFragment();
-  
+
   state.customNames.forEach((name, index) => {
     const item = document.createElement("li");
     item.className = "player-chip";

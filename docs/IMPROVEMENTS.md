@@ -150,26 +150,24 @@ Add timer controls to the narrator guide section in `ViewSummary.js`.
 
 ---
 
-### 7. Role Balancing Assistant ⚖️
+### 7. Role Balancing Assistant ⚖️ ✅ **COMPLETED**
 
-**Description:**
-Calculate and display the "balance score" of the current role composition.
+~~**Description:**~~
+~~Calculate and display the "balance score" of the current role composition.~~
 
-**Implementation:**
-```javascript
-function calculateBalance(roles) {
-  const wolves = roles.filter(r => r.team === 'wolves').length;
-  const specials = roles.filter(r => r.id !== 'villager' && r.team !== 'wolves').length;
-  const total = roles.length;
-  
-  // Return balance indicator
-  if (wolves / total > 0.35) return '🔴 Favors Wolves';
-  if (specials >= wolves * 2) return '🔵 Favors Village';
-  return '🟢 Balanced';
-}
-```
+**What was done (December 2024):**
+Added a colored balance indicator badge next to the "Role composition" section:
 
-**Display:** Show a colored badge near the "Role composition" section in setup.
+- **🔴 Favors Wolves** - when wolves are >30% of players
+- **🟢 Balanced** - normal game balance  
+- **� Favors Village** - when wolves <15% or many village specials selected
+
+**Files modified:**
+- `js/modules/setup.js` - Added `calculateBalance()` function
+- `js/components/ViewSetup.js` - Added badge element
+- `js/modules/dom.js` - Added badge getter
+- `css/game.css` - Added badge styling
+- Translation files (en/es/it) - Added balance labels
 
 ---
 

@@ -60,6 +60,11 @@ export const en = {
     "setup.rolesInDeck": "{count}× {role}",
     "setup.haptics": "Vibration",
 
+    // Balance Indicator
+    "balance.wolves": "🔴 Favors Wolves",
+    "balance.village": "🔵 Favors Village",
+    "balance.balanced": "🟢 Balanced",
+
     // Role-related messages
     "roles.availableFrom": "Suggested for {count}+ players.",
     "roles.masonNote": "Always add both cards together.",

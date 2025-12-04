@@ -726,6 +726,43 @@ details[open] .roles-caret {
   font-weight: 600;
 }
 
+.role-summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.role-summary-header h3 {
+  margin-bottom: 0;
+}
+
+.balance-badge {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.balance-wolves {
+  background: rgba(220, 38, 38, 0.25);
+  border: 1px solid rgba(248, 113, 113, 0.5);
+  color: #fca5a5;
+}
+
+.balance-village {
+  background: rgba(59, 130, 246, 0.25);
+  border: 1px solid rgba(96, 165, 250, 0.5);
+  color: #93c5fd;
+}
+
+.balance-balanced {
+  background: rgba(34, 197, 94, 0.25);
+  border: 1px solid rgba(74, 222, 128, 0.5);
+  color: #86efac;
+}
+
 .narrator-tools {
   margin-top: 24px;
   display: flex;

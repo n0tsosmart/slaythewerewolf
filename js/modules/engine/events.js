@@ -110,6 +110,7 @@ export function attachEvents() {
         el.wolfCount.addEventListener("input", () => {
             clampWolfCount();
             updateDeckPreview();
+            updateRoleSummary();
             persistState();
         });
     }

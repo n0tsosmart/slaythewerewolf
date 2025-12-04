@@ -64,7 +64,10 @@ export class ViewSetup extends HTMLElement {
         </details>
 
         <div id="roleSummary" class="role-summary hidden">
-          <h3 data-i18n="setup.rolesSummary">Role composition</h3>
+          <div class="role-summary-header">
+            <h3 data-i18n="setup.rolesSummary">Role composition</h3>
+            <span id="balanceBadge" class="balance-badge"></span>
+          </div>
           <div id="roleSummaryContent" class="role-summary-content"></div>
         </div>
 
