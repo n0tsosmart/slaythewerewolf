@@ -1,601 +1,382 @@
-# 🚀 Slay the Werewolf - Improvement Roadmap
+# 🚀 Slay the Werewolf - Improvement Ideas
 
-This document outlines potential improvements and enhancements for the Slay the Werewolf project. These suggestions are organized by priority and category to help guide future development.
+This document outlines potential improvements and enhancements for the Slay the Werewolf project, identified after a comprehensive codebase review.
 
 ---
 
-## ✅ Completed Improvements
+## 💡 Code Quality & Technical Debt
 
-### 1. Testing Infrastructure ✅ **COMPLETED** (December 2025)
+### 1. CSS Organization & Maintainability
 
-**Status:** Fully implemented with Vitest framework.
+**Current Issues:**
+- The `css/` folder has 9 separate files, but `styles.css` (24KB) and `components.css` (16KB) are quite large
+- Some styling duplicated between `base.css`, `styles.css`, and `game.css`
+- ~~CSS version numbers in `index.html` are inconsistent with cache versions in `sw.js`~~ ✅ **FIXED**
+- ~~Duplicate favicon link in `index.html` (line 6 and line 34)~~ ✅ **FIXED**
 
-**What was implemented:**
-- ✅ **Unit tests** for core game logic:
-  - `logic.js` - Mythomaniac mechanics (15 tests)
-  - `roles.js` - Card creation and deck management (7 tests)
-  - `i18n.js` - Translation system (14 tests)
-  - `utils.js` - Utility functions (16 tests)
-- ✅ **Integration tests** for state persistence (5 tests)
-- ✅ **57 total tests** with 100% pass rate
-- ✅ **Test coverage reporting** configured
-- ✅ **CI-ready** configuration (runs in ~550ms)
-- ✅ **Documentation** - [TESTING.md](TESTING.md) guide created
-- ✅ **Watch mode** and browser UI support
+**What was fixed (December 2024):**
+- ✅ Removed duplicate favicon link outside `<html>` tag
+- ✅ Synchronized all version numbers to `v=1.1.5` across:
+  - `index.html` (CSS, JS, translations, PWA modules)
+  - `sw.js` (cache name and asset URLs)
 
-**Commands:**
-```bash
-npm test              # Run all tests
-npm run test:watch   # Watch mode
-npm run test:coverage # Coverage report
+**Remaining Recommendations:**
+- **CSS Variables Consolidation**: Move all color definitions into a single `variables.css` file
+- **BEM Naming Convention**: Adopt consistent BEM naming (Block__Element--Modifier) for better readability
+- **CSS Module Pattern**: Consider splitting large component styles into co-located CSS (e.g., `ViewSetup.css` alongside `ViewSetup.js`)
+- **Auto-sync Versions**: Create a build script or pre-commit hook to sync version numbers across HTML, CSS, and service worker files
+
+---
+
+### 2. Engine.js Refactoring 🛠️ ✅ **COMPLETED**
+
+~~**Current Issue:**~~
+~~- `js/modules/engine.js` is **1,627 lines** – this is difficult to maintain and test~~
+
+**What was done (December 2024):**
+The monolithic engine.js was split into 9 focused modules:
+
+```
+js/modules/engine/
+├── index.js           # Main exports and orchestration (~270 lines)
+├── views.js           # View switching and visibility (~100 lines)
+├── game-lifecycle.js  # startGame, resetGame (~180 lines)
+├── narrator.js        # Day cycle, guide steps (~190 lines)
+├── mythomaniac.js     # Mythomaniac role handling (~200 lines)
+├── elimination.js     # Player elimination, voting (~400 lines)
+├── victory.js         # Victory conditions and screens (~230 lines)
+├── events.js          # Event attachment (~300 lines)
+├── modals.js          # Modal open/close helpers (~85 lines)
+└── settings.js        # Language/theme handlers (~120 lines)
 ```
 
 **Benefits achieved:**
-- Automated bug detection before deployment
-- Confident refactoring capability
-- Living documentation for core modules
-- Foundation for future E2E tests
-
-**Next steps:**
-- Add E2E tests for game flows (setup → reveal → summary)
-- Add E2E tests for online mode with WebRTC
-- Integrate with GitHub Actions for CI
+- ✅ Easier to understand and modify individual features
+- ✅ Clear separation of concerns
+- ✅ Simpler unit testing per module
+- ✅ Reduced merge conflicts in team development
+- ✅ All 57 existing tests still pass
 
 ---
 
-### 2. PWA (Progressive Web App) Support ✅ **COMPLETED** (December 2025)
-
-**Status:** Fully implemented with offline support and mobile optimizations.
-
-**What was implemented:**
-- ✅ **Web App Manifest** with theme colors and icons
-- ✅ **Service Worker** for offline caching and asset management
-- ✅ **Installable** on iOS and Android devices
-- ✅ **Mobile viewport fixes** - No black bars on notched devices
-- ✅ **Themed app icons** with dark red background (#0a0404)
-- ✅ **Safe-area-insets** for iPhone X+ and Android notches
-- ✅ **iOS status bar** set to black-translucent
-- ✅ **Offline support** for local mode gameplay
-
-**Features:**
-- Standalone app experience (no browser UI)
-- Instant load times after first visit
-- Works offline for local mode
-- Custom splash screen with theme colors
-- Professional branded icons
-- **Install button** in hamburger menu (shows when installable)
-
-**Files created:**
-- `manifest.json` - PWA configuration
-- `sw.js` - Service worker with cache-first strategy
-- `js/modules/pwa.js` - Installation prompt handler
-- `assets/icons/` - 5 app icons (512x512, 192x192, 180x180, 32x32, 16x16)
-
-**Benefits achieved:**
-- Native-like app experience
-- No black bars on mobile devices
-- Reduced bandwidth usage
-- Better performance on slow connections
-- Professional appearance on home screens
-
-**Next steps:**
-- Add custom install prompt UI
-- Implement update notifications
-- Add background sync for online mode
-- Push notifications (opt-in)
-
----
-
-## 🎯 High Priority Improvements
-
-### 3. Build Process & Code Optimization
-
-
-While the "no build step" philosophy is great for simplicity, a production build process would provide significant benefits.
-
-**Recommendations:**
-- **Minification** for production (smaller file sizes, faster load times)
-- **Tree shaking** (removing unused code)
-- **CSS autoprefixing** for better browser compatibility
-- **TypeScript** or **JSDoc** for type safety (catch bugs at development time)
-- **Source maps** for easier debugging in production
-
-**Implementation:**
-- Keep development as-is (no build needed)
-- Use **Vite** or **esbuild** for production builds only
-- Add npm scripts: `npm run dev` (current behavior) and `npm run build` (optimized output)
-
----
-
-### 3. Accessibility (A11y) Enhancements
-
-While there are some ARIA attributes, there's significant room for improvement.
-
-**Current Gaps:**
-- Limited keyboard navigation support
-- Inconsistent focus management
-- Missing screen reader announcements for dynamic content
-- Some color contrast issues
-
-**Recommendations:**
-- **Focus management** for modals and view transitions
-- **Keyboard navigation** for drag-and-drop player lists (arrow keys + space)
-- **Screen reader announcements** for:
-  - Game state changes (day/night transitions)
-  - Player eliminations
-  - Victory conditions
-- **Color contrast** verification against WCAG AA standards
-- **Reduced motion** support (`prefers-reduced-motion` media query)
-- **Skip links** for keyboard users
-- **ARIA live regions** for dynamic game updates
-
-**Testing:**
-- Use tools like **axe DevTools**, **Lighthouse**, **NVDA**, or **VoiceOver**
-
----
-
-### 4. Error Handling & Recovery
-
-Improve resilience and user experience when things go wrong.
-
-**Recommendations:**
-- **Global error boundary** to catch unexpected JavaScript errors
-- **Offline detection** with graceful fallbacks and user notifications
-- **Retry logic** for WebRTC connection failures
-- **State validation** on restore from localStorage:
-  - Handle corrupted data
-  - Validate schema versions
-  - Provide migration paths for breaking changes
-- **Better error messages** (user-friendly, actionable)
-- **Error reporting** (optional, privacy-respecting analytics)
-
----
-
-## 🚀 Feature Enhancements
-
-### 5. Enhanced Online Mode
-
-Improve the WebRTC multiplayer experience.
-
-**✅ Implemented (2025-12-04):**
-- **Reconnection logic** for dropped peers:
-  - ✅ Store role assignments in host state
-  - ✅ Allow clients to rejoin with same player name
-  - ✅ Restore their role card on reconnect
-  - ✅ Automatic reconnection with exponential backoff (3 attempts)
-  - ✅ Connection status indicators (connected/reconnecting/disconnected)
-  - ✅ Role persistence across page refreshes
-  - ✅ Connection info stored in localStorage with 1-hour expiry
-
-**Future Enhancements:**
-- **Host migration**:
-  - If host disconnects, elect a new host (oldest peer)
-  - Transfer game state to new host
-  - *(Note: Not needed for in-person play where host device is stable)*
-- **Voice chat integration**:
-  - Optional WebRTC audio channels
-  - *(Note: Not needed for in-person play)*
-- **Latency/quality metrics** for troubleshooting
-
-**✅ Spectator Mode (2025-12-04):**
-- **Ghost indicators** for eliminated players in narrator summary:
-  - 👻 Ghost badge displayed on eliminated players
-  - Visual styling (grayed out, line-through name)
-- **Online mode ghost notification**:
-  - When a player is eliminated, host sends `PLAYER_ELIMINATED` message
-  - Eliminated client receives ghost reminder panel with rules:
-    - Can vote for suspects (not for lynching)
-    - Must stay silent during discussions
-    - Must close eyes during night
-  - Client's role card shows grayscale effect with floating ghost overlay
-- **Network protocol**:
-  - `notifyPlayerEliminated()` function sends notification to specific player
-  - All elimination functions (`lynchPlayer`, `toggleElimination`, `addEliminationEntry`) trigger notification in online mode
-- **Translations** in EN/ES/IT for all ghost-related messages
-
----
-
-### 7. Game History & Analytics
-
-Track games and provide insights.
-
-**Recommendations:**
-- **Game logs** saved to localStorage:
-  - Date/time of game
-  - Player names and roles
-  - Elimination order
-  - Winner (team)
-  - Number of days survived
-- **Statistics dashboard**:
-  - Win rates by role
-  - Most played roles
-  - Average game length
-  - Player participation history
-- **Export/share results**:
-  - JSON download for record-keeping
-  - Shareable summary (text format)
-  - Optional social media sharing
-
-**Privacy:**
-- All data stored locally
-- Opt-in export only
-- Clear data deletion option
-
----
-
-## 🎨 UX/UI Improvements
-
-### 8. Better Mobile Experience
-
-Enhance touch interactions and mobile-specific features.
-
-**Recommendations:**
-- **Touch-optimized drag-and-drop**:
-  - Long-press to start drag
-  - Visual feedback during drag
-  - Haptic feedback (vibration)
-- **Gesture support**:
-  - Swipe gestures for navigation
-  - Pull-to-refresh for reconnection
-- **iOS Safari testing**:
-  - WebRTC compatibility
-  - Viewport height issues (address bar)
-  - PWA install behavior
-- **Mobile-first player elimination UI**:
-  - Larger tap targets
-- **Landscape/portrait optimizations**
-
----
-
-### 9. Animation Polish
-
-Add more delightful micro-interactions.
-
-**Recommendations:**
-- **Loading states** for async operations (connecting to peers, dealing cards)
-- **Skeleton screens** during game initialization
-- **Haptic feedback** for mobile:
-  - Button presses
-  - Role reveal
-  - Eliminations
-- **Transition animations** between views (smoother, more branded)
-- **Particle effects** for special moments:
-  - Victory screen confetti
-  - Elimination animations
-- **Progress indicators** for multi-step processes
-
----
-
-### 10. Customization Options
-
-Give users more control over their experience.
-
-**Recommendations:**
-- **Custom role creation** (advanced feature):
-  - Define role name, team, and abilities
-  - Upload custom artwork
-  - Save/share custom role packs
-- **Visual themes**:
-  - Dark/light mode toggle
-  - Additional theme packs (beyond Werewolf/Mafia)
-  - Custom color schemes
-- **Sound effects** (optional, with mute toggle):
-  - Ambient night/day sounds
-  - Card reveal sound
-  - Elimination sound
-  - Victory fanfare
-- **Game rules variants**:
-  - Different voting rules
-  - Werewolf reveal variants
-  - Custom narration scripts
-
----
-
-## 🛠️ Code Quality & Maintainability
-
-### 11. Code Organization
-
-The codebase is well-structured, but `engine.js` is too large.
+### 3. Translations File Optimization
 
 **Current Issue:**
-- `js/modules/engine.js` is **1,573 lines** – this is difficult to maintain
+- `translations.js` is **78KB** (1,099 lines) with all languages in a single file
 
 **Recommendations:**
-Split `engine.js` into focused modules:
-- `game-flow.js` – State transitions, game lifecycle
-- `narrator.js` – Narrator-specific UI and logic
-- `elimination.js` – Player elimination logic
-- `ui-updates.js` – DOM manipulation and rendering
-- `event-handlers.js` – Event attachment and delegation
-- `view-manager.js` – View switching and visibility
+- **Split by language**: `translations/en.js`, `translations/es.js`, `translations/it.js`
+- **Lazy loading**: Load additional languages only when selected
+- **Reduce initial bundle size** by ~50KB for non-English users
 
-**Benefits:**
-- Easier to understand and modify
-- Better code reusability
-- Simpler testing
-- Reduced merge conflicts
+**Implementation:**
+```javascript
+// js/modules/i18n.js
+async function loadLanguage(lang) {
+  const module = await import(`./translations/${lang}.js`);
+  return module.default;
+}
+```
 
 ---
 
-### 12. Documentation
+### 4. Service Worker Version Sync
 
-Improve developer onboarding and code understanding.
+**Current Issue:**
+- HTML files reference `?v=1.1.4`, `?v=1.1.2`, `?v=1.1.1`
+- Service worker uses `CACHE_NAME = 'slay-werewolf-v1.1.0'`
+- Manual updates are error-prone
 
-**Recommendations:**
-- **JSDoc comments** for all public functions:
-  - Parameters, return types
-  - Usage examples
-  - Edge cases
-- **Developer guide**:
-  - Architecture overview
-  - How to add new roles
-  - State machine explanation
-  - Event flow diagrams
-- **WebRTC flow documentation**:
-  - Sequence diagrams
-  - Signaling process
-  - Data channel usage
-- **API documentation** (if exposing any public APIs)
-- **Contribution guide** (beyond README)
+**Quick Fix:**
+Create a version constant file that all assets reference:
+```javascript
+// js/version.js
+export const APP_VERSION = '1.2.0';
+```
 
----
-
-### 13. Performance Optimization
-
-Ensure smooth performance across devices.
-
-**Recommendations:**
-- **Lazy loading** for components:
-  - Load views only when needed
-  - Dynamic imports for large modules
-- **Debouncing/throttling** for event handlers:
-  - Window resize events
-  - Scroll handlers
-  - Input validation
-- **RequestAnimationFrame** for smooth animations
-- **Memory leak audits**:
-  - WebRTC connections cleanup
-  - Event listener removal
-  - setInterval/setTimeout cleanup
-- **Bundle size analysis**:
-  - Identify large dependencies
-  - Consider alternatives or tree-shaking
-- **Image optimization**:
-  - WebP format with fallbacks
-  - Lazy loading role card images
-  - Appropriate sizing/compression
+Or use a simple build script:
+```bash
+# scripts/bump-version.sh
+VERSION="1.2.0"
+sed -i "s/v=[0-9]\+\.[0-9]\+\.[0-9]\+/v=$VERSION/g" index.html
+sed -i "s/slay-werewolf-v[0-9]\+\.[0-9]\+\.[0-9]\+/slay-werewolf-v$VERSION/g" sw.js
+```
 
 ---
 
-## 🔐 Security & Privacy
+## ✨ New Feature Ideas
 
-### 14. Content Security Policy (CSP)
+### 5. Dark/Light Mode Toggle 🌓
 
-Add protection against XSS attacks.
+**Current State:**
+- App only has dark theme with Werewolf/Mafia variants
+- No light mode option for daytime use or accessibility preferences
 
-**Recommendation:**
-Add a CSP meta tag or HTTP header:
-```html
-<meta http-equiv="Content-Security-Policy" 
-      content="default-src 'self'; 
-               script-src 'self' https://unpkg.com; 
-               style-src 'self' 'unsafe-inline'; 
-               img-src 'self' data:;">
+**Recommendations:**
+- Add a **light mode theme** with inverted colors for daytime visibility
+- Respect `prefers-color-scheme` media query for automatic switching
+- Store preference in localStorage alongside language setting
+- Add a **"Follow System"** option in addition to manual toggle
+
+**Implementation:**
+```css
+/* css/themes/light.css */
+:root[data-theme="light"] {
+  --bg-primary: #f5f5f5;
+  --text-primary: #1a1a1a;
+  --accent-color: #b91c1c;
+}
+```
+
+---
+
+### 6. Turn Timer Feature ⏱️
+
+**Description:**
+Add optional turn timers for discussion phases to keep the game moving.
+
+**Features:**
+- **Configurable Timer**: 2/3/5 minute options per day phase
+- **Visual Countdown**: Circular progress indicator
+- **Audio Warning**: 30-second and 10-second alerts (if sounds enabled)
+- **Pause/Resume**: Allow narrator to pause mid-discussion
+- **Skip Timer**: Option to advance without waiting
+
+**UI Location:**
+Add timer controls to the narrator guide section in `ViewSummary.js`.
+
+---
+
+### 7. Role Balancing Assistant ⚖️
+
+**Description:**
+Calculate and display the "balance score" of the current role composition.
+
+**Implementation:**
+```javascript
+function calculateBalance(roles) {
+  const wolves = roles.filter(r => r.team === 'wolves').length;
+  const specials = roles.filter(r => r.id !== 'villager' && r.team !== 'wolves').length;
+  const total = roles.length;
+  
+  // Return balance indicator
+  if (wolves / total > 0.35) return '🔴 Favors Wolves';
+  if (specials >= wolves * 2) return '🔵 Favors Village';
+  return '🟢 Balanced';
+}
+```
+
+**Display:** Show a colored badge near the "Role composition" section in setup.
+
+---
+
+### 8. Session Sharing via URL 📤
+
+**Description:**
+Generate shareable URLs that encode game configuration for quick setup.
+
+**Example URL:**
+```
+https://n0tsosmart.github.io/slaythewerewolf#config=eyJwbGF5ZXJzIjo4LCJ3b2x2ZXMiOjIsInNwZWNpYWxzIjpbInNlZXIiLCJtZWRpdW0iXX0=
 ```
 
 **Benefits:**
-- Prevents inline script execution
-- Blocks unauthorized external resources
-- Mitigates XSS risks
+- Quick game setup for recurring groups
+- Share presets on social media or messaging apps
+- No server-side storage needed (all encoded in URL hash)
 
 ---
 
-### 15. Input Sanitization
+### 9. Sound Effects & Audio 🔊
 
-Validate and sanitize all user inputs.
+**Recommended Sound Set:**
+- `card-reveal.mp3` – Card flip sound on reveal
+- `wolf-howl.mp3` – Night phase transition
+- `rooster.mp3` – Dawn announcement
+- `dramatic-sting.mp3` – Player elimination
+- `fanfare.mp3` – Victory screen
 
-**Recommendations:**
-- **Player names**:
-  - Sanitize HTML to prevent XSS
-  - Limit length (prevent UI breaks)
-  - Validate characters (prevent injection)
-- **Room codes**:
-  - Validate format
-  - Prevent injection attacks
-- **LocalStorage data**:
-  - Validate on restore
-  - Schema versioning
-  - Sanitize before rendering
-
----
-
-## 📦 Developer Experience
-
-### 16. Linting & Formatting
-
-Ensure consistent code style across the project.
-
-**Recommendations:**
-- **ESLint** for JavaScript linting:
-  - Recommended: `eslint-config-airbnb-base` or `standard`
-  - Custom rules for project conventions
-- **Prettier** for automatic formatting:
-  - Consistent indentation, quotes, semicolons
-  - Integrates with ESLint
-- **Pre-commit hooks** (Husky + lint-staged):
-  - Auto-format on commit
-  - Run linting before push
-  - Prevent commits with errors
+**Considerations:**
+- Use Web Audio API for precise timing
+- Preload sounds during initial app load
+- Provide volume slider (0-100%) in settings
+- **Default to muted** to avoid surprising users
+- Compress sounds (use MP3/OGG, <50KB each)
 
 ---
 
-### 17. CI/CD Pipeline
+### 10. Statistics Dashboard 📊
 
-Automate testing and deployment.
+**Track Locally:**
+- Games played per week/month
+- Win rates by role
+- Average game length  
+- Most frequently used role compositions
+- Personal "streaks" (e.g., 3 wins in a row)
 
-**Recommendations:**
-Set up **GitHub Actions** for:
-- **Continuous Integration**:
-  - Run tests on every commit
-  - Linting and formatting checks
-  - Build verification
-- **Continuous Deployment**:
-  - Automated deployments to GitHub Pages
-  - Version bumping
-  - Release notes generation
-- **Pull Request checks**:
-  - Code coverage reports
-  - Visual regression testing
-  - Accessibility audits
+**Visualization:**
+Use simple bar charts with pure CSS or inline SVG (no external dependencies).
 
 ---
 
-## 🌍 Additional Features
+## 🧪 Testing & Quality Assurance
 
-### 18. More Languages
+### 11. E2E Testing with Playwright
 
-Expand international support beyond EN/ES/IT.
+**Current Gap:**
+Testing infrastructure has unit tests (Vitest) but no E2E tests for user flows.
+
+**Recommended Test Scenarios:**
+1. **Local Game Flow**: Setup → Deal → Reveal → Summary → Victory
+2. **Online Game Flow**: Host creates room → Client joins → Cards dealt
+3. **Language Switching**: Verify all translations display correctly
+4. **PWA Installation**: Test install prompt and offline mode
+5. **Theme Switching**: Werewolf → Mafia → Back
+
+**Configuration:**
+```javascript
+// playwright.config.js
+export default {
+  use: {
+    baseURL: 'http://localhost:8000',
+    viewport: { width: 375, height: 667 }, // Mobile-first
+  },
+  projects: [
+    { name: 'Mobile Chrome', use: { ...devices['Pixel 5'] } },
+    { name: 'Desktop Chrome', use: { ...devices['Desktop Chrome'] } },
+    { name: 'Mobile Safari', use: { ...devices['iPhone 12'] } },
+  ],
+};
+```
+
+---
+
+### 12. Accessibility Audit ♿
+
+**Quick Wins:**
+- Add `aria-live="polite"` regions for game state announcements
+- Ensure all interactive elements have visible focus states
+- Add `prefers-reduced-motion` support to disable animations
+- Verify color contrast ratios meet WCAG AA standards
+- Add keyboard shortcuts documentation (`?` to show help)
+
+**Testing Tools:**
+- axe DevTools browser extension
+- Lighthouse accessibility audit
+- NVDA / VoiceOver manual testing
+
+---
+
+## 📱 PWA & Mobile Improvements
+
+### 13. Install Prompt Optimization
+
+**Current State:**
+PWA install button exists in hamburger menu but isn't prominently shown.
 
 **Recommendations:**
-- **French** 🇫🇷 (large player base)
-- **German** 🇩🇪 (popular in Central Europe)
-- **Portuguese** 🇵🇹 (Brazilian and Portuguese markets)
-- **Russian** 🇷🇺
-- **Japanese** 🇯🇵
-- **Polish** 🇵🇱
+- Show a **dismissable bottom banner** on first visit
+- Trigger install prompt after first successful game completion
+- Track (locally) if user has dismissed the banner
+- Show install option in victory screen for returning players
+
+---
+
+### 14. Offline Mode Improvements
+
+**Current State:**
+Local mode works offline, but online mode completely fails with no guidance.
+
+**Recommendations:**
+- Show a clear **"You are offline"** indicator in the header
+- Disable "Online Game" button with explanatory tooltip
+- Allow viewing of **cached game history** when offline
+- Show last successful online game summary if available
+
+---
+
+### 15. Version Check & Update Prompt
+
+**Issue:**
+Service worker updates are automatic, but users may not know when a new version is available.
 
 **Implementation:**
-- Community contributions
-- Professional translation services
-- Crowdsourced translation platform (e.g., Crowdin)
+```javascript
+// In pwa-init.js
+navigator.serviceWorker.addEventListener('controllerchange', () => {
+  showToast('New version available! Refresh to update.', {
+    action: { label: 'Refresh', onClick: () => location.reload() }
+  });
+});
+```
 
 ---
 
-### 19. Accessibility of Rules
+## 📝 Documentation
 
-Make the game easier to learn.
+### 16. Changelog Creation
 
-**Recommendations:**
-- **In-game tutorial** or interactive onboarding:
-  - Step-by-step walkthrough
-  - Practice mode
-- **Video tutorials** embedded in the app:
-  - How to play (local mode)
-  - How to host (online mode)
-  - Narrator tips
-- **Role ability tooltips** in setup screen
-- **Glossary** of game terms
+**Quick Win:** Create `CHANGELOG.md` following [Keep a Changelog](https://keepachangelog.com/) format.
 
----
+**Template:**
+```markdown
+# Changelog
 
-### 20. Social Features
+All notable changes to Slay the Werewolf.
 
-Make it easier to share and invite.
+## [1.2.0] - 2025-12-XX
+### Added
+- Ghost mode for eliminated players in online games
+- Browser compatibility warnings for WebRTC/localStorage
+- Mafia Edition theme with adapted terminology
 
-**Recommendations:**
-- **Share button** to invite friends:
-  - Generate shareable link with room code
-  - Copy to clipboard
-  - Native share API on mobile
-- **QR code generation** for easy room joining:
-  - Host displays QR code
-  - Clients scan to join
-- **Embed support**:
-  - Allow game to be embedded in other sites
-  - iframe-friendly
-- **Social media meta tags**:
-  - Open Graph for Facebook/Discord
-  - Twitter Cards
-  - Rich link previews
+### Fixed
+- Mobile viewport issues on notched devices
+- Translation missing for Spanish vibration toggle
+```
 
 ---
 
-## 🎁 Quick Wins (Easy to Implement)
+### 17. Developer Architecture Guide
 
-These are small improvements that can be done quickly with high impact:
-
-1. **Add comprehensive favicons**:
-   - apple-touch-icon for iOS
-   - favicon-32x32, favicon-16x16
-   - Android chrome icons
-   - manifest icons
-
-2. **Add meta tags** for better social sharing:
-   - Open Graph (Facebook, Discord)
-   - Twitter Cards
-   - Description and keywords
-
-3. **Add a changelog** (`CHANGELOG.md`):
-   - Track version history
-   - Document breaking changes
-   - Keep users informed
-
-4. **Add keyboard shortcuts**:
-   - `N` - Advance to next day
-   - `R` - Restart game
-   - `M` - Open menu
-   - `Esc` - Close modals
-   - `?` - Show keyboard shortcuts
-
-5. **Add a "Back to Top" button**:
-   - For long narrator guides
-   - Smooth scroll animation
-   - Show/hide based on scroll position
-
-6. **Add loading splash screen**:
-   - Show while app initializes
-   - Branded animation
-   - Progress indicator
-
-7. **Add copy-to-clipboard buttons**:
-   - Room code
-   - Game summary
-   - Player list
-
-8. **Add confirmation for destructive actions**: ✅ **COMPLETED** (December 2025)
-   - ✅ Confirmation dialog for "Clear list" button (clears all player names)
-   - ✅ All other destructive actions already have confirmations (restart, new game, lynch, leave game, etc.)
-
-9. **Add browser compatibility warnings**: ✅ **COMPLETED** (December 2025)
-   - ✅ Detect WebRTC support (required for online mode)
-   - ✅ Detect localStorage support (required for game persistence)
-   - ✅ Show warning toasts on app startup for unsupported features
-   - ✅ Translations in EN/ES/IT
-   - **Files created:** `js/modules/browser-compat.js`
-
-10. **Add version display in footer**:
-    - Show current version number
-    - Link to changelog
-    - Update notification
+**Create:** `docs/ARCHITECTURE.md` covering:
+- State management flow diagram
+- Component lifecycle and communication
+- WebRTC connection flow sequence diagram
+- Adding a new role step-by-step guide
+- Adding a new language checklist
 
 ---
 
-## 📊 Summary: Top 5 Priorities
+## 📊 Priority Matrix
 
-If you want to focus on the most impactful improvements, start with these:
+| Improvement | Effort | Impact | Priority |
+|-------------|--------|--------|----------|
+| Fix duplicate favicon | 🟢 Low | 🟡 Low | ⭐⭐⭐⭐⭐ |
+| Version sync script | 🟢 Low | 🟠 High | ⭐⭐⭐⭐⭐ |
+| Create CHANGELOG.md | 🟢 Low | 🟡 Medium | ⭐⭐⭐⭐ |
+| Dark/Light mode toggle | 🟡 Medium | 🟠 High | ⭐⭐⭐⭐ |
+| Turn timer feature | 🟡 Medium | 🟠 High | ⭐⭐⭐⭐ |
+| Split translations file | 🟡 Medium | 🟡 Medium | ⭐⭐⭐ |
+| Sound effects | 🟡 Medium | 🟡 Medium | ⭐⭐⭐ |
+| E2E tests (Playwright) | 🔴 High | 🟠 High | ⭐⭐⭐ |
+| Role balancing tool | 🟡 Medium | 🟡 Medium | ⭐⭐⭐ |
+| URL session sharing | 🟢 Low | 🟡 Medium | ⭐⭐⭐ |
+| Refactor engine.js | 🔴 High | 🟠 High | ⭐⭐ |
+| Statistics dashboard | 🔴 High | 🟡 Medium | ⭐⭐ |
+| Architecture docs | 🟡 Medium | 🟡 Medium | ⭐⭐ |
 
-### ~~1. Add Automated Testing~~ ✅ **COMPLETED**
-   - **Status:** Implemented with Vitest (57 tests, 100% pass rate)
-   - **See:** [TESTING.md](../TESTING.md) for usage guide
+---
 
-### ~~2. Make it a PWA~~ ✅ **COMPLETED**
-   - **Status:** Fully implemented with offline support and mobile optimizations
-   - **See:** Walkthrough for implementation details
+## 🎁 Quick Wins (< 1 hour each)
 
-### 3. **Refactor `engine.js`** 🛠️
-   - **Why:** Improve maintainability, easier to understand and modify
-   - **Effort:** High
-   - **Impact:** Medium (long-term)
-
-### 4. **Add Accessibility Improvements** ♿
-   - **Why:** Reach more users, legal compliance, better UX for all
-   - **Effort:** Medium
-   - **Impact:** High
-
-### 5. **Improve WebRTC Reliability** 🌐
-   - **Why:** Better online experience, fewer frustrations
-   - **Effort:** High
-   - **Impact:** High
+1. ✅ Remove duplicate favicon link in `index.html`
+2. ✅ Create version sync script  
+3. ✅ Add `CHANGELOG.md`
+4. ✅ Add `prefers-reduced-motion` CSS media query
+5. ✅ Add keyboard shortcut: `Esc` to close modals
+6. ✅ Fix inconsistent button spacing in setup view
+7. ✅ Add loading skeleton for lobby player list
 
 ---
 

@@ -1,4 +1,4 @@
-import { initApp } from './modules/engine.js';
+import { initApp } from './modules/engine/index.js';
 
 // Components
 import './components/GlobalControls.js';
