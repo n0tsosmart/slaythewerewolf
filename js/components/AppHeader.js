@@ -7,12 +7,10 @@ export class AppHeader extends HTMLElement {
     <header class="app-header">
       <div class="logo-row">
         <img src="assets/logo.png" alt="Slay the Werewolf logo" class="site-logo" id="appLogo" />
-        <div>
+        <div class="header-text">
           <p class="eyebrow" data-i18n="header.label">SLAY THE WEREWOLF</p>
-          <h1>
-            <span id="mafiaBadge" class="mafia-badge" style="display: none; font-size: 0.5em; vertical-align: middle; background: #9333ea; color: white; padding: 2px 6px; border-radius: 4px; margin-right: 8px;">Mafia Edition</span>
-            <span data-i18n="header.title">Slay the Werewolf</span>
-          </h1>
+          <span id="mafiaBadge" class="mafia-badge">Mafia Edition</span>
+          <h1 data-i18n="header.title">Slay the Werewolf</h1>
           <p class="tagline" data-i18n="header.tagline1">Remember to slay the wolf.</p>
         </div>
       </div>

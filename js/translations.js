@@ -384,7 +384,7 @@ window.TRANSLATIONS = {
                 "setup.specialsHelp": "El Vidente siempre está incluido.",
                 "setup.rolesSummary": "Composición de roles",
                 "setup.rolesInDeck": "{count}× {role}",
-                "setup.haptics": "Vibration",
+                "setup.haptics": "Vibración",
 
                 // Role-related messages
                 "roles.availableFrom": "Sugerido a partir de {count} jugadores.",
@@ -700,7 +700,7 @@ window.TRANSLATIONS = {
                 "setup.specialsHelp": "Il Veggente è sempre incluso!",
                 "setup.rolesSummary": "Composizione ruoli",
                 "setup.rolesInDeck": "{count}× {role}",
-                "setup.haptics": "Vibration",
+                "setup.haptics": "Vibrazione",
 
                 // Role-related messages
                 "roles.availableFrom": "Consigliato da {count}+ giocatori.",

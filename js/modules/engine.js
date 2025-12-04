@@ -76,10 +76,8 @@ export function initApp() {
   updateRoleSummary();
   renderPlayerList();
   restoreFromStorage();
-  if (el.hapticsToggle) {
-    el.hapticsToggle.checked = state.hapticsEnabled;
-  }
   // Use handleLanguageChange to ensure all UI is updated according to the restored language
+
   handleLanguageChange(state.language, { skipPersist: true });
 
   // Determine initial view based on network state and assigned role
@@ -183,14 +181,6 @@ function attachEvents() {
       clampWolfCount();
       updateDeckPreview();
       persistState();
-    });
-  }
-
-  if (el.hapticsToggle) {
-    el.hapticsToggle.addEventListener("change", () => {
-      state.hapticsEnabled = el.hapticsToggle.checked;
-      persistState();
-      if (state.hapticsEnabled) vibrateShort();
     });
   }
 

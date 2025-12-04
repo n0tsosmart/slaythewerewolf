@@ -11,19 +11,31 @@ export const PATTERNS = {
   ELIMINATION: [100, 50, 100], // Player elimination
 };
 
+// Check if vibration is supported
+const isVibrationSupported = typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function';
+
+// Detect iOS Safari which doesn't support vibration at all
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
 /**
  * Triggers haptic feedback if enabled in state and supported by the device.
+ * Note: iOS Safari does not support the Web Vibration API, so haptics 
+ * will not work on iPhones/iPads via the browser.
  * @param {number|number[]} pattern - The vibration pattern (ms or array of ms)
  */
 export function vibrate(pattern) {
   if (!state.hapticsEnabled) return;
-  
-  if (typeof navigator !== 'undefined' && navigator.vibrate) {
-    try {
-      navigator.vibrate(pattern);
-    } catch (e) {
-      // Ignore errors (some browsers might block if user hasn't interacted yet)
-    }
+
+  // Only attempt vibration on supported devices
+  if (!isVibrationSupported) return;
+
+  // iOS doesn't support vibration API - fail silently
+  if (isIOS) return;
+
+  try {
+    navigator.vibrate(pattern);
+  } catch (e) {
+    // Ignore errors (some browsers might block if user hasn't interacted yet)
   }
 }
 
@@ -40,3 +52,4 @@ export function vibrateShort() {
 export function vibrateSuccess() {
   vibrate(PATTERNS.SUCCESS);
 }
+

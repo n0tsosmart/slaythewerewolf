@@ -1,4 +1,7 @@
 import { applyTranslations } from '../modules/i18n.js';
+import { state } from '../modules/state.js';
+import { persistState } from '../modules/store.js';
+import { vibrateShort } from '../modules/haptics.js';
 
 export class GlobalControls extends HTMLElement {
   connectedCallback() {
@@ -28,6 +31,13 @@ export class GlobalControls extends HTMLElement {
               <span class="theme-label" data-i18n="theme.mafia">Mafia Edition</span>
               <label class="toggle-switch">
                 <input type="checkbox" id="themeToggle">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="theme-toggle-container" style="margin-top: 8px;">
+              <span class="theme-label" data-i18n="setup.haptics">Vibration</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="hapticsToggle" checked>
                 <span class="slider"></span>
               </label>
             </div>
@@ -61,7 +71,21 @@ export class GlobalControls extends HTMLElement {
     `;
     applyTranslations(this);
     this.initTheme();
+    this.initHaptics();
   }
+
+  initHaptics() {
+    const hapticsToggle = this.querySelector('#hapticsToggle');
+    if (hapticsToggle) {
+      hapticsToggle.checked = state.hapticsEnabled;
+      hapticsToggle.addEventListener('change', () => {
+        state.hapticsEnabled = hapticsToggle.checked;
+        persistState();
+        if (state.hapticsEnabled) vibrateShort();
+      });
+    }
+  }
+
 
   initTheme() {
     const savedTheme = localStorage.getItem('theme') || 'default';
