@@ -1,5 +1,5 @@
 // Service Worker for Slay the Werewolf PWA
-const CACHE_NAME = 'slay-werewolf-v1.0.45';
+const CACHE_NAME = 'slay-werewolf-v1.0.53';
 const ASSETS_TO_CACHE = [
     '/slaythewerewolf/',
     '/slaythewerewolf/index.html',
@@ -8,8 +8,6 @@ const ASSETS_TO_CACHE = [
     '/slaythewerewolf/js/translations.js',
     '/slaythewerewolf/assets/logo.png',
     '/slaythewerewolf/assets/mafia_logo.png',
-    '/slaythewerewolf/assets/backgrounds/background.jpg',
-    '/slaythewerewolf/assets/backgrounds/mafia_background.jpg',
     '/slaythewerewolf/assets/favicon.ico',
     // Add role card images
     '/slaythewerewolf/assets/cards/lupo.jpg',
@@ -37,7 +35,7 @@ self.addEventListener('install', (event) => {
     );
 });
 
-// Activate event - clean up old caches
+// Activate event - clean up old caches immediately
 self.addEventListener('activate', (event) => {
     console.log('[SW] Activating service worker...');
     event.waitUntil(
@@ -54,79 +52,39 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// Fetch event - network-first for HTML, cache-first for others
+// Fetch event - Network-first for ALL requests to ensure updates are always applied
 self.addEventListener('fetch', (event) => {
     // Skip cross-origin requests (like PeerJS CDN)
     if (!event.request.url.startsWith(self.location.origin)) {
         return;
     }
 
-    const url = new URL(event.request.url);
-    const isHTMLRequest = event.request.destination === 'document' ||
-        url.pathname.endsWith('.html') ||
-        url.pathname.endsWith('/');
-
-    if (isHTMLRequest) {
-        // Network-first strategy for HTML
-        event.respondWith(
-            fetch(event.request)
-                .then((response) => {
-                    // Clone and cache the response
-                    const responseToCache = response.clone();
-                    caches.open(CACHE_NAME).then((cache) => {
-                        cache.put(event.request, responseToCache);
-                    });
-                    return response;
-                })
-                .catch(() => {
-                    // Network failed, try cache
-                    return caches.match(event.request).then((cachedResponse) => {
-                        if (cachedResponse) {
-                            console.log('[SW] Serving HTML from cache (offline)');
-                            return cachedResponse;
-                        }
-                        // No cache available
-                        return new Response('Offline - No cached version available', {
-                            status: 503,
-                            statusText: 'Service Unavailable'
-                        });
-                    });
-                })
-        );
-    } else {
-        // Cache-first strategy for CSS, JS, images, etc.
-        event.respondWith(
-            caches.match(event.request)
-                .then((response) => {
-                    // Cache hit - return response
-                    if (response) {
-                        return response;
+    // Network-first strategy for all requests
+    // This ensures the app always gets the latest version when online
+    event.respondWith(
+        fetch(event.request)
+            .then((response) => {
+                // Clone and cache the response for offline use
+                const responseToCache = response.clone();
+                caches.open(CACHE_NAME).then((cache) => {
+                    cache.put(event.request, responseToCache);
+                });
+                return response;
+            })
+            .catch(() => {
+                // Network failed, try cache
+                return caches.match(event.request).then((cachedResponse) => {
+                    if (cachedResponse) {
+                        console.log('[SW] Serving from cache (offline):', event.request.url);
+                        return cachedResponse;
                     }
-
-                    // Clone the request
-                    const fetchRequest = event.request.clone();
-
-                    return fetch(fetchRequest).then((response) => {
-                        // Check if valid response
-                        if (!response || response.status !== 200 || response.type !== 'basic') {
-                            return response;
-                        }
-
-                        // Clone the response
-                        const responseToCache = response.clone();
-
-                        caches.open(CACHE_NAME)
-                            .then((cache) => {
-                                cache.put(event.request, responseToCache);
-                            });
-
-                        return response;
+                    // No cache available
+                    console.log('[SW] No cache available for:', event.request.url);
+                    return new Response('Offline - No cached version available', {
+                        status: 503,
+                        statusText: 'Service Unavailable'
                     });
-                })
-                .catch(() => {
-                    // If both cache and network fail
-                    console.log('[SW] Fetch failed for:', event.request.url);
-                })
-        );
-    }
+                });
+            })
+    );
 });

@@ -2,45 +2,6 @@
    Base, Reset, and Variables
    ========================================================================== */
 
-/* Base Settings */
-html {
-  font-size: 100%;
-  /* Standardizes base font size (16px) for better readability */
-
-  /* iOS viewport height fix - prevents black bars */
-  height: -webkit-fill-available;
-
-  /* Background color for overscroll areas (mobile bounce, notch zones) */
-  background-color: var(--color-bg-base);
-}
-
-/* Fixed background layer covering entire viewport including notch/safe areas */
-html::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-
-  /* Full viewport coverage including safe areas */
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
-  /* Dynamic viewport height for mobile */
-
-  /* Background image with gradient overlay */
-  background-image:
-    linear-gradient(180deg, var(--color-body-gradient-start), var(--color-body-gradient-end)),
-    var(--bg-image);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  /* Ensure it extends beyond safe areas */
-  margin: calc(-1 * env(safe-area-inset-top, 0px)) calc(-1 * env(safe-area-inset-right, 0px)) calc(-1 * env(safe-area-inset-bottom, 0px)) calc(-1 * env(safe-area-inset-left, 0px));
-  width: calc(100vw + env(safe-area-inset-left, 0px) + env(safe-area-inset-right, 0px));
-  height: calc(100dvh + env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px));
-}
-
 /* CSS Variables (Custom Properties) */
 :root {
   scroll-behavior: smooth;
@@ -48,15 +9,15 @@ html::before {
 
   /* --- Color Palette --- */
 
-  /* Backgrounds */
-  --color-bg-base: #0a0404;
-  --color-bg-accent: #1a0808;
-  --color-panel-bg: rgba(20, 8, 8, 0.78);
-  /* Semi-transparent for glassmorphism */
+  /* Backgrounds - Brighter red theme with gradient */
+  --color-bg-base: #1a0a0a;
+  --color-bg-top: #2a1212;
+  --color-bg-bottom: #120606;
+  --color-panel-bg: rgba(35, 15, 15, 0.85);
 
   /* Glassmorphism System */
-  --glass-bg: rgba(20, 8, 8, 0.7);
-  --glass-border: rgba(220, 38, 38, 0.25);
+  --glass-bg: rgba(35, 15, 15, 0.8);
+  --glass-border: rgba(220, 38, 38, 0.3);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
   --glass-blur: 12px;
 
@@ -90,13 +51,6 @@ html::before {
   --color-gray-medium: #94a3b8;
   --color-gray-dark: #9ca3af;
 
-  /* Body Gradient */
-  --color-body-gradient-start: rgba(10, 4, 6, 0.90);
-  --color-body-gradient-end: rgba(20, 8, 10, 0.82);
-
-  /* Assets */
-  --bg-image: url("../assets/backgrounds/background.jpg");
-
   /* --- Typography --- */
   --font-display: "Cinzel", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -107,21 +61,15 @@ html::before {
   background-color: var(--color-bg-base);
 }
 
-/* Purple Theme Override */
+/* Purple Theme Override - Brighter */
 :root[data-theme="purple"] {
   accent-color: rgba(147, 51, 234, 0.9);
 
-  /* Backgrounds */
-  --color-bg-base: #050305;
-  --color-bg-accent: #0f0512;
-  --color-panel-bg: rgba(5, 3, 6, 0.78);
-
-  /* Body Gradient */
-  --color-body-gradient-start: rgba(10, 4, 10, 0.90);
-  --color-body-gradient-end: rgba(20, 8, 20, 0.82);
-
-  /* Assets */
-  --bg-image: url("../assets/backgrounds/mafia_background.jpg");
+  /* Backgrounds - Brighter purple theme with gradient */
+  --color-bg-base: #120818;
+  --color-bg-top: #1a0e24;
+  --color-bg-bottom: #0a0410;
+  --color-panel-bg: rgba(25, 12, 35, 0.85);
 
   /* Borders & Highlights */
   --color-header-border: rgba(107, 33, 168, 0.35);
@@ -130,26 +78,23 @@ html::before {
   --color-card-border: rgba(107, 33, 168, 0.4);
 
   /* Interactive Elements */
-  --color-chip-bg: rgba(35, 10, 45, 0.9);
+  --color-chip-bg: rgba(45, 15, 60, 0.9);
   --color-chip-remove: rgba(216, 180, 254, 0.2);
-  --color-secondary-bg: rgba(30, 15, 40, 0.55);
+  --color-secondary-bg: rgba(40, 20, 55, 0.55);
   --color-secondary-border: rgba(88, 28, 135, 0.5);
 
   /* Brand / Theme Colors */
   --color-primary-from: #7e22ce;
-  /* Purple 700 */
   --color-primary-to: #581c87;
-  /* Purple 900 */
 
   /* Status & Utility Colors */
   --color-ghost-border: rgba(192, 132, 252, 0.35);
   --color-danger-border: rgba(147, 51, 234, 0.6);
-  /* Re-purposed for primary border in some contexts */
   --color-danger-bg: rgba(88, 28, 135, 0.35);
 
   /* Glassmorphism System (Purple) */
-  --glass-bg: rgba(15, 5, 18, 0.7);
-  --glass-border: rgba(147, 51, 234, 0.25);
+  --glass-bg: rgba(25, 10, 35, 0.8);
+  --glass-border: rgba(147, 51, 234, 0.3);
 }
 
 /* Reset Box Sizing */
@@ -159,25 +104,58 @@ html::before {
   padding: 0;
 }
 
-/* Body Styling - Content only, background handled by html::before */
+/* HTML - Solid background covering entire viewport including notch/safe areas */
+html {
+  font-size: 100%;
+  height: 100%;
+
+  /* Solid background color covers everything including safe areas */
+  background-color: var(--color-bg-base);
+}
+
+/* Body Styling */
 body {
-  /* Use safe-area-insets for notched devices (iPhone X+, etc.) */
+  /* Safe-area padding for content only */
   padding: max(env(safe-area-inset-top), 20px) max(env(safe-area-inset-right), 20px) max(env(safe-area-inset-bottom), 20px) max(env(safe-area-inset-left), 20px);
 
-  /* Transparent background - the html::before pseudo-element handles the background */
-  background: transparent;
+  /* Gradient background - subtle radial glow */
+  background:
+    radial-gradient(ellipse at 50% 0%, var(--color-bg-top) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, var(--color-bg-bottom) 0%, transparent 50%),
+    linear-gradient(180deg, var(--color-bg-top) 0%, var(--color-bg-base) 30%, var(--color-bg-base) 70%, var(--color-bg-bottom) 100%);
   color: var(--color-text-primary);
 
-  /* Ensure content extends to screen edges */
+  /* Full viewport height */
   min-height: 100vh;
   min-height: 100dvh;
-  /* Dynamic viewport height for mobile */
 
-  /* Prevent overscroll bounce from showing different colors */
+  /* Prevent overscroll bounce issues */
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
 
   font-family: var(--font-display);
+
+  /* Flex layout for sticky footer */
+  display: flex;
+  flex-direction: column;
+
+  /* Position context for noise overlay */
+  position: relative;
+}
+
+/* Noise grain overlay - cinematic film texture */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.035;
+
+  /* SVG noise pattern using feTurbulence */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
 }
 
 /* Responsive adjustments */
