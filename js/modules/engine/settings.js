@@ -37,8 +37,8 @@ export function setSettingsCallbacks({ renderSummaryList, updateNarratorUI, rend
  * @param {Object} options - Options object
  * @param {boolean} options.skipPersist - Whether to skip persisting state
  */
-export function handleLanguageChange(lang, { skipPersist = false } = {}) {
-    setLanguage(lang);
+export async function handleLanguageChange(lang, { skipPersist = false } = {}) {
+    await setLanguage(lang);
 
     // Refresh UI elements dependent on language
     const selectedRoles = getSelectedSpecials().map((item) => item.roleId);

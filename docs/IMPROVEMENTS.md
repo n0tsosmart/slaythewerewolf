@@ -59,24 +59,27 @@ js/modules/engine/
 
 ---
 
-### 3. Translations File Optimization
+### 3. Translations File Optimization ✅ **COMPLETED**
 
-**Current Issue:**
-- `translations.js` is **78KB** (1,099 lines) with all languages in a single file
+~~**Current Issue:**~~
+~~- `translations.js` is **78KB** (1,099 lines) with all languages in a single file~~
 
-**Recommendations:**
-- **Split by language**: `translations/en.js`, `translations/es.js`, `translations/it.js`
-- **Lazy loading**: Load additional languages only when selected
-- **Reduce initial bundle size** by ~50KB for non-English users
+**What was done (December 2024):**
+The monolithic translations.js was split into modular files with lazy loading:
+
+```
+js/translations/
+├── index.js   (2KB)  - Loader with lazy loading logic
+├── en.js      (21KB) - English + Mafia overrides (loaded immediately)
+├── es.js      (22KB) - Spanish + Mafia overrides (lazy loaded)
+└── it.js      (22KB) - Italian + Mafia overrides (lazy loaded)
+```
 
 **Implementation:**
-```javascript
-// js/modules/i18n.js
-async function loadLanguage(lang) {
-  const module = await import(`./translations/${lang}.js`);
-  return module.default;
-}
-```
+- English is loaded immediately with the app
+- Spanish and Italian are lazy loaded via `import()` when selected
+- `setLanguage()` is now async and awaits language loading
+- **~71% reduction in initial bundle** for English users (23KB vs 79KB)
 
 ---
 

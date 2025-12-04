@@ -3,10 +3,25 @@ import { el } from './dom.js';
 import { DEFAULT_LANGUAGE, ROLE_LIBRARY } from './config.js';
 import { getLanguageFlag } from './utils.js';
 
+// Import and initialize translations
+import { loadLanguage, isLanguageLoaded } from '../translations/index.js';
+
 // Translation & I18n
 
 export function formatString(template, vars = {}) {
   return template.replace(/\{(.*?)\}/g, (_, key) => (vars[key] !== undefined ? vars[key] : `{${key}}`));
+}
+
+/**
+ * Ensures a language is loaded before use.
+ * @param {string} lang - Language code
+ * @returns {Promise<boolean>}
+ */
+export async function ensureLanguageLoaded(lang) {
+  if (!isLanguageLoaded(lang)) {
+    return await loadLanguage(lang);
+  }
+  return true;
 }
 
 export function t(key, vars) {
@@ -71,7 +86,12 @@ export function updateLanguageButtons() {
   if (el.languageFlag) el.languageFlag.textContent = getLanguageFlag(state.language);
 }
 
-export function setLanguage(lang) {
+export async function setLanguage(lang) {
+  // Lazy load the language if needed
+  if (lang !== 'en') {
+    await ensureLanguageLoaded(lang);
+  }
+
   const trans = window.TRANSLATIONS || {};
   state.language = trans[lang] ? lang : DEFAULT_LANGUAGE;
   if (el.languageSelect) el.languageSelect.value = state.language;
