@@ -9,16 +9,16 @@
 
   /* --- Color Palette --- */
 
-  /* Backgrounds - Brighter red theme with gradient */
-  --color-bg-base: #1a0a0a;
-  --color-bg-top: #2a1212;
-  --color-bg-bottom: #120606;
-  --color-panel-bg: rgba(35, 15, 15, 0.85);
+  /* Backgrounds - Darker red theme with gradient */
+  --color-bg-base: #120606;
+  --color-bg-top: #1a0c0c;
+  --color-bg-bottom: #0a0404;
+  --color-panel-bg: rgba(25, 10, 10, 0.85);
 
   /* Glassmorphism System */
-  --glass-bg: rgba(35, 15, 15, 0.8);
+  --glass-bg: rgba(25, 10, 10, 0.8);
   --glass-border: rgba(220, 38, 38, 0.3);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   --glass-blur: 12px;
 
   /* Text */
@@ -104,13 +104,33 @@
   padding: 0;
 }
 
-/* HTML - Solid background covering entire viewport including notch/safe areas */
+/* HTML - Background with gradient and noise covering entire viewport including safe areas */
 html {
   font-size: 100%;
   height: 100%;
 
-  /* Solid background color covers everything including safe areas */
+  /* Gradient background - subtle radial glow */
+  background:
+    radial-gradient(ellipse at 50% 0%, var(--color-bg-top) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, var(--color-bg-bottom) 0%, transparent 50%),
+    linear-gradient(180deg, var(--color-bg-top) 0%, var(--color-bg-base) 30%, var(--color-bg-base) 70%, var(--color-bg-bottom) 100%);
   background-color: var(--color-bg-base);
+  background-attachment: fixed;
+}
+
+/* Noise grain overlay on html - covers overscroll areas too */
+html::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.035;
+
+  /* SVG noise pattern using feTurbulence */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
 }
 
 /* Body Styling */
@@ -118,11 +138,8 @@ body {
   /* Safe-area padding for content only */
   padding: max(env(safe-area-inset-top), 20px) max(env(safe-area-inset-right), 20px) max(env(safe-area-inset-bottom), 20px) max(env(safe-area-inset-left), 20px);
 
-  /* Gradient background - subtle radial glow */
-  background:
-    radial-gradient(ellipse at 50% 0%, var(--color-bg-top) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 100%, var(--color-bg-bottom) 0%, transparent 50%),
-    linear-gradient(180deg, var(--color-bg-top) 0%, var(--color-bg-base) 30%, var(--color-bg-base) 70%, var(--color-bg-bottom) 100%);
+  /* Transparent - let html background show through */
+  background: transparent;
   color: var(--color-text-primary);
 
   /* Full viewport height */
@@ -138,24 +155,6 @@ body {
   /* Flex layout for sticky footer */
   display: flex;
   flex-direction: column;
-
-  /* Position context for noise overlay */
-  position: relative;
-}
-
-/* Noise grain overlay - cinematic film texture */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0.035;
-
-  /* SVG noise pattern using feTurbulence */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 256px 256px;
 }
 
 /* Responsive adjustments */
