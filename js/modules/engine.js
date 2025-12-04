@@ -23,6 +23,7 @@ import { prepareReveal, revealCard, nextPlayer, clearHandoffCountdown, updateHan
 import { initUI, scrollToBottom, getRoleImage } from './utils.js';
 import { detectMythStatusFromDeck, determineMythOutcome } from './logic.js';
 import { setNetworkCallbacks, isClient, getLocalPlayerName, isHost, getConnectedPlayers, broadcast, sendToPeer, disconnect as networkDisconnect, notifyPlayerEliminated } from './network.js';
+import { initBrowserCompatibility } from './browser-compat.js';
 
 // Map to store peerId to playerName for easy lookup when distributing roles
 const peerIdToPlayerName = new Map();
@@ -93,6 +94,9 @@ export function initApp() {
       showView(state.view || "landing");
     }
   }
+
+  // Check browser compatibility and show warnings if needed
+  initBrowserCompatibility();
 }
 
 function handleLanguageChange(lang, { skipPersist = false } = {}) {
@@ -211,11 +215,11 @@ function attachEvents() {
   }
 
   if (el.clearPlayersBtn) {
-    el.clearPlayersBtn.addEventListener("click", () => {
+    el.clearPlayersBtn.addEventListener("click", () => confirmAction(t("confirmation.clearPlayers"), () => {
       state.customNames = [];
       renderPlayerList();
       persistState();
-    });
+    }));
   }
 
   if (el.setupForm) {

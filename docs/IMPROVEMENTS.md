@@ -243,7 +243,6 @@ Enhance touch interactions and mobile-specific features.
   - PWA install behavior
 - **Mobile-first player elimination UI**:
   - Larger tap targets
-  - Swipe-to-eliminate gestures
 - **Landscape/portrait optimizations**
 
 ---
@@ -553,13 +552,16 @@ These are small improvements that can be done quickly with high impact:
    - Game summary
    - Player list
 
-8. **Add confirmation for destructive actions**:
-   - Ensure all critical actions (reset, leave game) have warnings
+8. **Add confirmation for destructive actions**: ✅ **COMPLETED** (December 2025)
+   - ✅ Confirmation dialog for "Clear list" button (clears all player names)
+   - ✅ All other destructive actions already have confirmations (restart, new game, lynch, leave game, etc.)
 
-9. **Add browser compatibility warnings**:
-   - Detect old browsers
-   - Suggest modern alternatives
-   - WebRTC feature detection
+9. **Add browser compatibility warnings**: ✅ **COMPLETED** (December 2025)
+   - ✅ Detect WebRTC support (required for online mode)
+   - ✅ Detect localStorage support (required for game persistence)
+   - ✅ Show warning toasts on app startup for unsupported features
+   - ✅ Translations in EN/ES/IT
+   - **Files created:** `js/modules/browser-compat.js`
 
 10. **Add version display in footer**:
     - Show current version number

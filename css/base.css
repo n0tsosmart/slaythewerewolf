@@ -104,16 +104,15 @@
   padding: 0;
 }
 
-/* HTML - Background with gradient and noise covering entire viewport including safe areas */
+/* HTML - Gradient background with noise covering entire viewport including safe areas */
 html {
   font-size: 100%;
   height: 100%;
 
-  /* Gradient background - subtle radial glow */
-  background:
-    radial-gradient(ellipse at 50% 0%, var(--color-bg-top) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 100%, var(--color-bg-bottom) 0%, transparent 50%),
-    linear-gradient(180deg, var(--color-bg-top) 0%, var(--color-bg-base) 30%, var(--color-bg-base) 70%, var(--color-bg-bottom) 100%);
+  /* Refined radial gradient - subtle center glow with darker edges */
+  background: radial-gradient(ellipse at center,
+      var(--color-bg-base) 0%,
+      var(--color-bg-bottom) 100%);
   background-color: var(--color-bg-base);
   background-attachment: fixed;
 }

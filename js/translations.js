@@ -189,6 +189,13 @@ window.TRANSLATIONS = {
                 "confirmation.eliminationVictory": "Eliminating {player} will trigger {outcome}. Continue?",
                 "confirmation.lynch": "Are you sure you want to lynch {player}?",
                 "confirmation.handoff": "Ready to open the summary? Confirm you are the narrator and everyone else is not looking.",
+                "confirmation.clearPlayers": "Clear all player names?",
+
+                // Browser Compatibility
+                "compat.title": "Browser Compatibility",
+                "compat.webrtcWarning": "Online mode requires WebRTC. Use a modern browser like Chrome, Firefox, or Safari.",
+                "compat.localStorageWarning": "Game progress cannot be saved. Enable cookies/storage or use a different browser.",
+                "compat.oldBrowser": "Your browser may not support all features. Consider updating to the latest version.",
 
                 // Accessibility Labels
                 "accessibility.removePlayer": "Remove {name}",
@@ -498,6 +505,13 @@ window.TRANSLATIONS = {
                 "confirmation.eliminationVictory": "Eliminar a {player} provocará {outcome}. ¿Continuar?",
                 "confirmation.lynch": "¿Estás seguro de que quieres linchar a {player}?",
                 "confirmation.handoff": "¿Listo para abrir el resumen? Confirma que eres el narrador y que nadie más está mirando.",
+                "confirmation.clearPlayers": "¿Borrar todos los nombres?",
+
+                // Browser Compatibility
+                "compat.title": "Compatibilidad del Navegador",
+                "compat.webrtcWarning": "El modo online requiere WebRTC. Usa un navegador moderno como Chrome, Firefox o Safari.",
+                "compat.localStorageWarning": "El progreso no se puede guardar. Habilita cookies/almacenamiento o usa otro navegador.",
+                "compat.oldBrowser": "Tu navegador puede no soportar todas las funciones. Considera actualizarlo.",
 
                 // Accessibility Labels
                 "accessibility.removePlayer": "Eliminar a {name}",
@@ -806,6 +820,13 @@ window.TRANSLATIONS = {
                 "confirmation.eliminationVictory": "Eliminare {player} farà scattare {outcome}. Vuoi procedere?",
                 "confirmation.lynch": "Sei sicuro di voler linciare {player}?",
                 "confirmation.handoff": "Pronto a mostrare il riepilogo? Conferma di essere il narratore e che nessun altro stia guardando.",
+                "confirmation.clearPlayers": "Cancellare tutti i nomi?",
+
+                // Browser Compatibility
+                "compat.title": "Compatibilità del Browser",
+                "compat.webrtcWarning": "La modalità online richiede WebRTC. Usa un browser moderno come Chrome, Firefox o Safari.",
+                "compat.localStorageWarning": "I progressi non possono essere salvati. Abilita cookie/storage o usa un altro browser.",
+                "compat.oldBrowser": "Il tuo browser potrebbe non supportare tutte le funzionalità. Considera di aggiornarlo.",
 
                 // Accessibility Labels
                 "accessibility.removePlayer": "Rimuovi {name}",
