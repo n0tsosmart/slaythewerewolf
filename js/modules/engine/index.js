@@ -8,6 +8,7 @@ import { el } from '../dom.js';
 import { setNetworkCallbacks, isClient, getLocalPlayerName } from '../network.js';
 import { initUI } from '../utils.js';
 import { initBrowserCompatibility } from '../browser-compat.js';
+import { initOfflineDetection } from '../offline.js';
 import {
     renderRoleOptions,
     updateWolfHint,
@@ -258,6 +259,7 @@ export function initApp() {
     }
 
     initBrowserCompatibility();
+    initOfflineDetection();
 }
 
 // Re-export all public functions for external use

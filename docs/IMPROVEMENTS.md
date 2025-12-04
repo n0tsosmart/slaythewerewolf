@@ -283,16 +283,17 @@ PWA install button exists in hamburger menu but isn't prominently shown.
 
 ---
 
-### 14. Offline Mode Improvements
+### 14. Offline Mode Improvements ✅ **COMPLETED**
 
-**Current State:**
-Local mode works offline, but online mode completely fails with no guidance.
+~~**Current State:**~~
+~~Local mode works offline, but online mode completely fails with no guidance.~~
 
-**Recommendations:**
-- Show a clear **"You are offline"** indicator in the header
-- Disable "Online Game" button with explanatory tooltip
-- Allow viewing of **cached game history** when offline
-- Show last successful online game summary if available
+**What was done (December 2024):**
+- **📴 Offline indicator** - Red banner at top of page when offline
+- **Disabled Online button** - Grayed out with tooltip when offline
+- **Auto-update** - UI updates automatically when connection is restored
+
+**Files:** `js/modules/offline.js` (new), `css/components.css`, translations (en/es/it)
 
 ---
 

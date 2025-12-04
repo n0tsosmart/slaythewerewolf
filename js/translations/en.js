@@ -37,6 +37,10 @@ export const en = {
     "buttons.cancel": "Cancel",
     "buttons.confirm": "Confirm",
 
+    // Offline
+    "offline.indicator": "📴 You are offline",
+    "offline.onlineDisabled": "Online mode requires internet connection",
+
     // Language Picker
     "language.label": "Language",
     "theme.label": "Theme",

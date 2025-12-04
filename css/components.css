@@ -776,3 +776,57 @@ input:checked:hover+.slider {
   background: rgba(20, 5, 25, 0.85);
   border-color: rgba(88, 28, 135, 0.55);
 }
+
+/* --------------------------------------------------------------------------
+   Offline Indicator
+   -------------------------------------------------------------------------- */
+.offline-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: #fef2f2;
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  animation: slideDown 0.3s ease;
+}
+
+.offline-indicator.hidden {
+  display: none;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Disabled state for Online Game button when offline */
+.is-offline #onlineGameBtn,
+#onlineGameBtn.disabled-offline {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.is-offline #onlineGameBtn::after,
+#onlineGameBtn.disabled-offline::after {
+  content: '📴';
+  margin-left: 8px;
+}
+
+/* Adjust body padding when offline indicator is shown */
+.is-offline body {
+  padding-top: 36px;
+}

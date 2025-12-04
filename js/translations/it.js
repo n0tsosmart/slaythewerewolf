@@ -38,6 +38,10 @@ export const it = {
     "buttons.confirm": "Conferma",
     "buttons.leave": "Esci",
 
+    // Offline
+    "offline.indicator": "📴 Sei offline",
+    "offline.onlineDisabled": "La modalità online richiede una connessione internet",
+
     // Language Picker
     "language.label": "Lingua",
     "theme.label": "Tema",
