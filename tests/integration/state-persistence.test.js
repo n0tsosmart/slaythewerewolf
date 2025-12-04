@@ -118,6 +118,7 @@ describe('store.js - State Persistence', () => {
             realState.eliminatedPlayers = [{ name: 'Alice', type: 'maul', day: 1 }];
             realState.revealComplete = true;
             realState.language = 'es';
+            realState.hapticsEnabled = false;
 
             // Persist
             persistState();
@@ -128,6 +129,7 @@ describe('store.js - State Persistence', () => {
             realState.narratorDay = 1;
             realState.eliminatedPlayers = [];
             realState.language = 'en';
+            realState.hapticsEnabled = true;
 
             // Restore
             restoreFromStorage();
@@ -139,6 +141,7 @@ describe('store.js - State Persistence', () => {
             expect(realState.narratorDay).toBe(2);
             expect(realState.eliminatedPlayers).toHaveLength(1);
             expect(realState.language).toBe('es');
+            expect(realState.hapticsEnabled).toBe(false);
         });
 
         it('should handle empty localStorage gracefully', () => {

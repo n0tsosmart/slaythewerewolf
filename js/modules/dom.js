@@ -57,6 +57,7 @@ export const el = {
   get roleOptions() { return document.getElementById("roleOptions"); },
   get roleSummary() { return document.getElementById("roleSummary"); },
   get roleSummaryContent() { return document.getElementById("roleSummaryContent"); },
+  get hapticsToggle() { return document.getElementById("hapticsToggle"); },
   get backToLandingFromSetup() { return document.getElementById("backToLandingFromSetup"); },
 
   // Reveal View Elements

@@ -21,6 +21,7 @@ import {
 } from './setup.js';
 import { prepareReveal, revealCard, nextPlayer, clearHandoffCountdown, updateHandoffTimer } from './reveal.js';
 import { initUI, scrollToBottom, getRoleImage } from './utils.js';
+import { vibrate, vibrateShort, vibrateSuccess, PATTERNS } from './haptics.js';
 import { detectMythStatusFromDeck, determineMythOutcome } from './logic.js';
 import { setNetworkCallbacks, isClient, getLocalPlayerName, isHost, getConnectedPlayers, broadcast, sendToPeer, disconnect as networkDisconnect, notifyPlayerEliminated } from './network.js';
 import { initBrowserCompatibility } from './browser-compat.js';
@@ -75,6 +76,9 @@ export function initApp() {
   updateRoleSummary();
   renderPlayerList();
   restoreFromStorage();
+  if (el.hapticsToggle) {
+    el.hapticsToggle.checked = state.hapticsEnabled;
+  }
   // Use handleLanguageChange to ensure all UI is updated according to the restored language
   handleLanguageChange(state.language, { skipPersist: true });
 
@@ -179,6 +183,14 @@ function attachEvents() {
       clampWolfCount();
       updateDeckPreview();
       persistState();
+    });
+  }
+
+  if (el.hapticsToggle) {
+    el.hapticsToggle.addEventListener("change", () => {
+      state.hapticsEnabled = el.hapticsToggle.checked;
+      persistState();
+      if (state.hapticsEnabled) vibrateShort();
     });
   }
 
@@ -426,6 +438,13 @@ function attachEvents() {
   });
 
   if (el.infoButton) el.infoButton.addEventListener("click", openInfoModal);
+
+  // Haptics for all buttons
+  document.addEventListener("click", (event) => {
+    if (event.target.closest("button") || event.target.closest(".btn") || event.target.closest(".toggle-switch")) {
+      vibrateShort();
+    }
+  });
 
 }
 
@@ -1290,6 +1309,7 @@ export function lynchPlayer(player) {
       }
       state.benvenutoPlayer = player;
       state.playerVotes = {};
+      vibrate(PATTERNS.ELIMINATION);
       renderSummaryList();
       persistState();
       evaluateVictoryConditions();
@@ -1327,6 +1347,7 @@ export function toggleElimination(player) {
     if (isHost()) {
       notifyPlayerEliminated(player);
     }
+    vibrate(PATTERNS.ELIMINATION);
   }
   renderSummaryList();
   updateNarratorUI({ preserveGuideStep: true });
@@ -1514,6 +1535,8 @@ export function showVictoryScreen({ team }) {
   el.victoryTitle.textContent = texts.title;
   el.victorySubtitle.textContent = texts.subtitle;
   el.victoryList.innerHTML = "";
+
+  vibrate(PATTERNS.VICTORY);
 
   state.victory.winners.forEach((entry) => {
     const li = document.createElement("li");

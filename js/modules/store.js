@@ -38,6 +38,7 @@ export function persistState() {
       benvenutoPlayer: state.benvenutoPlayer,
       assignedRole: state.assignedRole,
       connectionStatus: state.connectionStatus,
+      hapticsEnabled: state.hapticsEnabled,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
   } catch (error) {
@@ -104,6 +105,7 @@ export function restoreFromStorage() {
     state.playerVotes = data.playerVotes || {};
     state.benvenutoPlayer = data.benvenutoPlayer || null;
     state.connectionStatus = data.connectionStatus || 'disconnected';
+    state.hapticsEnabled = data.hapticsEnabled !== undefined ? Boolean(data.hapticsEnabled) : true;
 
   } catch (error) {
     console.warn("Unable to restore the game state", error);

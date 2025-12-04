@@ -67,6 +67,7 @@ window.TRANSLATIONS = {
                 "setup.specialsHelp": "The Seer is always included.",
                 "setup.rolesSummary": "Role composition",
                 "setup.rolesInDeck": "{count}× {role}",
+                "setup.haptics": "Vibration",
 
                 // Role-related messages
                 "roles.availableFrom": "Suggested for {count}+ players.",
@@ -383,6 +384,7 @@ window.TRANSLATIONS = {
                 "setup.specialsHelp": "El Vidente siempre está incluido.",
                 "setup.rolesSummary": "Composición de roles",
                 "setup.rolesInDeck": "{count}× {role}",
+                "setup.haptics": "Vibration",
 
                 // Role-related messages
                 "roles.availableFrom": "Sugerido a partir de {count} jugadores.",
@@ -698,6 +700,7 @@ window.TRANSLATIONS = {
                 "setup.specialsHelp": "Il Veggente è sempre incluso!",
                 "setup.rolesSummary": "Composizione ruoli",
                 "setup.rolesInDeck": "{count}× {role}",
+                "setup.haptics": "Vibration",
 
                 // Role-related messages
                 "roles.availableFrom": "Consigliato da {count}+ giocatori.",

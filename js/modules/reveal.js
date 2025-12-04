@@ -3,6 +3,7 @@ import { persistState } from './store.js';
 import { el } from './dom.js';
 import { t, getRoleContent } from './i18n.js';
 import { scrollToBottom, getRoleImage } from './utils.js';
+import { vibrate, PATTERNS } from './haptics.js';
 
 let handoffTimerId = null;
 
@@ -35,6 +36,7 @@ export function prepareReveal() {
 export function revealCard() {
   const card = state.deck[state.revealIndex];
   if (!card) return;
+  vibrate(PATTERNS.REVEAL);
   el.roleCard.classList.remove("can-reveal");
   const roleText = getRoleContent(card.roleId);
   el.roleCard.dataset.team = card.team;

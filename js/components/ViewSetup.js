@@ -28,6 +28,14 @@ export class ViewSetup extends HTMLElement {
             </div>
             <span id="wolfHint" class="help"></span>
           </label>
+
+          <div class="theme-toggle-container" style="background: rgba(35, 18, 20, 0.85); padding: 12px; border-radius: 14px; border: 1px solid rgba(107, 33, 33, 0.55); margin-top: 8px;">
+             <span class="theme-label" data-i18n="setup.haptics">Vibration</span>
+             <label class="toggle-switch">
+               <input type="checkbox" id="hapticsToggle" checked />
+               <span class="slider"></span>
+             </label>
+          </div>
         </div>
 
         <div class="player-list-section animate-entry stagger-3">
