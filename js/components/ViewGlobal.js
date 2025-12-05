@@ -1,5 +1,5 @@
 import { applyTranslations } from '../modules/i18n.js';
-import { openPrivacyModal, closePrivacyModal, openInfoModal, closeInfoModal, openVotingModal, closeVotingModal } from '../modules/engine.js';
+import { openPrivacyModal, closePrivacyModal, openInfoModal, closeInfoModal, openVotingModal, closeVotingModal } from '../modules/engine/index.js';
 
 
 export class ViewGlobal extends HTMLElement {

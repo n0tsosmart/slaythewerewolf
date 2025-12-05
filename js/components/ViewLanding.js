@@ -1,5 +1,5 @@
 import { el } from '../modules/dom.js';
-import { showView, showLobbyView } from '../modules/engine.js';
+import { showView, showLobbyView } from '../modules/engine/index.js';
 import { applyTranslations } from '../modules/i18n.js';
 
 export class ViewLanding extends HTMLElement {

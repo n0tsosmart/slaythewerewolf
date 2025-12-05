@@ -3,7 +3,7 @@ import { el } from '../modules/dom.js';
 import { state } from '../modules/state.js';
 import { t, applyTranslations } from '../modules/i18n.js';
 import { hostGame, joinGame, setNetworkCallbacks, disconnect, getRoomCode, getConnectedPlayers, isHost, getLocalPlayerName, getHostPeerId } from '../modules/network.js';
-import { showView, showClientRoleView, showLobbyView, confirmAction } from '../modules/engine.js';
+import { showView, showClientRoleView, showLobbyView, confirmAction } from '../modules/engine/index.js';
 import { renderPlayerList } from '../modules/setup.js';
 import { persistState } from '../modules/store.js';
 
