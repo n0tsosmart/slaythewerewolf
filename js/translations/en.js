@@ -9,7 +9,7 @@ export const en = {
     "header.tagline1": "Remember to slay the wolf.",
 
     // Global Buttons
-    "buttons.restart": "🔄 New game",
+    "buttons.restart": "New game",
     "buttons.addPlayer": "Add",
     "buttons.clearPlayers": "Clear list",
     "buttons.lynch": "🔥 Lynch",

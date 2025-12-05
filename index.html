@@ -33,7 +33,7 @@
   <link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico" />
 
   <!-- Main stylesheet, includes versioning for cache busting -->
-  <link rel="stylesheet" href="css/styles.css?v=1.3.7" />
+  <link rel="stylesheet" href="css/styles.css?v=1.4.0" />
 
   <!-- Inline splash screen styles for instant display -->
   <style>
@@ -54,9 +54,25 @@
       visibility: hidden;
     }
 
+    .splash-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2.5rem 3rem;
+      background: rgba(8, 5, 6, 0.95);
+      border: 1px solid rgba(250, 204, 21, 0.2);
+      border-radius: 24px;
+      box-shadow:
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        0 0 80px rgba(185, 28, 28, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
     #splash-screen img {
-      width: 180px;
-      height: 180px;
+      width: 140px;
+      height: 140px;
       animation: splash-pulse 1.5s ease-in-out infinite;
     }
 
@@ -98,9 +114,11 @@
 <body>
   <!-- Splash screen for PWA startup -->
   <div id="splash-screen">
-    <img src="assets/icons/icon-192x192.png" alt="Logo" />
-    <div class="splash-title">Slay the Werewolf</div>
-    <div class="splash-credit">made by n0tsosmart</div>
+    <div class="splash-panel">
+      <img src="assets/logo.png" alt="Logo" />
+      <div class="splash-title">Slay the Werewolf</div>
+      <div class="splash-credit">made by n0tsosmart</div>
+    </div>
   </div>
 
   <!-- Main application container -->
@@ -141,7 +159,7 @@
   <!-- JavaScript files, includes versioning for cache busting and defer attribute for performance -->
   <!-- PeerJS for WebRTC functionality -->
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-  <script type="module" src="js/app.js?v=1.3.9"></script>
+  <script type="module" src="js/app.js?v=1.4.0"></script>
   <!-- PWA Support -->
   <script type="module" src="js/modules/pwa.js?v=1.2.2"></script>
   <script type="module" src="js/modules/pwa-init.js?v=1.2.2"></script>

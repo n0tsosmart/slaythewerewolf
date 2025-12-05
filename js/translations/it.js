@@ -9,7 +9,7 @@ export const it = {
     "header.tagline1": "Ricordati di uccidere il lupo.",
 
     // Global Buttons
-    "buttons.restart": "🔄 Nuova partita",
+    "buttons.restart": "Nuova partita",
     "buttons.addPlayer": "Aggiungi",
     "buttons.clearPlayers": "Svuota elenco",
     "buttons.lynch": "🔥 Lincia",

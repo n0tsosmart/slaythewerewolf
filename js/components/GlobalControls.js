@@ -44,7 +44,7 @@ export class GlobalControls extends HTMLElement {
             rel="noopener noreferrer" class="menu-item menu-item-donate" role="menuitem" data-i18n="menu.donate">❤️ Support this project</a>
         </div>
       </div>
-      <button id="restartBtn" class="btn-ghost btn-small" type="button" data-i18n="buttons.restart">🔄 New game</button>
+      <button id="restartBtn" class="restart-btn" type="button" data-i18n="buttons.restart">New game</button>
       
       <div id="mafiaWarningModal" class="modal-overlay hidden">
         <div class="modal-panel">

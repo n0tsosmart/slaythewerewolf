@@ -379,6 +379,39 @@ fieldset.options {
   transform: translateY(0);
 }
 
+/* Restart/New Game Button - Matches hamburger height */
+.restart-btn {
+  height: 48px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-gold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.restart-btn:hover {
+  border-color: rgba(250, 204, 21, 0.4);
+  box-shadow: var(--glass-shadow), 0 0 15px rgba(250, 204, 21, 0.15);
+  transform: translateY(-2px);
+}
+
+.restart-btn:active {
+  transform: translateY(0);
+}
+
 .hamburger-icon {
   display: flex;
   flex-direction: column;

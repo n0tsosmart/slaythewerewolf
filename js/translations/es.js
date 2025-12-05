@@ -9,7 +9,7 @@ export const es = {
     "header.tagline1": "Recuerda cazar al lobo.",
 
     // Global Buttons
-    "buttons.restart": "🔄 Nueva partida",
+    "buttons.restart": "Nueva partida",
     "buttons.addPlayer": "Añadir",
     "buttons.clearPlayers": "Limpiar lista",
     "buttons.lynch": "🔥 Linchar",
