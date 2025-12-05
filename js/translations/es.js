@@ -118,6 +118,14 @@ export const es = {
     // Day Cycle
     "day.label": "Día actual",
 
+    // Turn Timer
+    "timer.warning30": "⏱️ ¡Quedan 30 segundos!",
+    "timer.warning10": "⏱️ ¡Quedan 10 segundos!",
+    "timer.complete": "⏰ ¡Se acabó el tiempo!",
+    "timer.skipped": "Temporizador omitido",
+    "timer.pause": "Pausar",
+    "timer.resume": "Reanudar",
+
     // Narrator Guide
     "guide.title": "Guía de narración",
     "guide.progress": "Paso {current} / {total}",

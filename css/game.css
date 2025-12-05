@@ -777,6 +777,216 @@ details[open] .roles-caret {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* --------------------------------------------------------------------------
+   Turn Timer (Collapsible)
+   -------------------------------------------------------------------------- */
+.timer-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Toggle button - always visible */
+.timer-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  border-radius: 12px;
+  color: #fbbf24;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.timer-toggle:hover {
+  background: rgba(251, 191, 36, 0.25);
+  border-color: rgba(251, 191, 36, 0.6);
+}
+
+.timer-toggle-icon {
+  font-size: 1.2rem;
+}
+
+.timer-mini-display {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  min-width: 40px;
+}
+
+/* Expanded timer panel */
+.timer-expanded {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(15, 16, 20, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 16px;
+  animation: fadeInUp 0.2s ease;
+}
+
+.timer-control.collapsed .timer-expanded {
+  display: none;
+}
+
+.timer-display-wrapper {
+  position: relative;
+  width: 90px;
+  height: 90px;
+}
+
+.timer-ring-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.timer-ring-bg {
+  fill: none;
+  stroke: rgba(148, 163, 184, 0.2);
+  stroke-width: 6;
+}
+
+.timer-ring-progress {
+  fill: none;
+  stroke: var(--color-gold);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 283;
+  /* 2 * PI * 45 */
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.5s linear;
+}
+
+.timer-display {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f8fafc;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-display.paused {
+  animation: timerBlink 1s ease-in-out infinite;
+}
+
+.timer-display.timer-urgent {
+  color: #f87171;
+  animation: timerPulse 0.5s ease-in-out infinite;
+}
+
+.timer-display.timer-complete {
+  animation: timerComplete 0.3s ease-in-out 3;
+}
+
+@keyframes timerBlink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes timerPulse {
+
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes timerComplete {
+
+  0%,
+  100% {
+    color: #f8fafc;
+  }
+
+  50% {
+    color: #fbbf24;
+  }
+}
+
+.timer-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.timer-preset,
+.timer-action {
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.timer-preset {
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  color: #fbbf24;
+}
+
+.timer-preset:hover {
+  background: rgba(251, 191, 36, 0.25);
+  border-color: rgba(251, 191, 36, 0.6);
+}
+
+.timer-action {
+  background: rgba(148, 163, 184, 0.15);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  color: #e2e8f0;
+}
+
+.timer-action:hover:not(:disabled) {
+  background: rgba(148, 163, 184, 0.25);
+}
+
+.timer-action:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.timer-control.timer-active .timer-ring-progress {
+  stroke: #22c55e;
+}
+
+.timer-control.timer-active .timer-display.timer-urgent+.timer-ring-progress,
+.timer-control .timer-display.timer-urgent~.timer-ring-svg .timer-ring-progress {
+  stroke: #ef4444;
+}
+
+.timer-control.timer-active .timer-toggle {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.15);
 }
 
 .day-number {
@@ -792,6 +1002,12 @@ details[open] .roles-caret {
   padding: 16px;
   background: rgba(17, 12, 12, 0.85);
   animation: fadeInUp 0.35s ease;
+}
+
+/* Next Day button - placed after guide panel */
+.btn-next-day {
+  width: 100%;
+  margin-top: 8px;
 }
 
 .guide-header {

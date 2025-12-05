@@ -117,6 +117,14 @@ export const en = {
     // Day Cycle
     "day.label": "Current day",
 
+    // Turn Timer
+    "timer.warning30": "⏱️ 30 seconds left!",
+    "timer.warning10": "⏱️ 10 seconds left!",
+    "timer.complete": "⏰ Time is up!",
+    "timer.skipped": "Timer skipped",
+    "timer.pause": "Pause",
+    "timer.resume": "Resume",
+
     // Narrator Guide
     "guide.title": "Narration guide",
     "guide.progress": "Step {current} / {total}",

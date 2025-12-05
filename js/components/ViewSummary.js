@@ -54,7 +54,29 @@ export class ViewSummary extends HTMLElement {
             <p class="eyebrow" data-i18n="day.label">Current day</p>
             <p class="day-number" id="dayCounter">1</p>
           </div>
-          <button id="nextDayBtn" class="btn-day" type="button" data-i18n="buttons.nextDay">Next day</button>
+          
+          <div class="timer-control collapsed" id="timerControl">
+            <button id="timerToggle" class="timer-toggle" type="button" title="Toggle timer">
+              <span class="timer-toggle-icon">⏱️</span>
+              <span id="timerMiniDisplay" class="timer-mini-display"></span>
+            </button>
+            <div class="timer-expanded">
+              <div class="timer-display-wrapper">
+                <svg class="timer-ring-svg" viewBox="0 0 100 100">
+                  <circle class="timer-ring-bg" cx="50" cy="50" r="45" />
+                  <circle id="timerRing" class="timer-ring-progress" cx="50" cy="50" r="45" />
+                </svg>
+                <span id="timerDisplay" class="timer-display">--:--</span>
+              </div>
+              <div class="timer-buttons">
+                <button id="timer2min" class="timer-preset" type="button" title="2 minutes">2m</button>
+                <button id="timer3min" class="timer-preset" type="button" title="3 minutes">3m</button>
+                <button id="timer5min" class="timer-preset" type="button" title="5 minutes">5m</button>
+                <button id="timerPause" class="timer-action" type="button" disabled title="Pause">⏸️</button>
+                <button id="timerSkip" class="timer-action" type="button" disabled title="Skip">⏭️</button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="guide-panel">
@@ -73,6 +95,8 @@ export class ViewSummary extends HTMLElement {
               ➡️</button>
           </div>
         </div>
+        
+        <button id="nextDayBtn" class="btn-day btn-next-day" type="button" data-i18n="buttons.nextDay">Next day</button>
       </div>
     </section>
     `;

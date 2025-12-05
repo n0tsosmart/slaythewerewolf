@@ -9,6 +9,7 @@ import { setNetworkCallbacks, isClient, getLocalPlayerName } from '../network.js
 import { initUI } from '../utils.js';
 import { initBrowserCompatibility } from '../browser-compat.js';
 import { initOfflineDetection } from '../offline.js';
+import { initTimer } from '../timer.js';
 import {
     renderRoleOptions,
     updateWolfHint,
@@ -260,6 +261,7 @@ export function initApp() {
 
     initBrowserCompatibility();
     initOfflineDetection();
+    initTimer();
 }
 
 // Re-export all public functions for external use

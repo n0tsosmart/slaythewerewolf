@@ -133,20 +133,20 @@ sed -i "s/slay-werewolf-v[0-9]\+\.[0-9]\+\.[0-9]\+/slay-werewolf-v$VERSION/g" sw
 
 ---
 
-### 6. Turn Timer Feature ⏱️
+### 6. Turn Timer Feature ⏱️ ✅ **COMPLETED**
 
-**Description:**
-Add optional turn timers for discussion phases to keep the game moving.
+~~**Description:**~~
+~~Add optional turn timers for discussion phases to keep the game moving.~~
 
-**Features:**
-- **Configurable Timer**: 2/3/5 minute options per day phase
-- **Visual Countdown**: Circular progress indicator
-- **Audio Warning**: 30-second and 10-second alerts (if sounds enabled)
-- **Pause/Resume**: Allow narrator to pause mid-discussion
-- **Skip Timer**: Option to advance without waiting
+**What was done (December 2024):**
+- **⏱️ Timer presets** - 2, 3, or 5 minute buttons
+- **Circular progress** - SVG ring with countdown animation  
+- **🔔 Audio warnings** - Beeps at 30s and 10s
+- **⏸️ Pause/Resume** - Pause mid-discussion
+- **⏭️ Skip** - Advance without waiting
+- Timer auto-stops on day advance
 
-**UI Location:**
-Add timer controls to the narrator guide section in `ViewSummary.js`.
+**Files:** `js/modules/timer.js` (new), `ViewSummary.js`, `game.css`, translations (en/es/it)
 
 ---
 
