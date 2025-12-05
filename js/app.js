@@ -11,6 +11,7 @@ import './components/ViewGlobal.js';
 import './components/ViewLobby.js'; // New
 import './components/ViewClientRole.js'; // New
 import './components/ViewLanding.js'; // New
+import './components/ViewTutorial.js'; // Onboarding tutorial
 
 // Debug log to verify app.js execution
 console.log("[SlayTheWerewolf] app.js loaded");

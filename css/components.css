@@ -830,3 +830,150 @@ input:checked:hover+.slider {
 .is-offline body {
   padding-top: 36px;
 }
+
+/* --------------------------------------------------------------------------
+   Tutorial Modal
+   -------------------------------------------------------------------------- */
+.tutorial-panel {
+  max-width: 480px;
+  text-align: center;
+}
+
+.tutorial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.tutorial-header .modal-title {
+  margin: 0;
+}
+
+.tutorial-progress {
+  font-size: 0.85rem;
+  color: var(--color-gray-medium);
+  font-weight: 500;
+}
+
+.tutorial-content {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tutorial-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+}
+
+.tutorial-icon {
+  font-size: 4rem;
+  line-height: 1;
+  animation: tutorialIconPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.tutorial-step h4 {
+  font-size: 1.25rem;
+  color: var(--color-gold);
+  margin: 0;
+  font-weight: 700;
+}
+
+.tutorial-step p {
+  font-size: 1rem;
+  color: var(--color-gray-light);
+  margin: 0;
+  line-height: 1.6;
+  max-width: 320px;
+}
+
+.tutorial-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.tutorial-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(148, 163, 184, 0.3);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.tutorial-dot:hover {
+  background: rgba(148, 163, 184, 0.5);
+  transform: scale(1.2);
+}
+
+.tutorial-dot.active {
+  background: var(--color-gold);
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+}
+
+.tutorial-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.tutorial-nav {
+  display: flex;
+  gap: 10px;
+}
+
+@keyframes tutorialIconPop {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+  .tutorial-panel {
+    padding: 20px 16px;
+  }
+
+  .tutorial-icon {
+    font-size: 3rem;
+  }
+
+  .tutorial-step h4 {
+    font-size: 1.1rem;
+  }
+
+  .tutorial-step p {
+    font-size: 0.95rem;
+  }
+
+  .tutorial-actions {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+
+  .tutorial-actions #tutorialSkip {
+    width: 100%;
+  }
+
+  .tutorial-nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .tutorial-nav button {
+    flex: 1;
+  }
+}

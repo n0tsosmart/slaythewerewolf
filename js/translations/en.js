@@ -330,6 +330,26 @@ export const en = {
     "privacy.openSourceDesc": "This application is open source. You can review the entire codebase on GitHub to verify how data is handled.",
     "privacy.dataDeletionTitle": "Data Deletion",
     "privacy.dataDeletionDesc": "You can clear all stored data at any time by clearing your browser's local storage or cache for this website.",
+
+    // Tutorial
+    "tutorial.title": "How to Play",
+    "tutorial.skip": "Skip",
+    "tutorial.prev": "← Back",
+    "tutorial.next": "Next →",
+    "tutorial.done": "Let's Play!",
+    "tutorial.step1.title": "Welcome to Werewolf",
+    "tutorial.step1.desc": "A social deduction game where villagers must find and eliminate werewolves hiding among them before it's too late.",
+    "tutorial.step2.title": "Setup the Game",
+    "tutorial.step2.desc": "Choose the number of players (5-24), add optional special roles, and optionally enter player names for easy tracking.",
+    "tutorial.step3.title": "Deal the Cards",
+    "tutorial.step3.desc": "Pass the device around so each player can secretly see their role. Only you know who you are!",
+    "tutorial.step4.title": "Night Phase",
+    "tutorial.step4.desc": "Everyone closes their eyes. The narrator guides special roles to wake up and use their powers. Werewolves choose a victim.",
+    "tutorial.step5.title": "Day Phase",
+    "tutorial.step5.desc": "Discuss and debate! The village votes to lynch a suspected werewolf. Use the voting buttons to track suspects.",
+    "tutorial.step6.title": "Win the Game",
+    "tutorial.step6.desc": "Village wins when all werewolves are eliminated. Werewolves win when they equal the remaining villagers.",
+    "menu.tutorial": "📖 How to Play",
 };
 
 /**

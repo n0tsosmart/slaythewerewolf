@@ -1,10 +1,10 @@
 // Service Worker for Slay the Werewolf PWA
-const CACHE_NAME = 'slay-werewolf-v1.2.1';
+const CACHE_NAME = 'slay-werewolf-v1.2.2';
 const ASSETS_TO_CACHE = [
     '/slaythewerewolf/',
     '/slaythewerewolf/index.html',
-    '/slaythewerewolf/css/styles.css?v=1.2.1',
-    '/slaythewerewolf/js/app.js?v=1.2.1',
+    '/slaythewerewolf/css/styles.css?v=1.2.2',
+    '/slaythewerewolf/js/app.js?v=1.2.2',
     '/slaythewerewolf/js/translations/index.js',
     '/slaythewerewolf/js/translations/en.js',
     '/slaythewerewolf/assets/logo.png',

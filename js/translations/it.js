@@ -331,6 +331,26 @@ export const it = {
     "privacy.openSourceDesc": "Questa applicazione è open source. Puoi esaminare l'intero codice su GitHub per verificare come vengono gestiti i dati.",
     "privacy.dataDeletionTitle": "Cancellazione dei Dati",
     "privacy.dataDeletionDesc": "Puoi cancellare tutti i dati archiviati in qualsiasi momento cancellando l'archiviazione locale o la cache del browser per questo sito web.",
+
+    // Tutorial
+    "tutorial.title": "Come Giocare",
+    "tutorial.skip": "Salta",
+    "tutorial.prev": "← Indietro",
+    "tutorial.next": "Avanti →",
+    "tutorial.done": "Giochiamo!",
+    "tutorial.step1.title": "Benvenuto al Lupo Mannaro",
+    "tutorial.step1.desc": "Un gioco di deduzione sociale dove i villici devono trovare e eliminare i lupi mannari nascosti tra loro prima che sia troppo tardi.",
+    "tutorial.step2.title": "Configura la Partita",
+    "tutorial.step2.desc": "Scegli il numero di giocatori (5-24), aggiungi ruoli speciali opzionali e inserisci i nomi per facilitare il tracciamento.",
+    "tutorial.step3.title": "Distribuisci le Carte",
+    "tutorial.step3.desc": "Passa il dispositivo in modo che ogni giocatore veda il proprio ruolo in segreto. Solo tu sai chi sei!",
+    "tutorial.step4.title": "Fase Notturna",
+    "tutorial.step4.desc": "Tutti chiudono gli occhi. Il narratore guida i ruoli speciali a svegliarsi e usare i loro poteri. I lupi scelgono una vittima.",
+    "tutorial.step5.title": "Fase Diurna",
+    "tutorial.step5.desc": "Discuti e dibatti! Il villaggio vota per linciare un sospetto lupo. Usa i pulsanti per tracciare gli indiziati.",
+    "tutorial.step6.title": "Vinci la Partita",
+    "tutorial.step6.desc": "Il villaggio vince quando tutti i lupi sono eliminati. I lupi vincono quando eguagliano i villici rimasti.",
+    "menu.tutorial": "📖 Come Giocare",
 };
 
 /**

@@ -2,6 +2,7 @@ import { applyTranslations } from '../modules/i18n.js';
 import { state } from '../modules/state.js';
 import { persistState } from '../modules/store.js';
 import { vibrateShort } from '../modules/haptics.js';
+import { openTutorial, shouldShowTutorial } from './ViewTutorial.js';
 
 export class GlobalControls extends HTMLElement {
   connectedCallback() {
@@ -46,6 +47,7 @@ export class GlobalControls extends HTMLElement {
           <button type="button" id="installAppBtn" class="menu-item" role="menuitem" data-i18n="menu.install" style="display: none;">📱 Install App</button>
           <button type="button" id="menuVotingBtn" class="menu-item" role="menuitem" data-i18n="menu.voting">🗳️ Voting
             Rules</button>
+          <button type="button" id="menuTutorialBtn" class="menu-item" role="menuitem" data-i18n="menu.tutorial">📖 How to Play</button>
           <button type="button" id="menuImmersionBtn" class="menu-item" role="menuitem" data-i18n="info.button">📖
             Immersion tips & rules</button>
           <hr class="menu-divider">
@@ -72,6 +74,29 @@ export class GlobalControls extends HTMLElement {
     applyTranslations(this);
     this.initTheme();
     this.initHaptics();
+    this.initTutorial();
+  }
+
+  initTutorial() {
+    const tutorialBtn = this.querySelector('#menuTutorialBtn');
+    if (tutorialBtn) {
+      tutorialBtn.addEventListener('click', () => {
+        // Close menu first
+        const mainMenu = document.getElementById('mainMenu');
+        if (mainMenu && !mainMenu.classList.contains('hidden')) {
+          mainMenu.classList.add('hidden');
+          mainMenu.setAttribute('aria-hidden', 'true');
+          const menuBtn = document.getElementById('menuBtn');
+          if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+        }
+        openTutorial();
+      });
+    }
+
+    // Show tutorial on first visit after a short delay
+    if (shouldShowTutorial()) {
+      setTimeout(() => openTutorial(), 500);
+    }
   }
 
   initHaptics() {

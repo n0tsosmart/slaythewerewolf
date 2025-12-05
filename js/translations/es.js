@@ -331,6 +331,26 @@ export const es = {
     "privacy.openSourceDesc": "Esta aplicación es de código abierto. Puedes revisar todo el código en GitHub para verificar cómo se manejan los datos.",
     "privacy.dataDeletionTitle": "Eliminación de Datos",
     "privacy.dataDeletionDesc": "Puedes borrar todos los datos almacenados en cualquier momento limpiando el almacenamiento local o la caché de tu navegador para este sitio web.",
+
+    // Tutorial
+    "tutorial.title": "Cómo Jugar",
+    "tutorial.skip": "Omitir",
+    "tutorial.prev": "← Atrás",
+    "tutorial.next": "Siguiente →",
+    "tutorial.done": "¡A Jugar!",
+    "tutorial.step1.title": "Bienvenido al Hombre Lobo",
+    "tutorial.step1.desc": "Un juego de deducción social donde los aldeanos deben encontrar y eliminar a los licántropos ocultos entre ellos antes de que sea demasiado tarde.",
+    "tutorial.step2.title": "Configura la Partida",
+    "tutorial.step2.desc": "Elige el número de jugadores (5-24), añade roles especiales opcionales y opcionalmente ingresa nombres para facilitar el seguimiento.",
+    "tutorial.step3.title": "Reparte las Cartas",
+    "tutorial.step3.desc": "Pasa el dispositivo para que cada jugador vea su rol en secreto. ¡Solo tú sabes quién eres!",
+    "tutorial.step4.title": "Fase Nocturna",
+    "tutorial.step4.desc": "Todos cierran los ojos. El narrador guía a los roles especiales para despertar y usar sus poderes. Los lobos eligen una víctima.",
+    "tutorial.step5.title": "Fase Diurna",
+    "tutorial.step5.desc": "¡Discute y debate! El pueblo vota para linchar a un sospechoso. Usa los botones de votación para seguir a los acusados.",
+    "tutorial.step6.title": "Gana la Partida",
+    "tutorial.step6.desc": "El pueblo gana cuando todos los lobos son eliminados. Los lobos ganan cuando igualan a los aldeanos restantes.",
+    "menu.tutorial": "📖 Cómo Jugar",
 };
 
 /**
