@@ -808,6 +808,11 @@ details[open] .roles-caret {
   z-index: -1;
   filter: brightness(0.4) contrast(1.1);
   border-radius: 0;
+  /* Prevent repaints/flashing when vote counts change */
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .summary-item.eliminated {
@@ -1118,11 +1123,15 @@ details[open] .roles-caret {
   top: 8px;
   /* Gap from top when stuck */
   z-index: 10;
-  background: var(--color-background, #0f0f13);
+  /* Glassmorphism styling consistent with rest of app */
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
   margin: 0 0 12px 0;
   padding: 10px;
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  border: 1px solid var(--glass-border);
   border-radius: 12px;
+  box-shadow: var(--glass-shadow);
 }
 
 .summary-header-row {
@@ -1135,19 +1144,21 @@ details[open] .roles-caret {
 .day-badge {
   display: flex;
   align-items: center;
-  gap: 4px;
-  background: rgba(251, 191, 36, 0.15);
-  border: 1px solid rgba(251, 191, 36, 0.4);
-  border-radius: 6px;
-  padding: 4px 8px;
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(251, 191, 36, 0.1));
+  border: 1px solid rgba(251, 191, 36, 0.5);
+  border-radius: 10px;
+  padding: 6px 12px;
   flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .day-label {
-  font-size: 0.55rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
-  color: #94a3b8;
+  letter-spacing: 0.05em;
+  color: #d4a017;
+  font-weight: 600;
 }
 
 /* Hide label on very small screens */
@@ -1158,16 +1169,17 @@ details[open] .roles-caret {
 }
 
 .day-value {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 1.15rem;
+  font-weight: 800;
   color: #fbbf24;
   line-height: 1;
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
 }
 
 /* Timer in header - compact */
 .summary-header-row .timer-control {
   flex-shrink: 0;
-  position: static;
+  position: relative;
 }
 
 .summary-header-row .timer-control .timer-toggle {
@@ -1182,15 +1194,16 @@ details[open] .roles-caret {
   min-width: 24px;
 }
 
-/* Timer expanded - positioned below sticky header */
+/* Timer expanded - positioned below sticky header, right-aligned with button */
 .summary-header-row .timer-control .timer-expanded {
-  position: fixed;
-  top: 70px;
-  /* Below the sticky header */
-  left: 50%;
-  transform: translateX(-50%);
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: auto;
+  transform: none;
   z-index: 100;
   min-width: 220px;
+  margin-top: 12px;
 }
 
 .btn-next-day-compact {
@@ -1394,11 +1407,15 @@ details[open] .roles-caret {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 16px;
-  background: rgba(15, 16, 20, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  gap: 14px;
+  padding: 20px;
+  /* Glassmorphism styling consistent with rest of app */
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
   border-radius: 16px;
+  box-shadow: var(--glass-shadow);
   animation: fadeInUp 0.2s ease;
 }
 
@@ -1743,6 +1760,14 @@ details:not([open])>summary {
   color: var(--color-gold);
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+.victory-subtitle {
+  font-size: 1rem;
+  color: var(--color-gray-light);
+  margin-bottom: 20px;
+  padding: 0 16px;
+  line-height: 1.5;
 }
 
 /* --------------------------------------------------------------------------

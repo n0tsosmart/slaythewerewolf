@@ -6,7 +6,7 @@ import { state } from '../state.js';
 import { persistState } from '../store.js';
 import { el } from '../dom.js';
 import { t } from '../i18n.js';
-import { stopTimer } from '../timer.js';
+import { stopTimer, resetTimerPlaceholder } from '../timer.js';
 
 // Callback references to avoid circular dependencies
 let _renderMythPanel = null;
@@ -198,7 +198,7 @@ export function advanceDay() {
                 ...entry,
                 locked: true,
             }));
-            stopTimer(); // Reset timer on day advance
+            resetTimerPlaceholder(); // Reset timer on day advance
             if (_renderSummaryList) _renderSummaryList();
             updateNarratorUI();
         },

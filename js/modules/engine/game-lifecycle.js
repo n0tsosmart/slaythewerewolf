@@ -19,6 +19,7 @@ import {
 } from '../setup.js';
 import { prepareReveal, clearHandoffCountdown } from '../reveal.js';
 import { detectMythStatusFromDeck } from '../logic.js';
+import { resetTimerPlaceholder } from '../timer.js';
 import {
     isClient,
     isHost,
@@ -177,6 +178,7 @@ export function resetGame({ preserveNames = true } = {}) {
     const preservedWolfCount = el.wolfCount.value;
 
     clearHandoffCountdown();
+    resetTimerPlaceholder(); // Reset timer on new match
     state.deck = [];
     state.players = [];
     state.revealIndex = 0;

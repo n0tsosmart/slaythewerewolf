@@ -28,7 +28,7 @@ export const en = {
     "buttons.stepMode": "Step mode",
     "buttons.prevStep": "⬅️ Back",
     "buttons.nextStep": "Next ➡️",
-    "buttons.eliminate": "🐺 Mauled",
+    "buttons.eliminate": "🐺 Maul",
     "buttons.eliminateNight": "Eliminate",
     "buttons.newMatch": "🎮 New game",
     "buttons.finalNew": "🔁 New game",
@@ -115,7 +115,7 @@ export const en = {
     "myth.completeWarning": "Complete the Mythomaniac transformation before advancing to the next day.",
 
     // Day Cycle
-    "day.label": "Current day",
+    "day.label": "Day",
     "day.tooltip": "This is the current game day",
     "day.clickTooltip": "📅 Day {day} of the game",
 
@@ -361,7 +361,7 @@ export const enMafia = {
     "balance.village": "🔵 Favors Citizens",
     "header.tagline1": "Remember to eliminate the mafia.",
     "buttons.lynch": "⚖️ Arrest",
-    "buttons.eliminate": "🔫 Shot",
+    "buttons.eliminate": "🔫 Shoot",
     "setup.wolvesLabel": "Mafiosi",
     "setup.wolfHint": "Automatically calculated mafiosi (customizable: up to 3)",
     "setup.specialsHelp": "The Detective is always included.",
@@ -399,7 +399,7 @@ export const enMafia = {
         "bodyguard": { "name": "Doctor", "teamLabel": "Citizens", "description": "Each night before the mafia attack you protect one player. If targeted, they survive." },
         "owl": { "name": "Journalist", "teamLabel": "Citizens", "description": "Each night you mark a suspect. That player is automatically nominated and with 20+ players dies if they are not Mafia/Rat." },
         "mason": { "name": "Unionist", "teamLabel": "Citizens", "description": "Always in pairs: on the first night you open your eyes and recognize each other as allies." },
-        "werehamster": { "name": "Rat", "teamLabel": "Introvert", "description": "You only want to survive. Immune to mafia attacks but the Detective kills you if they investigate you. Win alone if you live to the end." },
+        "werehamster": { "name": "Rat", "teamLabel": "Loner", "description": "You only want to survive. Immune to mafia attacks but the Detective kills you if they investigate you. Win alone if you live to the end." },
         "mythomaniac": { "name": "Impostor", "teamLabel": "Citizens", "description": "At the end of the second night choose a player: if they are Mafia you become one, if they are the Detective you inherit the power, otherwise you remain citizen." }
     }
 };

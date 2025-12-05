@@ -169,6 +169,11 @@ function updateTimerDisplay() {
 
     if (remainingSeconds <= 0 && totalSeconds === 0) {
         timerDisplay.textContent = '--:--';
+        // Reset mini display to placeholder when timer is inactive
+        const miniDisplay = document.getElementById('timerMiniDisplay');
+        if (miniDisplay) {
+            miniDisplay.textContent = '—';
+        }
         return;
     }
 
@@ -180,11 +185,22 @@ function updateTimerDisplay() {
     // Also update mini display
     const miniDisplay = document.getElementById('timerMiniDisplay');
     if (miniDisplay) {
-        miniDisplay.textContent = (remainingSeconds > 0 || totalSeconds > 0) ? timeText : '';
+        miniDisplay.textContent = (remainingSeconds > 0 || totalSeconds > 0) ? timeText : '—';
     }
 
     // Add urgency class when under 30 seconds
     timerDisplay.classList.toggle('timer-urgent', remainingSeconds > 0 && remainingSeconds <= 30);
+}
+
+/**
+ * Reset timer to placeholder state - called on new day or new match
+ */
+export function resetTimerPlaceholder() {
+    stopTimer();
+    const miniDisplay = document.getElementById('timerMiniDisplay');
+    if (miniDisplay) {
+        miniDisplay.textContent = '—';
+    }
 }
 
 /**
