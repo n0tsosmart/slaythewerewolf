@@ -182,7 +182,7 @@ export const es = {
     "status.ghostTooltip": "Jugador eliminado - puede votar por sospechosos pero debe permanecer en silencio",
 
     // Ghost/Spectator Mode
-    "ghost.reminderTitle": "👻 Reglas del Fantasma",
+    "ghost.reminderTitle": "Reglas del Fantasma",
     "ghost.reminderMessage": "Has sido eliminado. Aún puedes votar para elegir sospechosos, pero no puedes votar en el linchamiento. No debes hablar durante las discusiones y debes cerrar los ojos durante la noche.",
     "ghost.youWere": "Eras un {role}",
 

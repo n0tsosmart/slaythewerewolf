@@ -109,8 +109,22 @@ export const debounce = (func, wait) => {
 
 export function scrollToBottom(view) {
   if (view !== "reveal") return;
+
+  // Only scroll if the action buttons aren't visible
   window.requestAnimationFrame(() => {
-    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    const revealBtn = document.getElementById('revealBtn');
+    const hideBtn = document.getElementById('hideBtn');
+    const btn = (hideBtn && !hideBtn.classList.contains('hidden')) ? hideBtn : revealBtn;
+
+    if (!btn) return;
+
+    const rect = btn.getBoundingClientRect();
+    const isVisible = rect.bottom <= window.innerHeight && rect.top >= 0;
+
+    // Only scroll if the button is not visible
+    if (!isVisible) {
+      btn.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
   });
 }
 

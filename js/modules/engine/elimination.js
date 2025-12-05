@@ -8,7 +8,7 @@ import { el } from '../dom.js';
 import { t, getRoleContent } from '../i18n.js';
 import { getRoleImage } from '../utils.js';
 import { vibrate, PATTERNS } from '../haptics.js';
-import { isHost, notifyPlayerEliminated } from '../network.js';
+import { isHost, notifyPlayerEliminated, notifyPlayerRevived, notifyPlayerStatus } from '../network.js';
 
 // Callback references to avoid circular dependencies
 let _confirmAction = null;
@@ -364,6 +364,39 @@ export function renderSummaryList() {
     renderFallenList();
     if (_renderMythPanel) _renderMythPanel();
     updateEliminationSelect();
+
+    // Broadcast status updates to online players
+    if (isHost()) {
+        broadcastPlayerStatuses(indiziatoPlayers);
+    }
+}
+
+/**
+ * Broadcasts suspect and welcome status to online players
+ */
+function broadcastPlayerStatuses(indiziatoPlayers) {
+    state.players.forEach((player) => {
+        const isBenvenuto = player === state.benvenutoPlayer;
+        const isIndiziato = indiziatoPlayers.includes(player);
+        const eliminationEntry = state.eliminatedPlayers.find((entry) => entry.name === player);
+        const isEliminated = Boolean(eliminationEntry);
+
+        // Only send status if player has a status
+        if (isBenvenuto || isIndiziato) {
+            notifyPlayerStatus(player, {
+                isBenvenuto,
+                isIndiziato,
+                isEliminated
+            });
+        } else if (!isEliminated) {
+            // Clear status for players without status
+            notifyPlayerStatus(player, {
+                isBenvenuto: false,
+                isIndiziato: false,
+                isEliminated: false
+            });
+        }
+    });
 }
 
 /**
@@ -423,6 +456,11 @@ export function toggleElimination(player) {
 
         if (state.benvenutoPlayer === player) {
             state.benvenutoPlayer = null;
+        }
+
+        // Notify revived player in online mode
+        if (isHost()) {
+            notifyPlayerRevived(player);
         }
     } else {
         state.eliminatedPlayers.push({ name: player, locked: false, type: 'sbranato', day: state.narratorDay });

@@ -4,7 +4,7 @@ import { ROLE_LIBRARY, MIN_PLAYERS, OPTIONAL_CONFIG } from './config.js';
 import { t, getRoleContent } from './i18n.js';
 import { createCard, deckFromRoleIds } from './roles.js';
 import { persistState } from './store.js';
-import { shuffle } from './utils.js';
+import { shuffle, getRoleImage } from './utils.js';
 
 // Game Setup Logic
 
@@ -15,8 +15,14 @@ export function renderRoleOptions() {
     const role = ROLE_LIBRARY[config.roleId];
     if (!role) return;
     const localized = getRoleContent(role.id);
+
     const item = document.createElement("label");
     item.className = "option-item";
+    item.dataset.team = role.team;
+
+    // Set role image as background
+    item.style.backgroundImage = `url('${getRoleImage(role.id)}')`;
+
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.value = role.id;
@@ -29,6 +35,7 @@ export function renderRoleOptions() {
     title.append(checkbox);
 
     const name = document.createElement("span");
+    name.className = "option-name";
     name.textContent = localized.name;
     title.append(name);
 
@@ -42,7 +49,7 @@ export function renderRoleOptions() {
     subtitle.textContent = t("roles.availableFrom", { count: config.minPlayers });
 
     const description = document.createElement("p");
-    description.className = "help";
+    description.className = "help option-desc";
     description.textContent = localized.description;
     if (config.noteKey) {
       const note = document.createElement("span");
@@ -260,56 +267,195 @@ export function buildDeck({ playerTotal, wolfTotal, specials }) {
   return shuffle(deck);
 }
 
-// Drag and Drop Logic
+// Drag and Drop Logic - Enhanced with insertion indicators
 
 let draggedItem = null;
 let draggedIndex = null;
 let touchCurrentItem = null;
+let dropIndicator = null;
+let insertionIndex = null;
+
+/**
+ * Generate a deterministic color from a string (player name)
+ */
+function getAvatarColor(name) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const hue = Math.abs(hash) % 360;
+  return `hsl(${hue}, 55%, 45%)`;
+}
+
+/**
+ * Get initials from a player name (up to 2 characters)
+ */
+function getInitials(name) {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+  return name.slice(0, 2).toUpperCase();
+}
+
+/**
+ * Create or get the drop indicator element
+ */
+function getDropIndicator() {
+  if (!dropIndicator) {
+    dropIndicator = document.createElement('div');
+    dropIndicator.className = 'drop-indicator';
+  }
+  return dropIndicator;
+}
+
+/**
+ * Remove the drop indicator from the DOM
+ */
+function removeDropIndicator() {
+  if (dropIndicator && dropIndicator.parentNode) {
+    dropIndicator.parentNode.removeChild(dropIndicator);
+  }
+  insertionIndex = null;
+}
+
+/**
+ * Calculate insertion index based on cursor position relative to chips
+ */
+function calculateInsertionIndex(clientY, list) {
+  const chips = Array.from(list.querySelectorAll('.player-chip:not(.dragging)'));
+  if (chips.length === 0) return 0;
+
+  for (let i = 0; i < chips.length; i++) {
+    const rect = chips[i].getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+
+    if (clientY < midY) {
+      return Number(chips[i].dataset.index);
+    }
+  }
+
+  // If past all chips, insert at end
+  return state.customNames.length;
+}
+
+/**
+ * Position the drop indicator at the calculated insertion point
+ */
+function positionDropIndicator(clientY, list) {
+  const indicator = getDropIndicator();
+  const chips = Array.from(list.querySelectorAll('.player-chip:not(.dragging)'));
+
+  if (chips.length === 0) {
+    removeDropIndicator();
+    return;
+  }
+
+  insertionIndex = calculateInsertionIndex(clientY, list);
+
+  // Don't show indicator if dropping at the same position
+  if (insertionIndex === draggedIndex || insertionIndex === draggedIndex + 1) {
+    removeDropIndicator();
+    return;
+  }
+
+  // Find the reference chip to position the indicator
+  let referenceChip = null;
+  let position = 'before';
+
+  for (const chip of chips) {
+    const chipIndex = Number(chip.dataset.index);
+    if (chipIndex >= insertionIndex) {
+      referenceChip = chip;
+      break;
+    }
+  }
+
+  if (!referenceChip && chips.length > 0) {
+    referenceChip = chips[chips.length - 1];
+    position = 'after';
+  }
+
+  if (referenceChip) {
+    const rect = referenceChip.getBoundingClientRect();
+    const listRect = list.getBoundingClientRect();
+
+    indicator.style.width = `${rect.width}px`;
+    indicator.style.left = `${rect.left - listRect.left}px`;
+
+    if (position === 'before') {
+      indicator.style.top = `${rect.top - listRect.top - 6}px`;
+    } else {
+      indicator.style.top = `${rect.bottom - listRect.top + 2}px`;
+    }
+
+    if (!indicator.parentNode) {
+      list.appendChild(indicator);
+    }
+  }
+}
 
 function handleDragStart(event) {
   draggedItem = event.currentTarget;
   draggedIndex = Number(draggedItem.dataset.index);
   draggedItem.classList.add("dragging");
   event.dataTransfer.effectAllowed = "move";
-  event.dataTransfer.setData("text/html", draggedItem.innerHTML);
+  event.dataTransfer.setData("text/plain", draggedIndex.toString());
+
+  // Use a timeout to set drag image after the drag has started
+  requestAnimationFrame(() => {
+    draggedItem.style.opacity = '0.4';
+  });
 }
 
 function handleDragOver(event) {
   event.preventDefault();
   event.dataTransfer.dropEffect = "move";
+
+  const list = el.playerList;
+  if (list) {
+    positionDropIndicator(event.clientY, list);
+  }
+
   return false;
 }
 
 function handleDrop(event) {
   event.stopPropagation();
   event.preventDefault();
-  const target = event.currentTarget;
-  target.classList.remove("drag-over");
-  if (target !== draggedItem && target.classList.contains("player-chip")) {
-    const targetIndex = Number(target.dataset.index);
+
+  if (insertionIndex !== null && insertionIndex !== draggedIndex && insertionIndex !== draggedIndex + 1) {
     const [draggedName] = state.customNames.splice(draggedIndex, 1);
-    state.customNames.splice(targetIndex, 0, draggedName);
+    // Adjust insertion index if we removed before the insertion point
+    const adjustedIndex = insertionIndex > draggedIndex ? insertionIndex - 1 : insertionIndex;
+    state.customNames.splice(adjustedIndex, 0, draggedName);
     renderPlayerList();
     persistState();
   }
+
+  removeDropIndicator();
   return false;
 }
 
 function handleDragEnd(event) {
   const target = event.currentTarget;
   target.classList.remove("dragging");
-  document.querySelectorAll(".player-chip").forEach(i => i.classList.remove("drag-over"));
+  target.style.opacity = '';
+  removeDropIndicator();
   draggedItem = null;
   draggedIndex = null;
 }
 
 function handleDragEnter(event) {
-  const target = event.currentTarget;
-  if (target !== draggedItem && target.classList.contains("player-chip")) target.classList.add("drag-over");
+  // No longer highlighting individual chips
 }
 
 function handleDragLeave(event) {
-  event.currentTarget.classList.remove("drag-over");
+  // Check if we're leaving the list entirely
+  const list = el.playerList;
+  if (list && !list.contains(event.relatedTarget)) {
+    removeDropIndicator();
+  }
 }
 
 function handleTouchStart(event) {
@@ -322,27 +468,29 @@ function handleTouchStart(event) {
 function handleTouchMove(event) {
   if (!touchCurrentItem) return;
   event.preventDefault();
+
   const touch = event.touches[0];
-  const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-  const targetChip = elementBelow?.closest(".player-chip");
-  document.querySelectorAll(".player-chip").forEach(i => { if (i !== touchCurrentItem) i.classList.remove("drag-over"); });
-  if (targetChip && targetChip !== touchCurrentItem) targetChip.classList.add("drag-over");
+  const list = el.playerList;
+
+  if (list) {
+    positionDropIndicator(touch.clientY, list);
+  }
 }
 
 function handleTouchEnd(event) {
   if (!touchCurrentItem) return;
-  const touch = event.changedTouches[0];
-  const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-  const targetChip = elementBelow?.closest(".player-chip");
+
   touchCurrentItem.classList.remove("dragging");
-  document.querySelectorAll(".player-chip").forEach(i => i.classList.remove("drag-over"));
-  if (targetChip && targetChip !== touchCurrentItem) {
-    const targetIndex = Number(targetChip.dataset.index);
+
+  if (insertionIndex !== null && insertionIndex !== draggedIndex && insertionIndex !== draggedIndex + 1) {
     const [draggedName] = state.customNames.splice(draggedIndex, 1);
-    state.customNames.splice(targetIndex, 0, draggedName);
+    const adjustedIndex = insertionIndex > draggedIndex ? insertionIndex - 1 : insertionIndex;
+    state.customNames.splice(adjustedIndex, 0, draggedName);
     renderPlayerList();
     persistState();
   }
+
+  removeDropIndicator();
   touchCurrentItem = null;
   draggedItem = null;
   draggedIndex = null;
@@ -360,10 +508,21 @@ export function renderPlayerList() {
     item.className = "player-chip";
     item.draggable = true;
     item.dataset.index = String(index);
+
+    // Avatar with initials
+    const avatar = document.createElement("span");
+    avatar.className = "player-avatar";
+    avatar.textContent = getInitials(name);
+    avatar.style.background = getAvatarColor(name);
+    item.appendChild(avatar);
+
+    // Player name
     const nameSpan = document.createElement("span");
     nameSpan.className = "player-name";
     nameSpan.textContent = name;
     item.appendChild(nameSpan);
+
+    // Action buttons
     const actions = document.createElement("div");
     actions.className = "chip-actions";
     const removeButton = document.createElement("button");
@@ -376,12 +535,15 @@ export function renderPlayerList() {
     item.appendChild(actions);
     frag.appendChild(item);
 
+    // Drag events
     item.addEventListener("dragstart", handleDragStart);
     item.addEventListener("dragover", handleDragOver);
     item.addEventListener("drop", handleDrop);
     item.addEventListener("dragend", handleDragEnd);
     item.addEventListener("dragenter", handleDragEnter);
     item.addEventListener("dragleave", handleDragLeave);
+
+    // Touch events
     item.addEventListener("touchstart", handleTouchStart, { passive: false });
     item.addEventListener("touchmove", handleTouchMove, { passive: false });
     item.addEventListener("touchend", handleTouchEnd);

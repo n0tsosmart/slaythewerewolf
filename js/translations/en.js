@@ -128,22 +128,22 @@ export const en = {
     "timer.resume": "Resume",
 
     // Narrator Guide
-    "guide.title": "Narration guide",
-    "guide.progress": "Step {current} / {total}",
+    "guide.title": "Narrator Guide",
+    "guide.progress": "Step {current} of {total}",
     "guide.empty": "No instructions for this day.",
-    "guide.step.closeEyes": "Night {day}: everyone closes their eyes.",
-    "guide.step.masons": "Call the Masons so they recognize each other.",
-    "guide.step.bodyguard": "Call the Bodyguard to choose someone to protect.",
-    "guide.step.seer": "Call the Seer and reveal the vision.",
-    "guide.step.medium": "Call the Medium and reveal whether the previous lynch was a wolf.",
-    "guide.step.owl": "Call the Owl to mark the nominated player.",
-    "guide.step.mythomaniac": "Remind the Mythomaniac to pick a role to mimic.",
-    "guide.step.wolves": "Call the Werewolves to choose their victim.",
-    "guide.step.hamster": "Remember the Werehamster is immune to wolves and only dies to the Seer.",
-    "guide.step.dawn": "Dawn {day}: announce the victims of the night.",
-    "guide.step.owlReveal": "Reveal the Owl's chosen player before the discussion.",
-    "guide.step.possessed": "Keep in mind there may be a Possessed ally.",
-    "guide.step.dayDiscuss": "Day {day}: let the village discuss and then collect votes for the lynching.",
+    "guide.step.closeEyes": "🌙 Night {day} begins — Ask everyone to close their eyes and remain silent.",
+    "guide.step.masons": "🤝 Call the Masons — They open their eyes and silently recognize each other, then close their eyes.",
+    "guide.step.bodyguard": "🛡️ Call the Bodyguard — Point to the player they wish to protect tonight, then close their eyes.",
+    "guide.step.seer": "👁️ Call the Seer — Point to a player to investigate. Nod for werewolf, shake your head for human.",
+    "guide.step.medium": "🔮 Call the Medium — Reveal whether yesterday's lynched player was a werewolf (nod/shake).",
+    "guide.step.owl": "🦉 Call the Owl — Point to a player to nominate for tomorrow's discussion.",
+    "guide.step.mythomaniac": "🎭 Mythomaniac — Tonight they choose someone to copy. Resolution happens at dawn.",
+    "guide.step.wolves": "🐺 Call the Werewolves — They open their eyes, silently agree on a victim, then close their eyes.",
+    "guide.step.hamster": "🐹 Remember: The Werehamster is immune to wolves but dies instantly if the Seer investigates them.",
+    "guide.step.dawn": "☀️ Dawn of Day {day} — Everyone opens their eyes. Announce last night's victims dramatically.",
+    "guide.step.owlReveal": "📰 Reveal the Owl's nomination — This player is automatically a suspect for today's vote.",
+    "guide.step.possessed": "👤 Remember: A Possessed is secretly helping the wolves without knowing their identities.",
+    "guide.step.dayDiscuss": "☀️ Day {day} Discussion — Let the village debate, then collect votes for the two suspects to stand trial.",
 
     // Elimination & Revive
     "elimination.title": "Eliminate a player",
@@ -181,7 +181,7 @@ export const en = {
     "status.ghostTooltip": "Eliminated player - can vote for suspects but must stay silent",
 
     // Ghost/Spectator Mode
-    "ghost.reminderTitle": "👻 Ghost Rules",
+    "ghost.reminderTitle": "Ghost Rules",
     "ghost.reminderMessage": "You have been eliminated. You can still vote to choose suspects, but you cannot vote in the lynching. You must not speak during discussions and must close your eyes during the night.",
     "ghost.youWere": "You were a {role}",
 

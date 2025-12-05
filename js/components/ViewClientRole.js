@@ -31,6 +31,7 @@ export class ViewClientRole extends HTMLElement {
                     <span class="status-indicator"></span>
                     <span class="status-text" data-i18n="clientRole.statusDisconnected">Disconnected</span>
                 </div>
+                <div id="clientStatusBadges" class="client-status-badges hidden"></div>
                 <div id="ghostPanel" class="ghost-panel hidden">
                     <div class="ghost-panel-icon">👻</div>
                     <h3 id="ghostYouWere" class="ghost-you-were"></h3>
@@ -50,6 +51,36 @@ export class ViewClientRole extends HTMLElement {
             </section>
         `;
         applyTranslations(this);
+    }
+
+    updateStatus(status) {
+        const badgesContainer = this.querySelector('#clientStatusBadges');
+        if (!badgesContainer) return;
+
+        badgesContainer.innerHTML = '';
+        let hasBadges = false;
+
+        if (status.isBenvenuto) {
+            const badge = document.createElement('div');
+            badge.className = 'client-badge benvenuto';
+            badge.innerHTML = `<span class="badge-icon">🎭</span><span class="badge-text">${t("status.benvenuto")}</span>`;
+            badgesContainer.appendChild(badge);
+            hasBadges = true;
+        }
+
+        if (status.isIndiziato) {
+            const badge = document.createElement('div');
+            badge.className = 'client-badge indiziato';
+            badge.innerHTML = `<span class="badge-icon">⚠️</span><span class="badge-text">${t("status.indiziato")}</span>`;
+            badgesContainer.appendChild(badge);
+            hasBadges = true;
+        }
+
+        if (hasBadges) {
+            badgesContainer.classList.remove('hidden');
+        } else {
+            badgesContainer.classList.add('hidden');
+        }
     }
 
     showEliminated() {
@@ -75,6 +106,33 @@ export class ViewClientRole extends HTMLElement {
         }
 
         applyTranslations(this.querySelector('#ghostPanel'));
+    }
+
+    showRevived() {
+        const ghostPanel = this.querySelector('#ghostPanel');
+        const roleCard = this.querySelector('#clientRoleCard');
+
+        // Animate ghost panel out
+        if (ghostPanel) {
+            ghostPanel.classList.add('fading-out');
+            setTimeout(() => {
+                ghostPanel.classList.add('hidden');
+                ghostPanel.classList.remove('fading-out');
+            }, 400);
+        }
+
+        // Animate role card back in
+        if (roleCard) {
+            setTimeout(() => {
+                roleCard.classList.remove('hidden');
+                roleCard.classList.add('reviving');
+
+                // Remove animation class after it completes
+                setTimeout(() => {
+                    roleCard.classList.remove('reviving');
+                }, 600);
+            }, 300);
+        }
     }
 
 

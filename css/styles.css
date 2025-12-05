@@ -309,9 +309,60 @@ body.online-mode #setupView .form-row:has(#wolfCount) {
 #clientRoleView h2 {
     color: var(--color-gold);
     font-size: 2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     letter-spacing: 0.05em;
+}
+
+/* Client Status Badges (Suspect/Welcome) */
+.client-status-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 0.4s ease;
+}
+
+.client-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    animation: badgePulse 2s ease-in-out infinite;
+}
+
+.client-badge.benvenuto {
+    background: linear-gradient(135deg, rgba(250, 204, 21, 0.25), rgba(250, 204, 21, 0.1));
+    border: 2px solid rgba(250, 204, 21, 0.5);
+    color: var(--color-gold);
+    box-shadow: 0 4px 20px rgba(250, 204, 21, 0.2);
+}
+
+.client-badge.indiziato {
+    background: linear-gradient(135deg, rgba(234, 88, 12, 0.25), rgba(234, 88, 12, 0.1));
+    border: 2px solid rgba(234, 88, 12, 0.5);
+    color: #fb923c;
+    box-shadow: 0 4px 20px rgba(234, 88, 12, 0.2);
+}
+
+.client-badge .badge-icon {
+    font-size: 1.25rem;
+}
+
+@keyframes badgePulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
 }
 
 /* Enhanced Role Card with Glassmorphism */

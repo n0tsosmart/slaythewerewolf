@@ -231,6 +231,18 @@ export function initApp() {
                 }
             }
         },
+        playerRevived: (playerName) => {
+            if (el.clientRole && typeof el.clientRole.showRevived === 'function') {
+                if (getLocalPlayerName() === playerName) {
+                    el.clientRole.showRevived();
+                }
+            }
+        },
+        statusUpdate: (status) => {
+            if (el.clientRole && typeof el.clientRole.updateStatus === 'function') {
+                el.clientRole.updateStatus(status);
+            }
+        },
     });
 
     renderRoleOptions();

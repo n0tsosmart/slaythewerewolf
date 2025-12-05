@@ -9,7 +9,7 @@ export class GlobalControls extends HTMLElement {
       <div class="menu-container">
         <button type="button" id="menuBtn" class="btn-ghost btn-icon" aria-label="Menu" aria-expanded="false"
           aria-controls="mainMenu">
-          <span class="hamburger-icon">☰</span>
+          <span class="hamburger-icon"><span></span></span>
         </button>
         <div id="mainMenu" class="main-menu hidden" role="menu" aria-hidden="true">
           <div class="menu-section">

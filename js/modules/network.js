@@ -30,8 +30,10 @@ const onHostDisconnectedCallbacks = [];
 const onReceiveRoleCallbacks = [];
 const onPlayerListUpdateCallbacks = [];
 const onPlayerEliminatedCallbacks = [];
+const onPlayerRevivedCallbacks = [];
+const onStatusUpdateCallbacks = [];
 
-export function setNetworkCallbacks({ connected, disconnected, gameStart, hostDisconnected, receiveRole, playerListUpdate, playerEliminated }) {
+export function setNetworkCallbacks({ connected, disconnected, gameStart, hostDisconnected, receiveRole, playerListUpdate, playerEliminated, playerRevived, statusUpdate }) {
     if (connected) onPeerConnectedCallbacks.push(connected);
     if (disconnected) onPeerDisconnectedCallbacks.push(disconnected);
     if (gameStart) onGameStartCallbacks.push(gameStart);
@@ -39,6 +41,8 @@ export function setNetworkCallbacks({ connected, disconnected, gameStart, hostDi
     if (receiveRole) onReceiveRoleCallbacks.push(receiveRole);
     if (playerListUpdate) onPlayerListUpdateCallbacks.push(playerListUpdate);
     if (playerEliminated) onPlayerEliminatedCallbacks.push(playerEliminated);
+    if (playerRevived) onPlayerRevivedCallbacks.push(playerRevived);
+    if (statusUpdate) onStatusUpdateCallbacks.push(statusUpdate);
 }
 
 // Utility to generate a random 4-char alphanumeric room code
@@ -330,6 +334,14 @@ function handleClientData(data) {
             // Player has been eliminated - show ghost reminder
             onPlayerEliminatedCallbacks.forEach(callback => callback(data.playerName));
             break;
+        case 'PLAYER_REVIVED':
+            // Player has been revived - show role card again
+            onPlayerRevivedCallbacks.forEach(callback => callback(data.playerName));
+            break;
+        case 'PLAYER_STATUS':
+            // Player status update (suspect, welcome)
+            onStatusUpdateCallbacks.forEach(callback => callback(data.status));
+            break;
         default:
             console.warn("Unknown data type received by client:", data.type);
     }
@@ -367,6 +379,28 @@ export function notifyPlayerEliminated(playerName) {
     for (const [peerId, conn] of connections.entries()) {
         if (conn.customPlayerName === playerName && conn.open) {
             conn.send({ type: 'PLAYER_ELIMINATED', playerName });
+            break;
+        }
+    }
+}
+
+// Notify a specific player that they have been revived (Host only)
+export function notifyPlayerRevived(playerName) {
+    // Find the connection for this player
+    for (const [peerId, conn] of connections.entries()) {
+        if (conn.customPlayerName === playerName && conn.open) {
+            conn.send({ type: 'PLAYER_REVIVED', playerName });
+            break;
+        }
+    }
+}
+
+// Notify a specific player of their status (suspect, welcome) (Host only)
+export function notifyPlayerStatus(playerName, status) {
+    // Find the connection for this player
+    for (const [peerId, conn] of connections.entries()) {
+        if (conn.customPlayerName === playerName && conn.open) {
+            conn.send({ type: 'PLAYER_STATUS', status });
             break;
         }
     }

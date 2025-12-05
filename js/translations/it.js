@@ -182,7 +182,7 @@ export const it = {
     "status.ghostTooltip": "Giocatore eliminato - può votare per gli indiziati ma deve rimanere in silenzio",
 
     // Ghost/Spectator Mode
-    "ghost.reminderTitle": "👻 Regole del Fantasma",
+    "ghost.reminderTitle": "Regole del Fantasma",
     "ghost.reminderMessage": "Sei stato eliminato. Puoi ancora votare per scegliere gli indiziati, ma non puoi votare per il linciaggio. Non devi parlare durante le discussioni e devi chiudere gli occhi durante la notte.",
     "ghost.youWere": "Eri un {role}",
 

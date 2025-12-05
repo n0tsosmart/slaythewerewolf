@@ -93,24 +93,7 @@
     opacity: 0.8;
 }
 
-/* Eliminated client role card styling */
-#clientRoleCard.eliminated {
-    position: relative;
-    filter: grayscale(40%);
-    opacity: 0.85;
-}
-
-#clientRoleCard.eliminated::after {
-    content: '👻';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 5rem;
-    opacity: 0.4;
-    animation: float-ghost 3s ease-in-out infinite;
-    pointer-events: none;
-}
+/* Note: Eliminated client role cards now hide and show ghost-panel instead */
 
 /* Mobile responsive */
 @media (max-width: 640px) {
@@ -138,5 +121,45 @@
     .ghost-badge {
         font-size: 0.8rem;
         padding: 3px 8px;
+    }
+}
+
+/* Revival Animations */
+.ghost-panel.fading-out {
+    animation: ghostFadeOut 0.4s ease-out forwards;
+}
+
+@keyframes ghostFadeOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.9);
+    }
+}
+
+/* Role card revival animation */
+#clientRoleCard.reviving {
+    animation: roleCardRevival 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes roleCardRevival {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.8);
+        filter: grayscale(100%) brightness(1.5);
+    }
+
+    50% {
+        filter: grayscale(50%) brightness(1.2);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: grayscale(0%) brightness(1);
     }
 }
