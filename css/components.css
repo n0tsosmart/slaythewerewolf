@@ -425,6 +425,8 @@ fieldset.options {
   color: #e2e8f0;
   text-decoration: none;
   font-size: 0.95rem;
+  font-weight: 400;
+  font-family: inherit;
   transition: background 0.15s ease;
   background: transparent;
   border: none;
@@ -435,6 +437,31 @@ fieldset.options {
 
 .menu-item:hover {
   background: rgba(255, 255, 255, 0.1);
+}
+
+/* Donate button emphasis */
+.menu-item-donate {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1));
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  position: relative;
+  animation: donateGlow 3s ease-in-out infinite;
+}
+
+.menu-item-donate:hover {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(220, 38, 38, 0.2));
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+@keyframes donateGlow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.4);
+  }
 }
 
 .language-btn,
@@ -707,7 +734,7 @@ select:focus-visible {
 .theme-label {
   font-size: 0.95rem;
   color: #e2e8f0;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .toggle-switch {
@@ -935,6 +962,7 @@ input:checked:hover+.slider {
     transform: scale(0.5);
     opacity: 0;
   }
+
   100% {
     transform: scale(1);
     opacity: 1;

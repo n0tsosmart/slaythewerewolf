@@ -1,7 +1,4 @@
 import { applyTranslations } from '../modules/i18n.js';
-import { state } from '../modules/state.js';
-import { persistState } from '../modules/store.js';
-import { vibrateShort } from '../modules/haptics.js';
 import { openTutorial, shouldShowTutorial } from './ViewTutorial.js';
 
 export class GlobalControls extends HTMLElement {
@@ -35,26 +32,16 @@ export class GlobalControls extends HTMLElement {
                 <span class="slider"></span>
               </label>
             </div>
-            <div class="theme-toggle-container" style="margin-top: 8px;">
-              <span class="theme-label" data-i18n="setup.haptics">Vibration</span>
-              <label class="toggle-switch">
-                <input type="checkbox" id="hapticsToggle" checked>
-                <span class="slider"></span>
-              </label>
-            </div>
           </div>
           <hr class="menu-divider">
-          <button type="button" id="installAppBtn" class="menu-item" role="menuitem" data-i18n="menu.install" style="display: none;">📱 Install App</button>
-          <button type="button" id="menuVotingBtn" class="menu-item" role="menuitem" data-i18n="menu.voting">🗳️ Voting
-            Rules</button>
           <button type="button" id="menuTutorialBtn" class="menu-item" role="menuitem" data-i18n="menu.tutorial">📖 How to Play</button>
-          <button type="button" id="menuImmersionBtn" class="menu-item" role="menuitem" data-i18n="info.button">📖
-            Immersion tips & rules</button>
+          <button type="button" id="menuRulesBtn" class="menu-item" role="menuitem" data-i18n="menu.rules">📜 Game rules</button>
           <hr class="menu-divider">
+          <button type="button" id="installAppBtn" class="menu-item" role="menuitem" data-i18n="menu.install" style="display: none;">📱 Install App</button>
           <a id="menuFeedbackLink" href="https://github.com/n0tsosmart/slaythewerewolf" target="_blank"
             rel="noopener noreferrer" class="menu-item" role="menuitem" data-i18n="info.feedback">💬 Send feedback</a>
           <a id="menuDonateLink" href="https://www.paypal.com/donate/?hosted_button_id=QRPBSBNR88J8C" target="_blank"
-            rel="noopener noreferrer" class="menu-item" role="menuitem" data-i18n="menu.donate">❤️ Support this project</a>
+            rel="noopener noreferrer" class="menu-item menu-item-donate" role="menuitem" data-i18n="menu.donate">❤️ Support this project</a>
         </div>
       </div>
       <button id="restartBtn" class="btn-ghost btn-small" type="button" data-i18n="buttons.restart">🔄 New game</button>
@@ -73,8 +60,8 @@ export class GlobalControls extends HTMLElement {
     `;
     applyTranslations(this);
     this.initTheme();
-    this.initHaptics();
     this.initTutorial();
+    this.initRulesPanel();
   }
 
   initTutorial() {
@@ -99,14 +86,23 @@ export class GlobalControls extends HTMLElement {
     }
   }
 
-  initHaptics() {
-    const hapticsToggle = this.querySelector('#hapticsToggle');
-    if (hapticsToggle) {
-      hapticsToggle.checked = state.hapticsEnabled;
-      hapticsToggle.addEventListener('change', () => {
-        state.hapticsEnabled = hapticsToggle.checked;
-        persistState();
-        if (state.hapticsEnabled) vibrateShort();
+  initRulesPanel() {
+    const rulesBtn = this.querySelector('#menuRulesBtn');
+    if (rulesBtn) {
+      rulesBtn.addEventListener('click', () => {
+        // Close menu first
+        const mainMenu = document.getElementById('mainMenu');
+        if (mainMenu && !mainMenu.classList.contains('hidden')) {
+          mainMenu.classList.add('hidden');
+          mainMenu.setAttribute('aria-hidden', 'true');
+          const menuBtn = document.getElementById('menuBtn');
+          if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+        }
+        // Open the voting rules modal (reusing existing modal)
+        const votingOverlay = document.getElementById('votingOverlay');
+        if (votingOverlay) {
+          votingOverlay.classList.remove('hidden');
+        }
       });
     }
   }

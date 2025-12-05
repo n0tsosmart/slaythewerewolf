@@ -53,7 +53,7 @@ export class ViewGlobal extends HTMLElement {
 
     <div id="votingOverlay" class="modal-overlay hidden">
       <div class="modal-panel info-panel">
-        <h3 class="modal-title" data-i18n="voting.title">Voting Rules</h3>
+        <h3 class="modal-title" data-i18n="rules.title">Game Rules</h3>
         <div class="info-section">
           <h3 data-i18n="voting.indiziatoTitle">Suspects</h3>
           <p data-i18n="voting.indiziatoBody">The two players with the most votes become suspects. In case of a tie, the
