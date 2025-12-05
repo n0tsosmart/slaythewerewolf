@@ -763,6 +763,229 @@ details[open] .roles-caret {
   color: #86efac;
 }
 
+/* --------------------------------------------------------------------------
+   Summary View - Mobile Optimized Layout
+   -------------------------------------------------------------------------- */
+
+/* Sticky Header - 8px gap from top when stuck */
+.summary-sticky-header {
+  position: sticky;
+  top: 8px;
+  /* Gap from top when stuck */
+  z-index: 10;
+  background: var(--color-background, #0f0f13);
+  margin: 0 0 12px 0;
+  padding: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+}
+
+.summary-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.day-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  border-radius: 6px;
+  padding: 4px 8px;
+  flex-shrink: 0;
+}
+
+.day-label {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #94a3b8;
+}
+
+/* Hide label on very small screens */
+@media (max-width: 360px) {
+  .day-label {
+    display: none;
+  }
+}
+
+.day-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fbbf24;
+  line-height: 1;
+}
+
+/* Timer in header - compact */
+.summary-header-row .timer-control {
+  flex-shrink: 0;
+  position: static;
+}
+
+.summary-header-row .timer-control .timer-toggle {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  gap: 4px;
+}
+
+.timer-mini-display {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  min-width: 24px;
+}
+
+/* Timer expanded - positioned below sticky header */
+.summary-header-row .timer-control .timer-expanded {
+  position: fixed;
+  top: 70px;
+  /* Below the sticky header */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  min-width: 220px;
+}
+
+.btn-next-day-compact {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Guide Panel - Primary Focus */
+.guide-panel {
+  border: 1px solid rgba(68, 32, 32, 0.45);
+  border-radius: 16px;
+  padding: 16px;
+  background: rgba(17, 12, 12, 0.85);
+  margin-bottom: 8px;
+}
+
+/* Next Day Button - close to guide */
+.btn-next-day {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* Section Divider */
+.section-divider {
+  border: none;
+  border-top: 1px solid rgba(148, 163, 184, 0.15);
+  margin: 0 0 12px 0;
+}
+
+.guide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.guide-header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.guide-text {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0 0 12px 0;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border-left: 3px solid #fbbf24;
+}
+
+.guide-nav-inline {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.guide-nav-inline button {
+  min-width: 44px;
+}
+
+/* Player Sections - Collapsible */
+.player-section {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  background: rgba(15, 16, 20, 0.6);
+  overflow: hidden;
+}
+
+.player-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+}
+
+.player-section-header::-webkit-details-marker {
+  display: none;
+}
+
+.player-section-header::before {
+  content: '▶';
+  font-size: 0.7rem;
+  transition: transform 0.2s ease;
+  color: #64748b;
+}
+
+.player-section[open] .player-section-header::before {
+  transform: rotate(90deg);
+}
+
+.player-count {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-left: auto;
+}
+
+/* Player list content padding */
+.player-section .summary-list,
+.player-section .fallen-list {
+  padding: 0 16px 16px 16px;
+  margin: 0;
+}
+
+.btn-icon-tiny {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  background: transparent;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 6px;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.btn-icon-tiny:hover {
+  background: rgba(148, 163, 184, 0.1);
+}
+
+/* Summary Footer */
+.summary-footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 12px;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  margin-top: 8px;
+}
+
+/* Legacy narrator-tools - keep for compatibility */
 .narrator-tools {
   margin-top: 24px;
   display: flex;

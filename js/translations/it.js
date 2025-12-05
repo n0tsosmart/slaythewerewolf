@@ -117,6 +117,8 @@ export const it = {
 
     // Day Cycle
     "day.label": "Giorno attuale",
+    "day.tooltip": "Questo è il giorno attuale della partita",
+    "day.clickTooltip": "📅 Giorno {day} della partita",
 
     // Turn Timer
     "timer.warning30": "⏱️ 30 secondi rimasti!",

@@ -18,6 +18,12 @@ let isPaused = false;
 export function initTimer() {
     updateTimerDisplay();
     attachTimerEvents();
+
+    // Set initial mini display placeholder
+    const miniDisplay = document.getElementById('timerMiniDisplay');
+    if (miniDisplay) {
+        miniDisplay.textContent = '—';
+    }
 }
 
 /**
@@ -41,6 +47,14 @@ function attachTimerEvents() {
     if (timerToggle) {
         timerToggle.addEventListener('click', toggleTimerPanel);
     }
+
+    // Close timer on click outside
+    document.addEventListener('click', (e) => {
+        const timerControl = document.getElementById('timerControl');
+        if (timerControl && !timerControl.contains(e.target)) {
+            timerControl.classList.add('collapsed');
+        }
+    });
 }
 
 /**
@@ -56,6 +70,12 @@ export function startTimer(minutes) {
     updateTimerDisplay();
     updateTimerProgress();
     showTimerActive(true);
+
+    // Auto-collapse the timer panel
+    const timerControl = document.getElementById('timerControl');
+    if (timerControl) {
+        timerControl.classList.add('collapsed');
+    }
 
     timerId = setInterval(() => {
         if (!isPaused) {
@@ -116,6 +136,11 @@ export function stopTimer() {
  */
 export function skipTimer() {
     stopTimer();
+    // Collapse the timer panel
+    const timerControl = document.getElementById('timerControl');
+    if (timerControl) {
+        timerControl.classList.add('collapsed');
+    }
     el.toastInfo?.(t('timer.skipped') || 'Timer skipped');
 }
 

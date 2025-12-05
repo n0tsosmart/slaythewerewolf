@@ -116,6 +116,8 @@ export const en = {
 
     // Day Cycle
     "day.label": "Current day",
+    "day.tooltip": "This is the current game day",
+    "day.clickTooltip": "📅 Day {day} of the game",
 
     // Turn Timer
     "timer.warning30": "⏱️ 30 seconds left!",
