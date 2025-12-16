@@ -1,0 +1,170 @@
+/* ==========================================================================
+   Base, Reset, and Variables
+   ========================================================================== */
+
+/* CSS Variables (Custom Properties) */
+:root {
+  scroll-behavior: smooth;
+  accent-color: rgba(239, 68, 68, 0.9);
+
+  /* --- Color Palette --- */
+
+  /* Backgrounds - Darker red theme with gradient */
+  --color-bg-base: #120606;
+  --color-bg-top: #1a0c0c;
+  --color-bg-bottom: #0a0404;
+  --color-panel-bg: rgba(25, 10, 10, 0.85);
+
+  /* Glassmorphism System */
+  --glass-bg: rgba(25, 10, 10, 0.8);
+  --glass-border: rgba(220, 38, 38, 0.3);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --glass-blur: 12px;
+
+  /* Text */
+  --color-text-primary: #e7dfd7;
+
+  /* Borders & Highlights */
+  --color-header-border: rgba(220, 38, 38, 0.4);
+  --color-header-highlight: rgba(239, 68, 68, 0.12);
+  --color-panel-border: rgba(185, 28, 28, 0.4);
+  --color-card-border: rgba(220, 38, 38, 0.5);
+
+  /* Interactive Elements */
+  --color-chip-bg: rgba(127, 29, 29, 0.85);
+  --color-chip-remove: rgba(252, 165, 165, 0.25);
+  --color-secondary-bg: rgba(127, 29, 29, 0.5);
+  --color-secondary-border: rgba(185, 28, 28, 0.6);
+
+  /* Brand / Theme Colors */
+  --color-primary-from: #dc2626;
+  --color-primary-to: #b91c1c;
+  --color-gold: #facc15;
+
+  /* Status & Utility Colors */
+  --color-ghost-border: rgba(252, 165, 165, 0.4);
+  --color-danger-border: rgba(220, 38, 38, 0.65);
+  --color-danger-bg: rgba(185, 28, 28, 0.4);
+
+  /* Grays */
+  --color-gray-light: #cbd5f5;
+  --color-gray-medium: #94a3b8;
+  --color-gray-dark: #9ca3af;
+
+  /* --- Typography --- */
+  --font-display: "Cinzel", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  font-family: var(--font-body);
+  line-height: 1.5;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-base);
+}
+
+/* Purple Theme Override - Brighter */
+:root[data-theme="purple"] {
+  accent-color: rgba(147, 51, 234, 0.9);
+
+  /* Backgrounds - Brighter purple theme with gradient */
+  --color-bg-base: #120818;
+  --color-bg-top: #1a0e24;
+  --color-bg-bottom: #0a0410;
+  --color-panel-bg: rgba(25, 12, 35, 0.85);
+
+  /* Borders & Highlights */
+  --color-header-border: rgba(107, 33, 168, 0.35);
+  --color-header-highlight: rgba(147, 51, 234, 0.08);
+  --color-panel-border: rgba(59, 7, 100, 0.35);
+  --color-card-border: rgba(107, 33, 168, 0.4);
+
+  /* Interactive Elements */
+  --color-chip-bg: rgba(45, 15, 60, 0.9);
+  --color-chip-remove: rgba(216, 180, 254, 0.2);
+  --color-secondary-bg: rgba(40, 20, 55, 0.55);
+  --color-secondary-border: rgba(88, 28, 135, 0.5);
+
+  /* Brand / Theme Colors */
+  --color-primary-from: #7e22ce;
+  --color-primary-to: #581c87;
+
+  /* Status & Utility Colors */
+  --color-ghost-border: rgba(192, 132, 252, 0.35);
+  --color-danger-border: rgba(147, 51, 234, 0.6);
+  --color-danger-bg: rgba(88, 28, 135, 0.35);
+
+  /* Glassmorphism System (Purple) */
+  --glass-bg: rgba(25, 10, 35, 0.8);
+  --glass-border: rgba(147, 51, 234, 0.3);
+}
+
+/* Reset Box Sizing */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* HTML - Gradient background with noise covering entire viewport including safe areas */
+html {
+  font-size: 100%;
+  height: 100%;
+
+  /* Refined radial gradient - subtle center glow with darker edges */
+  background: radial-gradient(ellipse at center,
+      var(--color-bg-base) 0%,
+      var(--color-bg-bottom) 100%);
+  background-color: var(--color-bg-base);
+  background-attachment: fixed;
+}
+
+/* Noise grain overlay on html - covers overscroll areas too */
+html::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.035;
+
+  /* SVG noise pattern using feTurbulence */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* Body Styling */
+body {
+  /* Safe-area padding for content only */
+  padding: max(env(safe-area-inset-top), 20px) max(env(safe-area-inset-right), 20px) max(env(safe-area-inset-bottom), 20px) max(env(safe-area-inset-left), 20px);
+
+  /* Transparent - let html background show through */
+  background: transparent;
+  color: var(--color-text-primary);
+
+  /* Full viewport height */
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  /* Prevent overscroll bounce issues */
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+
+  font-family: var(--font-display);
+
+  /* Flex layout for sticky footer */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  body {
+    padding: max(env(safe-area-inset-top), 16px) max(env(safe-area-inset-right), 16px) max(env(safe-area-inset-bottom), 16px) max(env(safe-area-inset-left), 16px);
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: max(env(safe-area-inset-top), 10px) max(env(safe-area-inset-right), 10px) max(env(safe-area-inset-bottom), 10px) max(env(safe-area-inset-left), 10px);
+  }
+}

@@ -1,0 +1,1059 @@
+/* css/styles.css */
+
+@import "./base.css";
+@import "./layout.css";
+@import "./components.css";
+@import "./utilities.css";
+@import "./animations.css";
+@import "./game.css";
+@import "./connection-status.css";
+@import "./ghost-mode.css";
+
+/* ==========================================================================
+   Lobby and Online Game Views - Enhanced Modern Design
+   ========================================================================== */
+
+#lobbyView {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   Lobby Section Cards
+   -------------------------------------------------------------------------- */
+
+.lobby-section {
+    width: 100%;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 22px;
+    padding: 2rem;
+    margin-bottom: 1.25rem;
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    animation: fadeInUp 0.4s ease;
+}
+
+/* --------------------------------------------------------------------------
+   Join Game Section (Input Fields)
+   -------------------------------------------------------------------------- */
+
+#lobbyMainMenu .join-game-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+#lobbyMainMenu input[type="text"] {
+    padding: 12px 16px;
+    border: 1px solid rgba(107, 33, 33, 0.5);
+    border-radius: 14px;
+    background: rgba(15, 16, 20, 0.85);
+    color: #f3f4f6;
+    font-size: 1rem;
+    font-family: inherit;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+#lobbyMainMenu input[type="text"]::placeholder {
+    color: var(--color-gray-medium);
+    opacity: 0.7;
+    font-weight: 400;
+}
+
+#lobbyMainMenu input[type="text"]:focus {
+    outline: none;
+    border-color: rgba(192, 132, 252, 0.5);
+    box-shadow: 0 0 0 3px rgba(192, 132, 252, 0.15);
+}
+
+/* Room code input - larger for emphasis */
+#joinRoomCodeInput {
+    font-size: 1.8rem !important;
+    letter-spacing: 0.3em !important;
+    text-transform: uppercase;
+    padding: 16px !important;
+}
+
+/* --------------------------------------------------------------------------
+   Room Code Display (Host)
+   -------------------------------------------------------------------------- */
+
+#hostRoomCodeDisplay {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: var(--color-gold);
+    margin: 1.5rem 0;
+    letter-spacing: 0.4em;
+    text-shadow:
+        0 0 20px rgba(250, 204, 21, 0.5),
+        0 0 40px rgba(250, 204, 21, 0.3),
+        0 4px 8px rgba(0, 0, 0, 0.8);
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg,
+            rgba(185, 28, 28, 0.2) 0%,
+            rgba(127, 29, 29, 0.15) 100%);
+    border-radius: 18px;
+    border: 1px solid rgba(250, 204, 21, 0.3);
+    display: inline-block;
+}
+
+/* --------------------------------------------------------------------------
+   OR Separator
+   -------------------------------------------------------------------------- */
+
+.or-separator {
+    margin: 1.75rem 0;
+    color: var(--color-gray-medium);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    position: relative;
+    text-align: center;
+}
+
+.or-separator::before,
+.or-separator::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(127, 29, 29, 0.5) 50%,
+            transparent);
+}
+
+.or-separator::before {
+    left: 0;
+}
+
+.or-separator::after {
+    right: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Player List Container (Host)
+   -------------------------------------------------------------------------- */
+
+#lobbyHost .player-list-container {
+    margin-top: 1.75rem;
+    text-align: left;
+}
+
+#lobbyHost .player-list-container h4 {
+    color: var(--color-gold);
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+#lobbyHost .player-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.75rem 0;
+    max-height: 200px;
+    overflow-y: auto;
+    background: rgba(15, 16, 20, 0.6);
+    border-radius: 14px;
+    border: 1px solid rgba(107, 33, 33, 0.4);
+    backdrop-filter: blur(8px);
+}
+
+#lobbyHost .player-list li {
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid rgba(107, 33, 33, 0.3);
+    color: #e7e5e4;
+    font-weight: 500;
+    transition: background 0.2s ease;
+}
+
+#lobbyHost .player-list li:last-child {
+    border-bottom: none;
+}
+
+#lobbyHost .player-list li:hover {
+    background: rgba(185, 28, 28, 0.15);
+}
+
+/* Custom scrollbar for player list */
+#lobbyHost .player-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+#lobbyHost .player-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+#lobbyHost .player-list::-webkit-scrollbar-thumb {
+    background: rgba(185, 28, 28, 0.5);
+    border-radius: 10px;
+}
+
+#lobbyHost .player-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(185, 28, 28, 0.7);
+}
+
+/* --------------------------------------------------------------------------
+   Client Joined View
+   -------------------------------------------------------------------------- */
+
+#lobbyClient h3,
+#clientPlayerNameDisplay {
+    color: var(--color-gold);
+    font-size: 1.75rem;
+    margin: 1rem 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#lobbyClient p {
+    color: var(--color-gray-medium);
+    font-size: 1rem;
+    margin: 1rem 0;
+}
+
+/* --------------------------------------------------------------------------
+   Lobby Action Buttons
+   -------------------------------------------------------------------------- */
+
+#lobbyHost .lobby-actions,
+#lobbyClient .lobby-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Design
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+    .lobby-section {
+        padding: 1.5rem;
+        border-radius: 18px;
+    }
+
+    #hostRoomCodeDisplay {
+        font-size: 2.5rem;
+        letter-spacing: 0.3em;
+        padding: 0.75rem 1.5rem;
+    }
+
+    #joinRoomCodeInput {
+        font-size: 1.5rem !important;
+        letter-spacing: 0.25em !important;
+    }
+
+    #lobbyMainMenu input[type="text"] {
+        font-size: 0.95rem;
+    }
+
+    #lobbyHost .player-list {
+        max-height: 150px;
+    }
+
+    #lobbyHost .lobby-actions,
+    #lobbyClient .lobby-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    #lobbyHost .lobby-actions button,
+    #lobbyClient .lobby-actions button {
+        width: 100%;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+    #hostRoomCodeDisplay {
+        font-size: 3rem;
+    }
+}
+
+/* Hide player configurator in online mode - only when in setup view */
+body.online-mode #setupView .player-list-section,
+body.online-mode #setupView .form-row:has(#playerCount),
+body.online-mode #setupView .form-row:has(#wolfCount) {
+    display: none;
+}
+
+/* Client Role View - Enhanced Premium Design */
+#clientRoleView {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    min-height: auto;
+    box-sizing: border-box;
+}
+
+#clientRoleView h2 {
+    color: var(--color-gold);
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.05em;
+}
+
+/* Client Status Badges (Suspect/Welcome) */
+.client-status-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 0.4s ease;
+}
+
+.client-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    animation: badgePulse 2s ease-in-out infinite;
+}
+
+.client-badge.benvenuto {
+    background: linear-gradient(135deg, rgba(250, 204, 21, 0.25), rgba(250, 204, 21, 0.1));
+    border: 2px solid rgba(250, 204, 21, 0.5);
+    color: var(--color-gold);
+    box-shadow: 0 4px 20px rgba(250, 204, 21, 0.2);
+}
+
+.client-badge.indiziato {
+    background: linear-gradient(135deg, rgba(234, 88, 12, 0.25), rgba(234, 88, 12, 0.1));
+    border: 2px solid rgba(234, 88, 12, 0.5);
+    color: #fb923c;
+    box-shadow: 0 4px 20px rgba(234, 88, 12, 0.2);
+}
+
+.client-badge .badge-icon {
+    font-size: 1.25rem;
+}
+
+@keyframes badgePulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+/* Enhanced Role Card with Glassmorphism */
+#clientRoleView .role-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    padding: 3rem 2rem;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+    overflow: hidden;
+    animation: cardEnter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Animated gradient background effect */
+#clientRoleView .role-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%,
+            rgba(185, 28, 28, 0.2),
+            transparent 70%);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+}
+
+#clientRoleView .role-card:hover::before {
+    opacity: 1;
+}
+
+/* Team-specific enhancements */
+#clientRoleView .role-card[data-team="wolves"] {
+    border-color: rgba(185, 28, 28, 0.6);
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(185, 28, 28, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+#clientRoleView .role-card[data-team="humans"] {
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(59, 130, 246, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+#clientRoleView .role-card[data-team="loner"] {
+    border-color: rgba(168, 85, 247, 0.5);
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(168, 85, 247, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Enhanced Role Image */
+#clientRoleView .role-image {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 2rem;
+    border: 4px solid rgba(250, 204, 21, 0.4);
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(250, 204, 21, 0.2);
+    animation: imageFloat 3s ease-in-out infinite;
+    transition: transform 0.3s ease;
+}
+
+#clientRoleView .role-image:hover {
+    transform: scale(1.05);
+}
+
+/* Role Text Container */
+#clientRoleView .role-text {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Team Label (Eyebrow) */
+#clientRoleView .eyebrow {
+    font-size: 0.85rem;
+    color: var(--color-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+    opacity: 0.9;
+}
+
+/* Role Name */
+#clientRoleView h3 {
+    font-size: 2.5rem;
+    color: #f3f4f6;
+    margin-bottom: 1.25rem;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    text-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.6),
+        0 0 20px rgba(250, 204, 21, 0.3);
+    line-height: 1.2;
+}
+
+/* Role Description */
+#clientRoleView p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--color-gray-light);
+    margin: 0;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Return Button */
+#clientRoleView .btn-secondary {
+    margin-top: 2.5rem;
+    padding: 14px 32px;
+    font-size: 1.05rem;
+    border-radius: 16px;
+    background: rgba(15, 16, 20, 0.6);
+    border: 1px solid rgba(107, 33, 33, 0.5);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+}
+
+#clientRoleView .btn-secondary:hover {
+    background: rgba(25, 18, 18, 0.8);
+    border-color: rgba(185, 28, 28, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Animations */
+@keyframes cardEnter {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes imageFloat {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+    #clientRoleView {
+        padding: 1.5rem 1rem;
+    }
+
+    #clientRoleView h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    #clientRoleView .role-card {
+        padding: 2rem 1.5rem;
+        border-radius: 20px;
+    }
+
+    #clientRoleView .role-image {
+        width: 140px;
+        height: 140px;
+        margin-bottom: 1.5rem;
+    }
+
+    #clientRoleView h3 {
+        font-size: 2rem;
+    }
+
+    #clientRoleView p {
+        font-size: 1rem;
+    }
+
+    #clientRoleView .btn-secondary {
+        width: 100%;
+        margin-top: 2rem;
+    }
+}
+
+/* Toast Container */
+#toastContainer {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 12px;
+    z-index: 10000;
+    pointer-events: none;
+    max-width: 90vw;
+    width: auto;
+}
+
+/* Toast Base Styles */
+.toast {
+    position: relative;
+    padding: 16px 24px;
+    border-radius: 16px;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 2px 8px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.95rem;
+    font-weight: 500;
+    min-width: 280px;
+    max-width: 480px;
+    text-align: left;
+    pointer-events: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    line-height: 1.5;
+}
+
+/* Toast Icons (using pseudo-element) */
+.toast::before {
+    content: '';
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Toast Show State */
+.toast.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Info Toast */
+.toast-info {
+    background: linear-gradient(135deg,
+            rgba(59, 130, 246, 0.15) 0%,
+            rgba(37, 99, 235, 0.25) 100%);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #dbeafe;
+}
+
+.toast-info::before {
+    content: 'ℹ️';
+    font-size: 20px;
+    line-height: 1;
+}
+
+/* Success variant (can be added if needed) */
+.toast-success {
+    background: linear-gradient(135deg,
+            rgba(34, 197, 94, 0.15) 0%,
+            rgba(22, 163, 74, 0.25) 100%);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #dcfce7;
+}
+
+.toast-success::before {
+    content: '✓';
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* Error Toast */
+.toast-error {
+    background: linear-gradient(135deg,
+            rgba(239, 68, 68, 0.15) 0%,
+            rgba(220, 38, 38, 0.25) 100%);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #fecaca;
+}
+
+.toast-error::before {
+    content: '⚠️';
+    font-size: 20px;
+    line-height: 1;
+}
+
+/* Warning Toast */
+.toast-warning {
+    background: linear-gradient(135deg,
+            rgba(251, 146, 60, 0.15) 0%,
+            rgba(249, 115, 22, 0.25) 100%);
+    border-color: rgba(251, 146, 60, 0.3);
+    color: #fed7aa;
+}
+
+.toast-warning::before {
+    content: '⚡';
+    font-size: 20px;
+    line-height: 1;
+}
+
+/* Hover Effects for Interactive Toasts */
+.toast:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+    #toastContainer {
+        bottom: 16px;
+        max-width: 95vw;
+    }
+
+    .toast {
+        min-width: auto;
+        width: 100%;
+        padding: 14px 20px;
+        font-size: 0.9rem;
+        border-radius: 14px;
+    }
+
+    .toast::before {
+        width: 18px;
+        height: 18px;
+        font-size: 18px;
+    }
+}
+
+/* Animation for exit */
+@keyframes toastExit {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+}
+
+.toast.exit {
+    animation: toastExit 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+/* ==========================================================================
+   Landing View - Enhanced Modern Design
+   ========================================================================== */
+
+#landingView {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.landing-subtitle {
+    font-size: 1.05rem;
+    color: var(--color-gray-medium);
+    margin-bottom: 2.5rem;
+    font-weight: 400;
+}
+
+.landing-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 100%;
+    max-width: 480px;
+}
+
+/* --------------------------------------------------------------------------
+   Large Button Cards - Glassmorphism Design
+   -------------------------------------------------------------------------- */
+
+.large-btn {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.75rem;
+    border: 1px solid;
+    border-radius: 22px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    width: 100%;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Primary Button - Local Game */
+.large-btn.btn-primary {
+    background: linear-gradient(135deg,
+            rgba(185, 28, 28, 0.25) 0%,
+            rgba(127, 29, 29, 0.35) 100%);
+    border-color: rgba(185, 28, 28, 0.5);
+}
+
+.large-btn.btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 30%,
+            rgba(220, 38, 38, 0.15),
+            transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+/* Secondary Button - Online Game */
+.large-btn.btn-secondary {
+    background: linear-gradient(135deg,
+            rgba(41, 28, 28, 0.45) 0%,
+            rgba(25, 18, 18, 0.55) 100%);
+    border-color: rgba(107, 33, 33, 0.45);
+}
+
+.large-btn.btn-secondary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 30%,
+            rgba(148, 163, 184, 0.1),
+            transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+/* Hover Effects */
+@media (hover: hover) and (pointer: fine) {
+    .large-btn:hover {
+        transform: translateY(-4px) scale(1.02);
+    }
+
+    .large-btn.btn-primary:hover {
+        border-color: rgba(220, 38, 38, 0.7);
+        box-shadow:
+            0 12px 40px rgba(185, 28, 28, 0.35),
+            0 0 30px rgba(220, 38, 38, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .large-btn.btn-primary:hover::before {
+        opacity: 1;
+    }
+
+    .large-btn.btn-secondary:hover {
+        border-color: rgba(148, 163, 184, 0.6);
+        box-shadow:
+            0 12px 40px rgba(0, 0, 0, 0.5),
+            0 0 25px rgba(148, 163, 184, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .large-btn.btn-secondary:hover::before {
+        opacity: 1;
+    }
+}
+
+/* Active/Touch Feedback */
+.large-btn:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .large-btn:active {
+        transform: scale(0.96);
+        opacity: 0.95;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Button Content Styling
+   -------------------------------------------------------------------------- */
+
+.large-btn .btn-icon {
+    font-size: 3.5rem;
+    margin-bottom: 0.75rem;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .large-btn:hover .btn-icon {
+        transform: scale(1.1);
+    }
+}
+
+.large-btn span[data-i18n]:not(.btn-icon):not(.btn-desc) {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #f3f4f6;
+    margin-bottom: 0.4rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.btn-desc {
+    font-size: 0.95rem;
+    color: var(--color-gray-medium);
+    font-weight: 400;
+    opacity: 0.85;
+    line-height: 1.4;
+}
+
+/* Beta badge positioning in large button */
+.large-btn .beta-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    margin: 0;
+    z-index: 10;
+}
+
+
+/* --------------------------------------------------------------------------
+   Responsive Design
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+    .landing-actions {
+        max-width: 100%;
+        gap: 1rem;
+    }
+
+    .large-btn {
+        padding: 1.5rem 1.25rem;
+        border-radius: 18px;
+    }
+
+    .large-btn .btn-icon {
+        font-size: 2.75rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .large-btn span[data-i18n]:not(.btn-icon):not(.btn-desc) {
+        font-size: 1.25rem;
+    }
+
+    .btn-desc {
+        font-size: 0.85rem;
+    }
+
+    .landing-subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 2rem;
+    }
+}
+
+/* Tablet range */
+@media (min-width: 641px) and (max-width: 1024px) {
+    .landing-actions {
+        max-width: 420px;
+    }
+}
+
+/* ==========================================================================
+   Purple Theme Overrides
+   ========================================================================== */
+:root[data-theme="purple"] .lobby-section {
+    background: linear-gradient(135deg,
+            rgba(35, 10, 45, 0.45) 0%,
+            rgba(15, 5, 18, 0.55) 100%);
+    border-color: rgba(88, 28, 135, 0.45);
+}
+
+:root[data-theme="purple"] #lobbyMainMenu input[type="text"] {
+    border-color: rgba(88, 28, 135, 0.5);
+}
+
+:root[data-theme="purple"] #hostRoomCodeDisplay {
+    background: linear-gradient(135deg,
+            rgba(126, 34, 206, 0.2) 0%,
+            rgba(88, 28, 135, 0.15) 100%);
+}
+
+:root[data-theme="purple"] .or-separator::before,
+:root[data-theme="purple"] .or-separator::after {
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(88, 28, 135, 0.5) 50%,
+            transparent);
+}
+
+:root[data-theme="purple"] #lobbyHost .player-list {
+    border-color: rgba(88, 28, 135, 0.4);
+}
+
+:root[data-theme="purple"] #lobbyHost .player-list li {
+    border-bottom-color: rgba(88, 28, 135, 0.3);
+}
+
+:root[data-theme="purple"] #lobbyHost .player-list li:hover {
+    background: rgba(147, 51, 234, 0.15);
+}
+
+:root[data-theme="purple"] #lobbyHost .player-list::-webkit-scrollbar-thumb {
+    background: rgba(147, 51, 234, 0.5);
+}
+
+:root[data-theme="purple"] #lobbyHost .player-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(147, 51, 234, 0.7);
+}
+
+:root[data-theme="purple"] .large-btn.btn-primary {
+    background: linear-gradient(135deg,
+            rgba(126, 34, 206, 0.25) 0%,
+            rgba(88, 28, 135, 0.35) 100%);
+    border-color: rgba(126, 34, 206, 0.5);
+}
+
+:root[data-theme="purple"] .large-btn.btn-primary:hover {
+    border-color: rgba(147, 51, 234, 0.7);
+    box-shadow:
+        0 12px 40px rgba(126, 34, 206, 0.35),
+        0 0 30px rgba(147, 51, 234, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="purple"] .large-btn.btn-primary::before {
+    background: radial-gradient(circle at 30% 30%,
+            rgba(147, 51, 234, 0.15),
+            transparent 70%);
+}
+
+:root[data-theme="purple"] .large-btn.btn-secondary {
+    background: linear-gradient(135deg,
+            rgba(35, 10, 45, 0.45) 0%,
+            rgba(15, 5, 18, 0.55) 100%);
+    border-color: rgba(88, 28, 135, 0.45);
+}
+
+:root[data-theme="purple"] #clientRoleView .role-card {
+    background: linear-gradient(135deg,
+            rgba(35, 10, 45, 0.45) 0%,
+            rgba(15, 5, 18, 0.55) 100%);
+    border-color: rgba(88, 28, 135, 0.45);
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(126, 34, 206, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+:root[data-theme="purple"] #clientRoleView .role-card::before {
+    background: radial-gradient(circle at 50% 0%,
+            rgba(126, 34, 206, 0.2),
+            transparent 70%);
+}
+
+:root[data-theme="purple"] #clientRoleView .btn-secondary {
+    background: rgba(15, 16, 20, 0.6);
+    border-color: rgba(88, 28, 135, 0.5);
+}
+
+:root[data-theme="purple"] #clientRoleView .btn-secondary:hover {
+    background: rgba(25, 18, 18, 0.8);
+    border-color: rgba(126, 34, 206, 0.6);
+}

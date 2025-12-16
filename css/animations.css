@@ -1,0 +1,189 @@
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+
+/**
+ * Fade In Up
+ * Used for: Modal panels, cards, and general entry animations.
+ * Effect: element becomes visible while moving slightly upwards.
+ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/**
+ * Pulse Glow
+ * Used for: Highlighting active elements like the 'Benvenuto' badge.
+ * Effect: A gold glow that expands and contracts.
+ */
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 0 rgba(251, 191, 36, 0.1);
+  }
+
+  50% {
+    box-shadow: 0 0 18px rgba(251, 191, 36, 0.4);
+  }
+
+  100% {
+    box-shadow: 0 0 0 rgba(65, 59, 44, 0.1);
+  }
+}
+
+/**
+ * Slide In Right
+ * Used for: Elements entering from the right side.
+ */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/**
+ * Slide In Left
+ * Used for: Elements entering from the left side.
+ */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/**
+ * Scale In
+ * Used for: Pop-in effects.
+ */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/**
+ * Shimmer
+ * Used for: .shimmer-text utility.
+ * Effect: Moves a gradient background across text to create a shine.
+ */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/**
+ * Float
+ * Used for: Idle animations on cards or logos.
+ */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/**
+ * Ripple
+ * Used for: Click feedback effects (if implemented in JS).
+ */
+@keyframes ripple {
+  to {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/**
+ * Shake
+ * Used for: Error states or validation feedback.
+ */
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-8px);
+  }
+
+  75% {
+    transform: translateX(8px);
+  }
+}
+
+/* 
+   Accessibility: Reduced Motion 
+   Forces animations to complete almost instantly for users who prefer reduced motion.
+*/
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Staggered Delays for Child Elements */
+.animate-entry {
+  animation: fadeInUp 0.5s ease backwards;
+}
+
+.stagger-1 {
+  animation-delay: 100ms !important;
+}
+
+.stagger-2 {
+  animation-delay: 200ms !important;
+}
+
+.stagger-3 {
+  animation-delay: 300ms !important;
+}
+
+.stagger-4 {
+  animation-delay: 400ms !important;
+}
+
+.stagger-5 {
+  animation-delay: 500ms !important;
+}

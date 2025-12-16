@@ -1,0 +1,1963 @@
+/* ==========================================================================
+   Game Specific Components
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Player Setup (Chips & List)
+   -------------------------------------------------------------------------- */
+.player-list-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.add-player-row {
+  display: flex;
+  gap: 10px;
+}
+
+.add-player-row input {
+  flex: 1;
+}
+
+/* Grid for player chips - always single column */
+.player-chips {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  position: relative;
+}
+
+/* Individual Player Chip */
+.player-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--color-chip-bg);
+  color: #f5f5f4;
+  font-weight: 500;
+  font-size: 0.85rem;
+  border: 2px solid transparent;
+  transition: all 0.2s ease, transform 0.15s ease;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  position: relative;
+}
+
+.player-chip:active {
+  cursor: grabbing;
+}
+
+/* Player Avatar - Initials Circle */
+.player-avatar {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.player-chip:hover .player-avatar {
+  transform: scale(1.05);
+}
+
+/* Drag & Drop states - Enhanced */
+.player-chip.dragging {
+  opacity: 0.4;
+  cursor: grabbing;
+  border-color: rgba(250, 204, 21, 0.6);
+  transform: scale(0.95);
+  box-shadow: none;
+}
+
+/* Drop Zone Indicator - Shows between chips */
+.drop-indicator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(250, 204, 21, 0.8) 20%,
+      rgba(250, 204, 21, 1) 50%,
+      rgba(250, 204, 21, 0.8) 80%,
+      transparent 100%);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 100;
+  box-shadow:
+    0 0 8px rgba(250, 204, 21, 0.6),
+    0 0 16px rgba(250, 204, 21, 0.3);
+  animation: dropIndicatorPulse 0.8s ease-in-out infinite;
+}
+
+.drop-indicator::before,
+.drop-indicator::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  background: rgba(250, 204, 21, 1);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(250, 204, 21, 0.8);
+}
+
+.drop-indicator::before {
+  left: -5px;
+}
+
+.drop-indicator::after {
+  right: -5px;
+}
+
+@keyframes dropIndicatorPulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow:
+      0 0 8px rgba(250, 204, 21, 0.6),
+      0 0 16px rgba(250, 204, 21, 0.3);
+  }
+
+  50% {
+    opacity: 0.8;
+    box-shadow:
+      0 0 12px rgba(250, 204, 21, 0.8),
+      0 0 24px rgba(250, 204, 21, 0.5);
+  }
+}
+
+/* Insert before/after visual hint on chip */
+.player-chip.insert-before {
+  margin-top: 6px;
+}
+
+.player-chip.insert-after {
+  margin-bottom: 6px;
+}
+
+.drag-handle {
+  cursor: grab;
+  color: var(--color-gray-medium);
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 2px;
+  user-select: none;
+  touch-action: none;
+}
+
+.player-chip:active .drag-handle {
+  cursor: grabbing;
+}
+
+.player-number {
+  font-size: 0.7rem;
+  color: var(--color-gray-medium);
+  font-weight: 600;
+  min-width: 16px;
+  text-align: center;
+}
+
+.player-name {
+  flex: 1;
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 7ch;
+}
+
+.chip-actions {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.chip-remove {
+  background: var(--color-chip-remove);
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: #fef3c7;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  padding: 0;
+  line-height: 1;
+  transition: all 0.2s ease;
+}
+
+.chip-remove:hover {
+  background: rgba(251, 113, 133, 0.35);
+  transform: scale(1.05);
+}
+
+.chip-remove:active {
+  transform: scale(0.95);
+}
+
+/* --------------------------------------------------------------------------
+   Roles Configuration Panel
+   -------------------------------------------------------------------------- */
+#rolesPanel {
+  margin-top: -6px;
+}
+
+.roles-details {
+  border: 1px solid rgba(250, 204, 21, 0.25);
+  border-radius: 14px;
+  padding: 14px;
+  background: rgba(45, 15, 15, 0.15);
+  margin: 8px 0 4px 0;
+  box-shadow: 0 0 8px rgba(250, 204, 21, 0.05);
+  transition: all 0.3s ease;
+}
+
+.roles-details:hover {
+  border-color: rgba(250, 204, 21, 0.35);
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.08);
+}
+
+.roles-details[open] {
+  border-color: rgba(250, 204, 21, 0.3);
+  background: rgba(45, 15, 15, 0.2);
+}
+
+.roles-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1.15rem;
+  color: var(--color-gold);
+  letter-spacing: 0.04em;
+  list-style: none;
+  font-weight: 600;
+}
+
+.roles-caret {
+  transition: transform 0.2s ease;
+  font-size: 1.3rem;
+  color: var(--color-gold);
+}
+
+details[open] .roles-caret {
+  transform: rotate(180deg);
+}
+
+.roles-details>summary::-webkit-details-marker {
+  display: none;
+}
+
+.collapsible-content {
+  margin-top: 14px;
+}
+
+#rolesPanel .options-grid {
+  margin-top: 12px;
+}
+
+.options-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+/* Role Option Card - Background image on right */
+.option-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+  background-color: rgba(15, 15, 20, 0.9);
+  background-size: 90px auto;
+  background-position: calc(100% - 8px) center;
+  background-repeat: no-repeat;
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 12px 110px 12px 14px;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow);
+  transition: all 0.25s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* Gradient overlay to fade image into background */
+.option-item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 130px;
+  background: linear-gradient(90deg, rgba(15, 15, 20, 1) 0%, rgba(15, 15, 20, 0.4) 50%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.option-item:hover {
+  border-color: rgba(250, 204, 21, 0.4);
+  box-shadow: var(--glass-shadow), 0 0 15px rgba(250, 204, 21, 0.1);
+}
+
+.option-item:has(.role-option:checked) {
+  border-color: rgba(250, 204, 21, 0.5);
+}
+
+/* Faction-tinted backgrounds */
+.option-item[data-team="wolves"] {
+  background-color: rgba(50, 15, 15, 0.9);
+}
+
+.option-item[data-team="wolves"]::after {
+  background: linear-gradient(90deg, rgba(50, 15, 15, 1) 0%, rgba(50, 15, 15, 0.3) 60%, transparent 100%);
+}
+
+.option-item[data-team="wolves"]:has(.role-option:checked) {
+  border-color: rgba(185, 28, 28, 0.6);
+}
+
+.option-item[data-team="humans"] {
+  background-color: rgba(15, 25, 45, 0.9);
+}
+
+.option-item[data-team="humans"]::after {
+  background: linear-gradient(90deg, rgba(15, 25, 45, 1) 0%, rgba(15, 25, 45, 0.3) 60%, transparent 100%);
+}
+
+.option-item[data-team="humans"]:has(.role-option:checked) {
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.option-item[data-team="loner"] {
+  background-color: rgba(35, 20, 45, 0.9);
+}
+
+.option-item[data-team="loner"]::after {
+  background: linear-gradient(90deg, rgba(35, 20, 45, 1) 0%, rgba(35, 20, 45, 0.3) 60%, transparent 100%);
+}
+
+.option-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+.option-name {
+  flex: 1;
+  font-weight: 700;
+}
+
+.option-desc {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  opacity: 0.85;
+  position: relative;
+  z-index: 1;
+}
+
+.role-subtitle {
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-gray-medium);
+  position: relative;
+  z-index: 1;
+}
+
+/* Role Tags */
+.tag {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.tag.wolves {
+  background: rgba(185, 28, 28, 0.8);
+  color: #fde68a;
+}
+
+.tag.humans {
+  background: rgba(30, 64, 110, 0.8);
+  color: #cbd5f5;
+}
+
+.tag.loner {
+  background: rgba(88, 45, 120, 0.8);
+  color: #e9d5ff;
+}
+
+.option-disabled {
+  opacity: 0.4;
+}
+
+/* --------------------------------------------------------------------------
+   Reveal Phase (Role Cards) - Modernized Premium Design
+   -------------------------------------------------------------------------- */
+
+/* Reveal View Container - Fill horizontal */
+#revealView {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 1rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* Hide the main title - use status bar instead */
+#revealView>h2 {
+  display: none;
+}
+
+.reveal-status {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  color: white;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.reveal-status p {
+  margin: 0 0 0.35rem 0;
+  font-size: 0.85rem;
+  color: var(--color-gray-medium);
+}
+
+.reveal-status h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--color-gold);
+  font-weight: 700;
+}
+
+/* Role Card - Glassmorphism with subtle faction tint */
+.role-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  color: white;
+  padding: 2rem 1.5rem;
+  margin: 0.75rem 0;
+  width: 100%;
+  min-height: 360px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  animation: cardEnter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.role-card.can-reveal {
+  cursor: pointer;
+  border: 1px solid rgba(250, 204, 21, 0.4);
+}
+
+.role-card.can-reveal:hover {
+  border-color: rgba(250, 204, 21, 0.6);
+  box-shadow:
+    var(--glass-shadow),
+    0 0 30px rgba(250, 204, 21, 0.2);
+}
+
+/* Role Image - Circular with glow */
+.role-image {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0 auto 1.5rem;
+  border: 4px solid rgba(250, 204, 21, 0.4);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(250, 204, 21, 0.2);
+  display: block;
+  animation: imageFloat 3s ease-in-out infinite;
+  transition: transform 0.3s ease;
+}
+
+.role-image:hover {
+  transform: scale(1.05);
+}
+
+.role-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Team Label (Eyebrow) */
+.role-text .eyebrow {
+  font-size: 0.85rem;
+  color: var(--color-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+/* Role Name */
+.role-text h3 {
+  font-size: 2.25rem;
+  color: #f3f4f6;
+  margin: 0 0 0.75rem 0;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(250, 204, 21, 0.3);
+  line-height: 1.2;
+}
+
+/* Role Description */
+.role-text p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-gray-light);
+  margin: 0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Team-specific: subtle glassmorphism with faction tint */
+.role-card[data-team="unknown"] {
+  background: linear-gradient(135deg,
+      rgba(96, 165, 250, 0.08) 0%,
+      var(--glass-bg) 50%);
+  border-color: rgba(96, 165, 250, 0.4);
+}
+
+.role-card[data-team="wolves"] {
+  background: linear-gradient(135deg,
+      rgba(185, 28, 28, 0.15) 0%,
+      var(--glass-bg) 60%);
+  border-color: rgba(185, 28, 28, 0.5);
+  box-shadow:
+    var(--glass-shadow),
+    0 0 40px rgba(185, 28, 28, 0.15);
+}
+
+.role-card[data-team="humans"] {
+  background: linear-gradient(135deg,
+      rgba(59, 130, 246, 0.12) 0%,
+      var(--glass-bg) 60%);
+  border-color: rgba(59, 130, 246, 0.45);
+  box-shadow:
+    var(--glass-shadow),
+    0 0 40px rgba(59, 130, 246, 0.12);
+}
+
+.role-card[data-team="loner"] {
+  background: linear-gradient(135deg,
+      rgba(168, 85, 247, 0.12) 0%,
+      var(--glass-bg) 60%);
+  border-color: rgba(168, 85, 247, 0.45);
+  box-shadow:
+    var(--glass-shadow),
+    0 0 40px rgba(168, 85, 247, 0.12);
+}
+
+/* Handoff Notice - Enhanced glassmorphism */
+.handoff-notice {
+  background: linear-gradient(135deg, rgba(190, 18, 60, 0.15), var(--glass-bg) 60%);
+  border: 1px solid rgba(190, 18, 60, 0.4);
+  border-radius: 20px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  text-align: center;
+  color: #fecdd3;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow), 0 0 30px rgba(190, 18, 60, 0.1);
+  animation: fadeInUp 0.35s ease;
+  width: 100%;
+}
+
+.handoff-notice h4 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fda4af;
+}
+
+.handoff-notice p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+.handoff-timer {
+  font-weight: 600;
+  color: var(--color-gold);
+  margin-top: 0.5rem;
+}
+
+/* Reveal View Buttons - Full width */
+#revealView .actions-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+#revealView .btn-primary,
+#revealView .btn-secondary,
+#revealView .btn-ghost {
+  padding: 16px 24px;
+  font-size: 1.1rem;
+  border-radius: 16px;
+  width: 100%;
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  #revealView {
+    padding: 1.5rem 1rem;
+  }
+
+  #revealView h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .reveal-status {
+    padding: 1rem;
+  }
+
+  .reveal-status h3 {
+    font-size: 1.25rem;
+  }
+
+  .role-card {
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+  }
+
+  .role-image {
+    width: 130px;
+    height: 130px;
+  }
+
+  .role-text h3 {
+    font-size: 1.75rem;
+  }
+
+  .role-text p {
+    font-size: 0.95rem;
+  }
+}
+
+.handoff-list {
+  list-style: decimal inside;
+  margin-bottom: 20px;
+  color: var(--color-gray-light);
+}
+
+.handoff-list {
+  list-style: decimal inside;
+  margin-bottom: 20px;
+  color: var(--color-gray-light);
+}
+
+/* --------------------------------------------------------------------------
+   Summary & Game Status (Living/Fallen)
+   -------------------------------------------------------------------------- */
+.summary-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.living-details summary,
+.fallen-details summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  position: relative;
+  padding-right: 32px;
+}
+
+.living-details summary>span:first-child,
+.fallen-details summary>span:first-child {
+  order: 1;
+}
+
+.living-count,
+.fallen-count {
+  order: 2;
+  background: rgba(248, 250, 252, 0.1);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 0.85rem;
+  color: #f8fafc;
+}
+
+.btn-icon-small {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: rgba(148, 163, 184, 0.2);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  order: 3;
+  margin-left: auto;
+  transition: all 0.2s ease;
+}
+
+.btn-icon-small:hover {
+  background: rgba(148, 163, 184, 0.3);
+  border-color: rgba(148, 163, 184, 0.5);
+}
+
+.summary-item {
+  position: relative;
+  overflow: hidden;
+  min-height: 160px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border: none;
+  border-radius: 16px;
+  background: #1e293b;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  isolation: isolate;
+}
+
+.summary-item.dead {
+  opacity: 0.6;
+  filter: grayscale(1);
+}
+
+.summary-thumb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  z-index: -1;
+  filter: brightness(0.4) contrast(1.1);
+  border-radius: 0;
+  /* Prevent repaints/flashing when vote counts change */
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.summary-item.eliminated {
+  opacity: 0.6;
+  filter: grayscale(0.8);
+}
+
+.summary-info {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  text-align: center;
+  color: white;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.summary-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
+  color: white;
+}
+
+.summary-name-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.summary-role {
+  display: inline-block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fbbf24;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 4px 10px;
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.summary-actions {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  align-items: stretch;
+}
+
+.mini-action {
+  width: 100%;
+  padding: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+}
+
+.mini-action:hover,
+.mini-action:active {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.mini-action.remove {
+  background: rgba(248, 113, 113, 0.25);
+  color: #fecaca;
+  border-color: rgba(248, 113, 113, 0.4);
+}
+
+.mini-action.revive {
+  background: rgba(52, 211, 153, 0.2);
+  color: #bbf7d0;
+}
+
+/* Horizontal Scroll (for Narrative view) */
+.summary-list.horizontal-scroll {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 12px;
+  padding-bottom: 12px;
+  scroll-snap-type: x mandatory;
+}
+
+.summary-list.horizontal-scroll .summary-item {
+  min-width: 240px;
+  max-width: 240px;
+  flex-shrink: 0;
+  scroll-snap-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   Voting Controls
+   -------------------------------------------------------------------------- */
+.vote-controls {
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+  padding: 6px 0;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+}
+
+.vote-label {
+  font-size: 0.8rem;
+  color: var(--color-gray-medium);
+  font-weight: 600;
+}
+
+.vote-count {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fbbf24;
+  min-width: 24px;
+  text-align: center;
+}
+
+.vote-btn {
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(96, 165, 250, 0.4);
+  color: #93c5fd;
+  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-weight: bold;
+  transition: all 0.15s ease;
+}
+
+.vote-btn:hover {
+  background: rgba(59, 130, 246, 0.35);
+  border-color: rgba(96, 165, 250, 0.6);
+}
+
+.vote-btn:active {
+  transform: scale(0.95);
+}
+
+/* --------------------------------------------------------------------------
+   Status Badges
+   -------------------------------------------------------------------------- */
+.summary-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.status-badge {
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+/* 'Benvenuto' (Welcome) Badge */
+.benvenuto-badge {
+  background: linear-gradient(120deg, #7c3aed, #5b21b6);
+  color: #fef3c7;
+  box-shadow: 0 0 12px rgba(124, 58, 237, 0.4);
+  animation: pulseGlow 2s infinite;
+}
+
+/* 'Indiziato' (Suspect) Badge */
+.indiziato-badge {
+  background: linear-gradient(120deg, #dc2626, #991b1b);
+  color: #fef3c7;
+  box-shadow: 0 0 8px rgba(220, 38, 38, 0.4);
+}
+
+.badge-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Highlight for Benvenuto player */
+.summary-item.benvenuto {
+  border-color: rgba(167, 139, 250, 0.6);
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+  background: linear-gradient(135deg, rgba(88, 28, 135, 0.15), rgba(22, 14, 15, 0.82));
+}
+
+.toggle-indiziato {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  font-size: 1rem;
+}
+
+.toggle-indiziato:hover {
+  background: rgba(245, 158, 11, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   Narrator Tools
+   -------------------------------------------------------------------------- */
+.role-summary {
+  margin: 4px 0 16px 0;
+  padding: 16px;
+  background: rgba(22, 14, 15, 0.6);
+  border: 1px solid rgba(127, 29, 29, 0.4);
+  border-radius: 14px;
+  animation: fadeInUp 0.35s ease;
+}
+
+.role-summary h3 {
+  font-size: 1rem;
+  color: #fbbf24;
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+}
+
+.role-summary-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.role-summary-item {
+  background: rgba(45, 15, 15, 0.8);
+  border: 1px solid rgba(107, 33, 33, 0.5);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: #f8fafc;
+  font-weight: 600;
+}
+
+.role-summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.role-summary-header h3 {
+  margin-bottom: 0;
+}
+
+.balance-badge {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.balance-wolves {
+  background: rgba(220, 38, 38, 0.25);
+  border: 1px solid rgba(248, 113, 113, 0.5);
+  color: #fca5a5;
+}
+
+.balance-village {
+  background: rgba(59, 130, 246, 0.25);
+  border: 1px solid rgba(96, 165, 250, 0.5);
+  color: #93c5fd;
+}
+
+.balance-balanced {
+  background: rgba(34, 197, 94, 0.25);
+  border: 1px solid rgba(74, 222, 128, 0.5);
+  color: #86efac;
+}
+
+/* --------------------------------------------------------------------------
+   Summary View - Mobile Optimized Layout
+   -------------------------------------------------------------------------- */
+
+/* Sticky Header - 8px gap from top when stuck */
+.summary-sticky-header {
+  position: sticky;
+  top: 8px;
+  /* Gap from top when stuck */
+  z-index: 10;
+  /* Glassmorphism styling consistent with rest of app */
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  margin: 0 0 12px 0;
+  padding: 10px;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: var(--glass-shadow);
+}
+
+.summary-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.day-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(251, 191, 36, 0.1));
+  border: 1px solid rgba(251, 191, 36, 0.5);
+  border-radius: 10px;
+  padding: 6px 12px;
+  flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.day-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #d4a017;
+  font-weight: 600;
+}
+
+/* Hide label on very small screens */
+@media (max-width: 360px) {
+  .day-label {
+    display: none;
+  }
+}
+
+.day-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fbbf24;
+  line-height: 1;
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
+}
+
+/* Timer in header - compact */
+.summary-header-row .timer-control {
+  flex-shrink: 0;
+  position: relative;
+}
+
+.summary-header-row .timer-control .timer-toggle {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  gap: 4px;
+}
+
+.timer-mini-display {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  min-width: 24px;
+}
+
+/* Timer expanded - positioned below sticky header, right-aligned with button */
+.summary-header-row .timer-control .timer-expanded {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: auto;
+  transform: none;
+  z-index: 100;
+  min-width: 220px;
+  margin-top: 12px;
+}
+
+.btn-next-day-compact {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Guide Panel - Primary Focus */
+.guide-panel {
+  border: 1px solid rgba(68, 32, 32, 0.45);
+  border-radius: 16px;
+  padding: 16px;
+  background: rgba(17, 12, 12, 0.85);
+  margin-bottom: 8px;
+}
+
+/* Next Day Button - close to guide */
+.btn-next-day {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* Section Divider */
+.section-divider {
+  border: none;
+  border-top: 1px solid rgba(148, 163, 184, 0.15);
+  margin: 0 0 12px 0;
+}
+
+.guide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.guide-header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.guide-text {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0 0 12px 0;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border-left: 3px solid #fbbf24;
+}
+
+.guide-nav-inline {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.guide-nav-inline button {
+  min-width: 44px;
+}
+
+/* Player Sections - Collapsible */
+.player-section {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  background: rgba(15, 16, 20, 0.6);
+  overflow: hidden;
+}
+
+.player-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+}
+
+.player-section-header::-webkit-details-marker {
+  display: none;
+}
+
+.player-section-header::before {
+  content: '▶';
+  font-size: 0.7rem;
+  transition: transform 0.2s ease;
+  color: #64748b;
+}
+
+.player-section[open] .player-section-header::before {
+  transform: rotate(90deg);
+}
+
+.player-count {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-left: auto;
+}
+
+/* Player list content padding */
+.player-section .summary-list,
+.player-section .fallen-list {
+  padding: 0 16px 16px 16px;
+  margin: 0;
+}
+
+.btn-icon-tiny {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  background: transparent;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 6px;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.btn-icon-tiny:hover {
+  background: rgba(148, 163, 184, 0.1);
+}
+
+/* Summary Footer */
+.summary-footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 12px;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  margin-top: 8px;
+}
+
+/* Legacy narrator-tools - keep for compatibility */
+.narrator-tools {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  padding-top: 20px;
+  animation: fadeInUp 0.35s ease;
+}
+
+.day-control {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* --------------------------------------------------------------------------
+   Turn Timer (Collapsible)
+   -------------------------------------------------------------------------- */
+.timer-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Toggle button - always visible */
+.timer-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  border-radius: 12px;
+  color: #fbbf24;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.timer-toggle:hover {
+  background: rgba(251, 191, 36, 0.25);
+  border-color: rgba(251, 191, 36, 0.6);
+}
+
+.timer-toggle-icon {
+  font-size: 1.2rem;
+}
+
+.timer-mini-display {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  min-width: 40px;
+}
+
+/* Expanded timer panel */
+.timer-expanded {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+  /* Glassmorphism styling consistent with rest of app */
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  box-shadow: var(--glass-shadow);
+  animation: fadeInUp 0.2s ease;
+}
+
+.timer-control.collapsed .timer-expanded {
+  display: none;
+}
+
+.timer-display-wrapper {
+  position: relative;
+  width: 90px;
+  height: 90px;
+}
+
+.timer-ring-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.timer-ring-bg {
+  fill: none;
+  stroke: rgba(148, 163, 184, 0.2);
+  stroke-width: 6;
+}
+
+.timer-ring-progress {
+  fill: none;
+  stroke: var(--color-gold);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 283;
+  /* 2 * PI * 45 */
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.5s linear;
+}
+
+.timer-display {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f8fafc;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-display.paused {
+  animation: timerBlink 1s ease-in-out infinite;
+}
+
+.timer-display.timer-urgent {
+  color: #f87171;
+  animation: timerPulse 0.5s ease-in-out infinite;
+}
+
+.timer-display.timer-complete {
+  animation: timerComplete 0.3s ease-in-out 3;
+}
+
+@keyframes timerBlink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes timerPulse {
+
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes timerComplete {
+
+  0%,
+  100% {
+    color: #f8fafc;
+  }
+
+  50% {
+    color: #fbbf24;
+  }
+}
+
+.timer-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.timer-preset,
+.timer-action {
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.timer-preset {
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  color: #fbbf24;
+}
+
+.timer-preset:hover {
+  background: rgba(251, 191, 36, 0.25);
+  border-color: rgba(251, 191, 36, 0.6);
+}
+
+.timer-action {
+  background: rgba(148, 163, 184, 0.15);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  color: #e2e8f0;
+}
+
+.timer-action:hover:not(:disabled) {
+  background: rgba(148, 163, 184, 0.25);
+}
+
+.timer-action:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.timer-control.timer-active .timer-ring-progress {
+  stroke: #22c55e;
+}
+
+.timer-control.timer-active .timer-display.timer-urgent+.timer-ring-progress,
+.timer-control .timer-display.timer-urgent~.timer-ring-svg .timer-ring-progress {
+  stroke: #ef4444;
+}
+
+.timer-control.timer-active .timer-toggle {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.15);
+}
+
+.day-number {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #fbbf24;
+}
+
+/* Narrator Guide Panel */
+.guide-panel {
+  border: 1px solid rgba(68, 32, 32, 0.45);
+  border-radius: 16px;
+  padding: 16px;
+  background: rgba(17, 12, 12, 0.85);
+  animation: fadeInUp 0.35s ease;
+}
+
+/* Next Day button - placed after guide panel */
+.btn-next-day {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.guide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.guide-progress {
+  font-size: 0.7rem;
+  color: var(--color-gray-light);
+}
+
+.guide-text {
+  min-height: 60px;
+  color: #f8fafc;
+  margin-bottom: 12px;
+}
+
+.guide-list {
+  list-style: decimal;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Lists for Fallen and Living Players (Collapsible) */
+.fallen-details {
+  margin-top: 20px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 14px;
+  padding: 14px 18px;
+  background: rgba(17, 12, 12, 0.7);
+  animation: fadeInUp 0.3s ease;
+}
+
+details summary {
+  list-style: none;
+}
+
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+.fallen-details summary {
+  margin-bottom: 10px;
+}
+
+.fallen-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #e2e8f0;
+}
+
+.fallen-list .fallen-empty {
+  color: var(--color-gray-medium);
+  font-style: italic;
+}
+
+.living-details {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 16px;
+  padding: 14px 18px;
+  background: rgba(22, 16, 12, 0.85);
+  margin-bottom: 18px;
+  animation: fadeInUp 0.3s ease;
+}
+
+.living-details summary {
+  margin-bottom: 12px;
+}
+
+.living-details .summary-list {
+  margin-top: 8px;
+}
+
+.living-details:not([open]) .summary-list,
+.fallen-details:not([open]) .fallen-list {
+  display: none;
+}
+
+/* Chevron for details/summary */
+.fallen-details summary::after,
+.living-details summary::after {
+  content: "⌄";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  transition: transform 0.2s ease;
+  color: var(--color-gold);
+  font-size: 0.85rem;
+}
+
+.fallen-details[open] summary::after,
+.living-details[open] summary::after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+details:not([open])>summary {
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Mythomaniac Special Feature
+   -------------------------------------------------------------------------- */
+.myth-panel {
+  margin-top: 24px;
+  border: 1px solid rgba(245, 158, 11, 0.65);
+  border-radius: 18px;
+  padding: 18px;
+  background: linear-gradient(135deg, rgba(66, 32, 10, 0.92), rgba(26, 10, 5, 0.9));
+  box-shadow: 0 10px 25px rgba(15, 8, 3, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: fadeInUp 0.35s ease, pulseGlow 3.2s ease-in-out infinite;
+}
+
+.myth-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.myth-status {
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  color: #fde68a;
+}
+
+.myth-result {
+  min-height: 20px;
+}
+
+.myth-summary {
+  margin-top: 20px;
+  border-radius: 14px;
+  border: 1px dashed rgba(251, 191, 36, 0.35);
+  padding: 12px 16px;
+  background: rgba(30, 21, 12, 0.85);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  animation: fadeInUp 0.35s ease;
+}
+
+/* --------------------------------------------------------------------------
+   Victory Screen
+   -------------------------------------------------------------------------- */
+.victory-title {
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+  color: var(--color-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.victory-subtitle {
+  font-size: 1rem;
+  color: var(--color-gray-light);
+  margin-bottom: 20px;
+  padding: 0 16px;
+  line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   Info & Rules Panel
+   -------------------------------------------------------------------------- */
+.info-panel {
+  max-width: 640px;
+  text-align: left;
+}
+
+.info-section {
+  margin-bottom: 18px;
+  border-top: 1px solid rgba(148, 163, 184, 0.25);
+  padding-top: 16px;
+  animation: fadeInUp 0.35s ease;
+}
+
+.info-section h3 {
+  font-size: 1.1rem;
+  color: var(--color-gold);
+  margin-bottom: 8px;
+}
+
+.info-section p {
+  font-size: 0.92rem;
+  color: #f5ebe0;
+  margin-bottom: 8px;
+}
+
+.lynch-btn {
+  background: rgba(220, 38, 38, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(220, 38, 38, 0.4);
+}
+
+.lynch-btn:hover {
+  background: rgba(220, 38, 38, 0.3);
+  border-color: rgba(220, 38, 38, 0.6);
+}
+
+/* --------------------------------------------------------------------------
+   Interactive Hover Effects
+   -------------------------------------------------------------------------- */
+.card,
+[class*="card"] {
+  transition: all 0.3s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+
+  .card:hover,
+  [class*="card"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(185, 28, 28, 0.2);
+  }
+}
+
+/* Responsive adjustments for Game components */
+@media (max-width: 640px) {
+
+  .role-card,
+  .role-card.with-image {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .role-image {
+    width: 120px;
+    height: 120px;
+  }
+
+  #summaryView>div:first-child {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px;
+  }
+
+  #summaryView h2 {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  #openVotingFromSummary {
+    width: 100%;
+    text-align: center;
+  }
+
+  .guide-panel {
+    padding: 18px;
+  }
+
+  .guide-nav {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .guide-nav .btn-small {
+    width: 100%;
+  }
+}
+
+/* Responsive Summary Item Layout */
+@media (min-width: 769px) {
+  .summary-item {
+    flex-direction: row;
+    align-items: center;
+    min-height: 120px;
+    padding: 12px 16px;
+    flex-wrap: wrap;
+  }
+
+  .summary-thumb {
+    object-position: center center;
+  }
+
+  .summary-info {
+    text-align: center;
+    flex: 1 1 auto;
+    min-width: 200px;
+    padding-right: 16px;
+  }
+
+  .summary-name-row {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .summary-actions {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    margin-top: 0;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    min-width: fit-content;
+  }
+
+  .vote-controls {
+    margin-top: 0;
+    margin-bottom: 0;
+    flex-wrap: nowrap;
+  }
+
+  .mini-action {
+    white-space: nowrap;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    min-width: fit-content;
+  }
+}
+
+/* Online Mode Adjustments */
+body.online-mode .player-count-label {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Purple Theme Overrides
+   ========================================================================== */
+:root[data-theme="purple"] .player-chip.drag-over {
+  background: rgba(35, 10, 45, 1);
+  border-color: rgba(192, 132, 252, 0.6);
+}
+
+:root[data-theme="purple"] .chip-remove:hover {
+  background: rgba(216, 180, 254, 0.35);
+}
+
+:root[data-theme="purple"] .roles-details {
+  background: rgba(35, 10, 45, 0.15);
+}
+
+:root[data-theme="purple"] .roles-details[open] {
+  background: rgba(35, 10, 45, 0.2);
+}
+
+:root[data-theme="purple"] .role-summary {
+  background: rgba(15, 5, 18, 0.6);
+  border-color: rgba(107, 33, 168, 0.4);
+}
+
+:root[data-theme="purple"] .role-summary-item {
+  background: rgba(35, 10, 45, 0.8);
+  border-color: rgba(88, 28, 135, 0.5);
+}
+
+:root[data-theme="purple"] .guide-panel {
+  border-color: rgba(59, 7, 100, 0.45);
+  background: rgba(10, 5, 12, 0.85);
+}

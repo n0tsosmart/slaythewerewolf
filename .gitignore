@@ -1,0 +1,7 @@
+.vscode/launch.json
+.vscode/tasks.json
+
+# Testing and Dependencies
+node_modules/
+coverage/
+.vitest/

@@ -1,0 +1,32 @@
+{
+  "name": "slaythewerewolf",
+  "version": "1.0.0",
+  "description": "A modern digital companion for the classic social deduction game Lupus in Tabula (Werewolf/Mafia)",
+  "main": "index.js",
+  "type": "module",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/n0tsosmart/slaythewerewolf.git"
+  },
+  "keywords": ["werewolf", "mafia", "social-deduction", "party-game", "webrtc"],
+  "author": "n0tsosmart",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/n0tsosmart/slaythewerewolf/issues"
+  },
+  "homepage": "https://github.com/n0tsosmart/slaythewerewolf#readme",
+  "devDependencies": {
+    "@vitest/ui": "^4.0.15",
+    "jsdom": "^27.2.0",
+    "vitest": "^4.0.15"
+  }
+}

@@ -1,0 +1,131 @@
+/* ==========================================================================
+   Utility Classes
+   ========================================================================== */
+
+/* Visibility */
+.hidden {
+  display: none !important;
+}
+
+/* Layout Helpers */
+.glass-panel {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-radius: 22px;
+}
+
+.actions-right {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .actions-right {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* Specific hidden states managed by JS logic */
+.info-footer.hidden {
+  display: none;
+}
+
+.guide-list.hidden,
+.guide-nav.hidden,
+#guideStepText.hidden {
+  display: none;
+}
+
+.summary-list.hidden {
+  display: none;
+}
+
+/* 
+   Custom Scrollbars 
+   Themed to match the application colors (Red/Dark)
+*/
+.overflow-auto,
+.overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(185, 28, 28, 0.5) rgba(45, 15, 15, 0.3);
+  -webkit-overflow-scrolling: touch;
+}
+
+.overflow-auto::-webkit-scrollbar,
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.overflow-auto::-webkit-scrollbar-track,
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: rgba(45, 15, 15, 0.3);
+  border-radius: 3px;
+}
+
+.overflow-auto::-webkit-scrollbar-thumb,
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: rgba(185, 28, 28, 0.5);
+  border-radius: 3px;
+}
+
+/* 
+   Text Shimmer Effect
+   Animation class for golden text shine
+*/
+.shimmer-text {
+  background: linear-gradient(90deg,
+      var(--color-text-primary) 0%,
+      var(--color-gold) 50%,
+      var(--color-text-primary) 100%);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s linear infinite;
+}
+
+/* 
+   Stagger Animations
+   Used for lists where items should appear one after another
+*/
+.stagger-item {
+  animation: fadeInUp 0.5s ease-out backwards;
+}
+
+.stagger-item:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.stagger-item:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.stagger-item:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+.stagger-item:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+.stagger-item:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+.stagger-item:nth-child(6) {
+  animation-delay: 0.3s;
+}
+
+.stagger-item:nth-child(7) {
+  animation-delay: 0.35s;
+}
+
+.stagger-item:nth-child(8) {
+  animation-delay: 0.4s;
+}

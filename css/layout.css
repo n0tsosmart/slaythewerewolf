@@ -1,0 +1,196 @@
+/* ==========================================================================
+   Layout Structure
+   ========================================================================== */
+
+/* 
+   App Shell
+   Main container constraining the width of the application 
+*/
+.app-shell {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex: 1;
+  width: 100%;
+}
+
+/* 
+   Global Controls
+   Top bar containing language picker and reset/home buttons
+*/
+.global-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 0;
+  margin-bottom: 10px;
+}
+
+/* 
+   Header
+   Contains the main Logo and Title with glassmorphic effects
+*/
+.app-header {
+  background: rgba(8, 9, 13, 0.82);
+  border: 1px solid var(--color-header-border);
+  border-radius: 28px;
+  padding: 30px;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.55);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+}
+
+/* Radial glow effect behind the text */
+.app-header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 35% 20%, var(--color-header-highlight), transparent 60%);
+  pointer-events: none;
+}
+
+.app-header h1 {
+  margin: 10px 0 6px;
+  font-size: clamp(1.65rem, 4vw, 2.5rem);
+  color: var(--color-gold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 900;
+  text-shadow:
+    0 0 20px rgba(250, 204, 21, 0.5),
+    0 0 40px rgba(250, 204, 21, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.8);
+  line-height: 1.1;
+}
+
+.logo-row {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.site-logo {
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 20px rgba(0, 0, 0, 0.4));
+}
+
+/* 
+   Footer - Simple and minimal
+*/
+.app-footer {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--color-gray-medium);
+  margin-top: 10px;
+  padding: 0 10px;
+}
+
+/* Info Footer - simple styling */
+.info-footer {
+  margin-top: auto;
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
+
+.info-footer p {
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: var(--color-gray-medium);
+  margin: 0 0 0.75rem 0;
+  opacity: 0.7;
+}
+
+.link-stack {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.link-stack a {
+  font-size: 0.75rem;
+  color: var(--color-gray-light);
+  text-decoration: none;
+  opacity: 0.7;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.link-stack a:hover {
+  opacity: 1;
+  color: var(--color-gold);
+  background: rgba(250, 204, 21, 0.08);
+}
+
+/* 
+   Panels
+   The main card-like containers for content
+*/
+.panel {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 26px;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  animation: fadeInUp 0.45s ease;
+}
+
+.panel h2 {
+  margin-bottom: 18px;
+  font-size: 1.35rem;
+  color: var(--color-gold);
+  letter-spacing: 0.04em;
+}
+
+/* Glass morphism utility for panels/modals */
+.panel,
+.modal,
+[class*="panel"],
+[class*="modal"] {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Mobile Layout Adjustments */
+@media (max-width: 640px) {
+  .panel {
+    padding: 16px;
+  }
+
+  .global-controls {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-row {
+    flex-direction: row;
+    text-align: left;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .site-logo {
+    width: 140px;
+    height: 140px;
+    margin-left: 0;
+  }
+
+  .app-header h1 {
+    font-size: 1.65rem;
+    letter-spacing: 0.05em;
+  }
+}

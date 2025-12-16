@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<!--
+  Slay the Werewolf: A web-based adaptation of the classic social deduction game.
+  This file serves as the main entry point and defines the overall structure of the application.
+-->
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Slay the Werewolf</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Theme Colors -->
+  <meta name="theme-color" content="#0a0404" />
+  <meta name="msapplication-TileColor" content="#0a0404" />
+
+  <!-- Apple iOS Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Werewolf" />
+
+  <!-- Apple Touch Icons -->
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png" />
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png" />
+  <link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico" />
+
+  <!-- Main stylesheet, includes versioning for cache busting -->
+  <link rel="stylesheet" href="css/styles.css?v=1.4.5" />
+
+  <!-- Inline splash screen styles for instant display -->
+  <style>
+    #splash-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #0a0404;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    #splash-screen.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .splash-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2.5rem 3rem;
+      background: rgba(8, 5, 6, 0.95);
+      border: 1px solid rgba(250, 204, 21, 0.2);
+      border-radius: 24px;
+      box-shadow:
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        0 0 80px rgba(185, 28, 28, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    #splash-screen img {
+      width: 140px;
+      height: 140px;
+      animation: splash-pulse 1.5s ease-in-out infinite;
+    }
+
+    #splash-screen .splash-title {
+      margin-top: 1.5rem;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #facc15;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      text-shadow: 0 0 20px rgba(250, 204, 21, 0.5);
+    }
+
+    #splash-screen .splash-credit {
+      margin-top: 0.75rem;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: 400;
+    }
+
+    @keyframes splash-pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.05);
+        opacity: 0.9;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Splash screen for PWA startup -->
+  <div id="splash-screen">
+    <div class="splash-panel">
+      <img src="assets/logo.png" alt="Logo" />
+      <div class="splash-title">Slay the Werewolf</div>
+      <div class="splash-credit">made by n0tsosmart</div>
+    </div>
+  </div>
+
+  <!-- Main application container -->
+  <main class="app-shell">
+    <!-- Global controls: Menu button and Restart game button -->
+    <global-controls></global-controls>
+
+    <!-- Application Header with Logo and Title -->
+    <app-header></app-header>
+
+    <!-- Landing View: Choose Game Mode -->
+    <view-landing></view-landing>
+
+    <!-- Setup View: Player and Role Configuration -->
+    <view-setup></view-setup>
+
+    <!-- Reveal View: Player Role Revelation -->
+    <view-reveal></view-reveal>
+
+    <!-- Summary View: Narrator Tools and Game Overview -->
+    <view-summary></view-summary>
+
+    <!-- Final View: Victory/Game End Screen -->
+    <view-final></view-final>
+
+    <!-- New Views for Online Mode -->
+    <view-lobby></view-lobby>
+    <view-client-role></view-client-role>
+
+    <!-- Onboarding Tutorial -->
+    <view-tutorial></view-tutorial>
+
+    <!-- Footer and Modals -->
+    <view-global></view-global>
+  </main>
+
+
+  <!-- JavaScript files, includes versioning for cache busting and defer attribute for performance -->
+  <!-- PeerJS for WebRTC functionality -->
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <script type="module" src="js/app.js?v=1.4.5"></script>
+  <!-- PWA Support -->
+  <script type="module" src="js/modules/pwa.js?v=1.2.2"></script>
+  <script type="module" src="js/modules/pwa-init.js?v=1.2.2"></script>
+
+  <div id="toastContainer"></div>
+</body>
+
+</html>
